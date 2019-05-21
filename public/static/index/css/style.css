@@ -26,6 +26,9 @@ body{
 	background: #0BE093;
   font-family: 'Open Sans', sans-serif;
 }
+textarea{
+    border:none;
+}
 body a,form li,.submit input[type="submit"],.new h3 a,.new h4 a{
 	transition: 0.1s all;
 	-webkit-transition: 0.1s all;
@@ -73,7 +76,11 @@ form {
 .location img {
   margin: 2em 0;
 }
-.app-location input[type="text"],.app-location input[type="password"]{
+.textareaLabel{
+   vertical-align:top;
+   margin-top:1.2em; 
+}
+.app-location input[type="text"],.app-location input[type="password"],.app-location textarea{
   width: 81.2%;
   padding: 1.1em 1em 1.1em 4em;
   color: #858282;
@@ -86,15 +93,15 @@ form {
   border-radius: 0.3em;
   -o-border-radius: 0.3em;
   -moz-border-radius: 0.3em;
-  -webkit- border-radius: 0.3em;
-  margin:0.7em 0;
+  -webkit-border-radius: 0.3em;
+   margin:0.7em 0;
    background: url("../images/icons.png") no-repeat 14px 16px #474a55;
   }
   .app-location input[type="password"]{
       background: url("../images/icons.png") no-repeat 13px -61px #474a55;
   }
   .submit {
-  margin: 1em 0;
+    margin: 1em 0;
   }
 .app-location input[type="submit"]{
   font-size: 20px;
@@ -150,6 +157,42 @@ input[type="submit"]:hover{
 }
 .copy-right p a:hover {
 	text-decoration: underline;
+}
+.app-main .line{
+    margin-bottom:15px;
+}
+.app-main .form-group{
+  background:#474a55; 
+  margin-bottom:15px;
+}
+.app-main .form-group label{
+    font-size:1.5em;
+    color:#fff;
+}
+.app-main .form-group input[type='text'],.app-main .form-group input[type='password'],.app-main .form-group textarea{
+   background: #474a55;
+   padding: 1.1em 1em 1.1em 0em;
+}
+.app-main .item{
+    overflow: hidden;
+}
+.app-main .item .form-group input{
+    width:60%;
+}
+.app-main .item .form-group:first-child{
+  width:55%;
+  float:left;
+}
+.app-main .item .form-group:last-child{
+  width:40%;
+  float:right;
+}
+.app-main .add{
+  background: #474a55;
+  color:#fff;
+  height:3em;
+  line-height:3em;
+  font-size:1.5em;
 }
 /*-----start-responsive-design------*/
 @media (max-width:1440px){

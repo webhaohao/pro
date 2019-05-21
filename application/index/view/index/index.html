@@ -2,7 +2,9 @@
 <html>
 <head>
 <title>首页</title>
-<link href="__PUBLIC__/css/style.css" rel='stylesheet' type='text/css' />
+<link rel="stylesheet" href="__PUBLIC__/css/font_780494_gi02bcyvmy5.css" rel="stylesheet">
+<link rel="stylesheet" href="__PUBLIC__/css/font-awesome.min.css">
+<link href="__PUBLIC__/css/style.css" rel='stylesheet' type='text/css'/>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="keywords" content="App Loction Form,Login Forms,Sign up Forms,Registration Forms,News latter Forms,Elements"./>
@@ -14,14 +16,46 @@
 </head>
 <body>
 	  <h1></h1>
-		<div class="app-location">
+		<div class="app-location app-main">
 			<h2>无纸化仓库管理</h2>
 			<div class="line"><span></span></div>
-			<div class="location"><img src="__IMG__/location.png" class="img-responsive" alt="" /></div>
 			<form action="/index/login" method="post">
-				<input type="text" class="text" placeholder="请输入学号" name="uname">
-				<input type="password" placeholder="请输入密码" name="pwd">
-				<div class="submit"><input type="submit" onclick="myFunction()" value="登录" ></div>
+				<div class="form-group">
+						<label for="" class="iconfont icon-user"></label>
+						<input type="text" class="text" placeholder="请输入学号" name="uname">
+				</div>
+				<div class="form-group">
+						<label for="" class="fa fa-cube"></label>
+						<input type="text" placeholder="请输入物品编号" name="pwd">
+				</div>
+				<div class="form-group">
+						<label for="" class="fa fa-tags"></label>
+					  <input type="text" placeholder="请输入资产描述" name="">
+				</div>
+				<div class="item">
+						<div class="form-group">
+								<label for="" class="fa fa-tags"></label>
+								<input type="text" placeholder="请输入配件描述" name="partIntr">
+						</div>
+						<div class="form-group">
+								<label for="" class="fa fa-cubes"></label>
+								<input type="text" placeholder="请输入配件数量" name="partIntr">
+						</div>
+				</div>
+				<div class="add">
+								<span>+点击添加配件</span>
+				</div>	
+				<!-- <div class="item">
+						<div class="form-group">
+								<label for="" class="fa fa-tags"></label>
+								<input type="text" placeholder="请输入配件描述" name="partIntr">
+						</div>
+						<div class="form-group">
+								<label for="" class="fa fa-cubes"></label>
+								<input type="text" placeholder="请输入配件数量" name="partIntr">
+						</div>
+				</div>			 -->
+				<div class="submit"><input type="submit" onclick="myFunction()" value="提交" ></div>
 				<div class="clear"></div>
 				<div class="new">
 					<!-- <h3><a href="#">Forgot password ?</a></h3>
