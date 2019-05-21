@@ -4,47 +4,71 @@
 <title>首页</title>
 <link rel="stylesheet" href="__PUBLIC__/css/font_780494_gi02bcyvmy5.css" rel="stylesheet">
 <link rel="stylesheet" href="__PUBLIC__/css/font-awesome.min.css">
+<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+<link href="__PUBLIC__/css/mui.min.css" rel="stylesheet" />
 <link href="__PUBLIC__/css/style.css" rel='stylesheet' type='text/css'/>
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<script type="text/javascript" src="__PUBLIC__/js/mui.min.js"></script>
+
+
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="keywords" content="App Loction Form,Login Forms,Sign up Forms,Registration Forms,News latter Forms,Elements"./>
 <script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
-</script>
 <!--webfonts-->
-<link href='http://fonts.useso.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+<!-- <link href='http://fonts.useso.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,300,600,700,800' rel='stylesheet' type='text/css'> -->
 <!--//webfonts-->
 </head>
+<style>
+	#signature{
+		position: fixed;
+		top:0;
+		left:0;
+		z-index:99;
+		background:#fff;
+	}
+</style>
 <body>
 	  <h1></h1>
 		<div class="app-location app-main">
 			<h2>无纸化仓库管理</h2>
 			<div class="line"><span></span></div>
-			<form action="/index/login" method="post">
+			<form action="" method="post" class="form">
+				<div class="form-group">
+						<label for="" class="fa fa-address-card"></label>
+						<input type="text" class="text" placeholder="请输入学号" name="stusno">
+				</div>
 				<div class="form-group">
 						<label for="" class="iconfont icon-user"></label>
-						<input type="text" class="text" placeholder="请输入学号" name="uname">
+						<input type="text" class="text" placeholder="请输入姓名" name="uname">
 				</div>
-				<div class="form-group">
-						<label for="" class="fa fa-cube"></label>
-						<input type="text" placeholder="请输入物品编号" name="pwd">
-				</div>
-				<div class="form-group">
-						<label for="" class="fa fa-tags"></label>
-					  <input type="text" placeholder="请输入资产描述" name="">
-				</div>
-				<div class="item">
-						<div class="form-group">
-								<label for="" class="fa fa-tags"></label>
-								<input type="text" placeholder="请输入配件描述" name="partIntr">
+				<div class="htmlFrame">
+					<div class="form-group">
+							<label for="" class="fa fa-cube"></label>
+							<input type="text" placeholder="请输入物品编号" name="serialnum">
+					</div>
+					<div class="form-group">
+							<label for="" class="fa fa-tags"></label>
+						<input type="text" placeholder="请输入资产描述" name="">
+					</div>
+					<div class="items">
+						<div class="item">
+								<div class="form-group">
+										<label for="" class="fa fa-tags"></label>
+										<input type="text" placeholder="请输入配件描述" name="partIntr">
+								</div>
+								<div class="form-group">
+										<label for="" class="fa fa-cubes"></label>
+										<input type="text" placeholder="数量" name="count">
+								</div>
 						</div>
-						<div class="form-group">
-								<label for="" class="fa fa-cubes"></label>
-								<input type="text" placeholder="请输入配件数量" name="partIntr">
-						</div>
+					</div>
+					<div class="add" style="margin-bottom:15px">
+							<span><label class="fa fa-plus-circle" style="margin-right:.5em"></label>点击添加配件</span>
+					</div>
+					<div class="form-group">
+							<textarea name="" id="" cols="30" rows="10" placeholder="输入备注信息"></textarea>
+					</div>	
 				</div>
-				<div class="add">
-								<span>+点击添加配件</span>
-				</div>	
 				<!-- <div class="item">
 						<div class="form-group">
 								<label for="" class="fa fa-tags"></label>
@@ -55,7 +79,8 @@
 								<input type="text" placeholder="请输入配件数量" name="partIntr">
 						</div>
 				</div>			 -->
-				<div class="submit"><input type="submit" onclick="myFunction()" value="提交" ></div>
+				<div class="submit"><input type="submit"  value="继续添加" ></div>
+				<div class="submit final"><input type="submit"  value="签名提交"></div>
 				<div class="clear"></div>
 				<div class="new">
 					<!-- <h3><a href="#">Forgot password ?</a></h3>
@@ -64,10 +89,80 @@
 				</div>
 			</form>
 		</div>
+	 	<div id="signature" style="height: 100%;" style="display:none;"></div>
 	<!--start-copyright-->
    		<div class="copy-right">
 				<p>Copyright &copy; 2019.<a target="_blank" href="#"></a></p>
 		</div>
 	<!--//end-copyright-->
+	<script src="__PUBLIC__/js/jquery.js"></script>
+	<script type="text/javascript" src="__PUBLIC__/js/jSignature.min.js"></script>
+	<!--[if lt IE 9]>
+	<script type="text/javascript" src="__PUBLIC__/js/flashcanvas.js"></script>
+	<![endif]-->
+	<script src="http://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+	<script src="__PUBLIC__/js/common.js"></script>
+	<script>
+			$(function(){
+					$(".add").on('click',function(){
+						var item=$('.items .item').eq(0).clone();
+						$(".items").append(item);	
+					})
+					$(".form input[name=uname]").blur(checkUname);
+					$(".form input[name=stusno]").blur(checkStusno);
+					$(".form input[name=serialnum]").blur(checkSerialnum);
+					$(".form .final").on('click',function(e){
+							e.preventDefault();
+							$("#signature").fadeIn('fast',function(){
+								var width =  document.body.clientWidth,height= document.body.clientHeight;
+								
+								$("#signature").jSignature({
+									height:height,width:width,color:"#000",lineWidth:4
+								})
+							});
+							
+					})
+			})
+			function checkUname(){
+					var uname = $.trim($(".form input[name=uname]").val());
+					if(!uname){
+						toastr.error('姓名不能为空!');
+						return false;
+					}
+					else if(uname.length>10){
+						toastr.error('姓名不能超过10位字符!');
+						return false;     
+					}
+					else{
+						return true;
+					}
+			}
+			function checkStusno(){
+					var stusno = $.trim($(".form input[name=stusno]").val());
+					var reg = /^[0-9]+.?[0-9]*$/; 
+					if(!reg.test(stusno)){
+						toastr.error('学号必须是数字!');
+						return false;
+					}
+					else if(stusno){
+						toastr.error('学号不能为空!');
+						return false;
+					}
+					else{
+						return true;
+					}
+			}
+			function checkSerialnum(){
+					var serialnum = $.trim($(".form input[name=serialnum]").val());
+					var reg =  /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,}$/; 
+					if(!reg.test(serialnum)){
+						toastr.error('物品编号必须是字母和数字组合!');
+						return false;
+					}
+					else{
+						return true;
+					}
+			}
+	</script>
 </body>
 </html>
