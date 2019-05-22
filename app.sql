@@ -7,7 +7,7 @@ create table admin(
     username varchar(20),
     password varchar(100)    
 );
-insert into admin values(null,'pro','1a5e52a77e8c62a74190a5040c5ce97e');
+insert into admin values(null,'admin','e10adc3949ba59abbe56e057f20f883e');
 
 create table storeman(
     id int primary key auto_increment,

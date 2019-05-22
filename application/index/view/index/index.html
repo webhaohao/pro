@@ -18,20 +18,37 @@
 <!-- <link href='http://fonts.useso.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,300,600,700,800' rel='stylesheet' type='text/css'> -->
 <!--//webfonts-->
 </head>
-<style>
-	.canvasWrap{
-		position: fixed;
-		top:0;
-		left:0;
-		z-index:99;
-		background:#fff;
-		width:100%;
-		height:100%;
-	}
-</style>
 <body>
-	  <h1></h1>
+		<div class="modal">
+				<div class="modal-content">
+						<div style="overflow: hidden">
+							<h5 class="float-lt">姓名:<span class="uname"></span></h5>
+							<h5 class="float-lt">学号:<span class="sno"></span></h5>
+						</div>	
+						<table>
+							<thead>
+									<tr>
+										<th>资产编号</th>
+										<th>资产描述</th>
+										<th>配件描述</th>
+										<th>配件数量</th>	
+										<th>备注</th>	
+									</tr>	
+							</thead>
+							<tbody>
+								
+							</tbody>
+						</table>
+						<div class="app-location ">
+							<div class="submit final"><input type="submit"  value="签名提交"></div>
+						</div>
+				</div>	
+		</div>
+		<div class="barLine">
+				<span class="fa fa-pencil-square-o"></span>
+		</div>	
 		<div class="app-location app-main">
+			<h4 style="color:#fff;">当前仓库:{$store.sname}</h4>
 			<h2>无纸化仓库管理</h2>
 			<div class="line"><span></span></div>
 			<form action="" method="post" class="form">
@@ -64,15 +81,14 @@
 								</div>
 						</div>
 					</div>
-					<div class="add" style="margin-bottom:15px">
+					<!-- <div class="add" style="margin-bottom:15px">
 							<span><label class="fa fa-plus-circle" style="margin-right:.5em"></label>点击添加配件</span>
-					</div>
+					</div> -->
 					<div class="form-group">
 							<textarea name="remarks" id="" cols="30" rows="10" placeholder="输入备注信息"></textarea>
 					</div>	
 				</div>
-				<div class="submit addInfo"><input type="submit"  value="继续添加" ></div>
-				<div class="submit final"><input type="submit"  value="签名提交"></div>
+				<div class="submit addInfo"><input type="submit"  value="添加" ></div>
 				<div class="clear"></div>
 				<div class="new">
 					<!-- <h3><a href="#">Forgot password ?</a></h3>
@@ -128,9 +144,24 @@
 								var result = FormValidate();
 								if(result){
 												$(".form")[0].reset();
-												$(".form input[name=uname]").val(result[result.length-1].uname);
-												$(".form input[name=stusno]").val(result[result.length-1].stusno);
+												var i = result.length-1;
+												$(".form input[name=uname]").val(result[i].uname);
+												$(".form input[name=stusno]").val(result[i].stusno);
+												var html =`
+														<tr>
+															<td>${result[i].serialnum}</td>
+															<td>${result[i].serialdes}</td>
+															<td>${result[i].partIntr}</td>
+															<td>${result[i].count}</td>
+															<td>${result[i].remarks}</td>
+														</tr>
+												`;
+												$(".modal table tbody").append(html);
+												$(".modal h5 .uname").html(result[i].uname)
+												$(".modal h5 .sno").html(result[i].stusno)	
+												toastr.info('添加成功!点击右侧按钮查看记录', 'Information');				
 								}
+			
 					});
 					//验证input 
 					$(".form input[name=uname]").blur(checkUname);
@@ -138,11 +169,11 @@
 					$(".form input[name=serialnum]").blur(checkSerialnum);
 					$(".form input[name=serialdes]").blur(checkSerialdes);
 					//最后签名
-					$(".form .final").on('click',function(e){
-							e.preventDefault();
-							var res=FormValidate();
-							console.log(res);
-							if(!res)return false;
+					$(".final").on('click',function(e){
+							if(formData.length==0){
+								toastr.error('无领取纪录!');
+								return false;
+							}
 							$(".canvasWrap").fadeIn('fast',function(){
 								var width =  document.documentElement.clientWidth,height= document.documentElement.clientHeight;
 								$("#signature").jSignature({
@@ -165,7 +196,7 @@
 					})
 					//签名提交
 					$("#formSubmit").on('click',function(e){
-									if(Strokes<10){
+									if(Strokes<3){
 											toastr.error('请完善签名!');
 											return false;
 									}
@@ -178,7 +209,9 @@
 
 									})
 					})
-				
+					$(".barLine").on('click',function(){
+							$(".modal").fadeToggle();
+					})
 			})
 			function checkUname(){
 					var uname = $.trim($(".form input[name=uname]").val());

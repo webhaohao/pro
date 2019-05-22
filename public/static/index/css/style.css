@@ -19,6 +19,10 @@ a{text-decoration:none;}
 .vertical-top{	vertical-align:top;}/* vertical align top */
 nav.vertical ul li{	display:block;}/* vertical menu */
 nav.horizontal ul li{	display: inline-block;}/* horizontal menu */
+*{ 
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
+  -webkit-tap-highlight-color: transparent; 
+}
 input{
     outline: none;
     padding:0;
@@ -105,12 +109,12 @@ form {
    margin:0.7em 0;
    background: url("../images/icons.png") no-repeat 14px 16px #474a55;
   }
-  .app-location input[type="password"]{
-      background: url("../images/icons.png") no-repeat 13px -61px #474a55;
-  }
-  .submit {
-    margin: 1em 0;
-  }
+.app-location input[type="password"]{
+    background: url("../images/icons.png") no-repeat 13px -61px #474a55;
+}
+.submit {
+  margin: 1em 0;
+}
 .app-location input[type="submit"]{
   font-size: 20px;
   font-weight: 300;
@@ -125,6 +129,62 @@ form {
   -o-border-radius: 0.3em;
   -webkit-border-radius: 0.3em;
   -moz-border-radius: 0.3em;
+}
+.canvasWrap{
+  position: fixed;
+  top:0;
+  left:0;
+  z-index:99;
+  background:#fff;
+  width:100%;
+  height:100%;
+}
+.barLine{
+  position: fixed;
+  top:50%;
+  right:2%;
+  z-index:99;		
+}
+.barLine span{
+  font-size:3em;	
+  color:#000;
+}
+.modal{
+   position: fixed;
+   width:100%;
+   height:100%;
+   background:#fff;
+   z-index:50;	
+   display:none;
+}
+.modal .modal-content{
+  padding:1em;
+}
+.modal .modal-content table{
+  width:100%;
+  font-size:11px;
+  color:#333333;
+  border: 1px solid #ddd;
+  border-collapse: collapse;
+}
+.modal .modal-content table th{
+  border-width: 1px;
+  padding: 8px;
+  border: 1px solid #ddd;
+}
+.modal .modal-content table td{
+  border-width: 1px;
+  padding: 8px;
+  border: 1px solid #ddd;
+  text-align:center;
+}
+.modal .app-location{
+  background:none;
+}
+.modal .modal-content h5{
+  line-height:2;
+  color:#333;	
+  margin:15px 15px 15px 0px;
 }
 input[type="submit"]:hover{
   /* background:none;
@@ -361,8 +421,8 @@ form {
 .app-location input[type="submit"] {
   font-size: 18px;
   padding: 11px 11px;
-  }
-  form {
+}
+form {
   width: 87%;
   margin: 0 auto;
 }

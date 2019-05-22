@@ -1,14 +1,14 @@
 <?php
 namespace app\admin\controller;
-use app\admin\model\Orderlist as OrderModel;
+use app\admin\model\Storeman as StoreModel;
 use app\admin\controller\Base;
-class Orderlist extends Base
+class Storeman extends Base
 {
     public function lst()
     {
     	// $list = ArticleModel::paginate(3);
         // $list=db('article')->alias('a')->join('cate c','c.id=a.cateid')->field('a.id,a.title,a.pic,a.author,a.state,c.catename')->paginate(3);
-        $list = OrderModel::paginate(10);
+        $list = StoreModel::paginate(10);
     	$this->assign('list',$list);
         return $this->fetch();
     }
@@ -16,37 +16,22 @@ class Orderlist extends Base
     public function add()
     {	
     	if(request()->isPost()){
-            // dump($_POST); die;
+
 			$data=[
-    			'title'=>input('title'),
-                'author'=>input('author'),
-                'desc'=>input('desc'),
-                'keywords'=>str_replace('，', ',', input('keywords')),
-                'content'=>input('content'),
-                'cateid'=>input('cateid'),
-    			'time'=>time(),
-            ];
-            if(input('state')=='on'){
-                $data['state']=1;
-            }
-            if($_FILES['pic']['tmp_name']){
-                $file = request()->file('pic');
-                $info = $file->move(ROOT_PATH . 'public' . DS . 'static/uploads');
-                $data['pic']='/uploads/'.$info->getSaveName();
-            }
-    		$validate = \think\Loader::validate('Article');
+    			'sname'=>input('sname'),
+    			'pwd'=>input('pwd'),
+    		];
+    		$validate = \think\Loader::validate('Storeman');
     		if(!$validate->scene('add')->check($data)){
 			   $this->error($validate->getError()); die;
 			}
-    		if(db('Article')->insert($data)){
-    			return $this->success('添加文章成功！','lst');
+    		if(db('storeman')->insert($data)){
+    			return $this->success('添加仓库成功！','lst');
     		}else{
-    			return $this->error('添加文章失败！');
+    			return $this->error('添加仓库失败！');
     		}
     		return;
     	}
-        $cateres=db('cate')->select();
-        $this->assign('cateres',$cateres);
         return $this->fetch();
     }
 

@@ -4,10 +4,13 @@ use think\Controller;
 
 class Login extends Controller{
       public function index(){
-          if(request()->isPost()){
-              session('uid',1);
-              $this->success('登录成功！','/index');
-          }
+          $list=db('storeman')->select();  
+          $this->assign('list',$list);
           return $this -> fetch();
+      }
+      public function login(){
+            $id = input('id');
+            session('sid',$id);
+            return $this->redirect('/index/index');
       }
 }
