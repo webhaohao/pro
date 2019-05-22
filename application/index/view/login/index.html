@@ -6,35 +6,44 @@
 <link href="__PUBLIC__/css/style.css" rel='stylesheet' type='text/css' />
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" href="__PUBLIC__/css/font-awesome.min.css">
 <meta name="keywords" content="App Loction Form,Login Forms,Sign up Forms,Registration Forms,News latter Forms,Elements"./>
 <script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
 </script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/3.4.2/css/swiper.min.css">
 <!--webfonts-->
 <!-- <link href='http://fonts.useso.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,300,600,700,800' rel='stylesheet' type='text/css'> -->
 <!--//webfonts-->
 </head>
+<style>
+		.swiper-container{
+					margin-top:3em;
+		}
+		.swiper-container span{
+					font-size:10em;
+					color:#fff;
+					display:block;
+		}
+</style>
 <body>
 	  <h1></h1>
 		<div class="app-location">
 			<h2>无纸化仓库管理</h2>
 			<div class="line"><span></span></div>
-			<div class="location"><img src="__IMG__/location.png" class="img-responsive" alt="" /></div>
-			<form action="/index/login" method="post">
-				<input type="text" class="text" placeholder="请输入学号" name="uname">
-				<input type="password" placeholder="请输入密码" name="pwd">
-				<div class="submit"><input type="submit" value="登录" ></div>
-				<div class="clear"></div>
-				<div class="new">
-					<!-- <h3><a href="#">Forgot password ?</a></h3>
-					<h4><a href="#">New here ? Sign Up</a></h4> -->
-					<div class="clear"></div>
+				<div class="swiper-container">
+								<div class="swiper-wrapper">
+											<div class="swiper-slide">
+														<span class="fa fa-database"></span>
+														<p class="">仓库1</p>
+											</div>	
+								</div>
 				</div>
-			</form>
 		</div>
-	<!--start-copyright-->
-   		<div class="copy-right">
-				<p>Copyright &copy; 2019.<a target="_blank" href="#"></a></p>
-		</div>
-	<!--//end-copyright-->
+		<!--start-copyright-->
+				<div class="copy-right">
+					<p>Copyright &copy; 2019.<a target="_blank" href="#"></a></p>
+			</div>
+		<!--//end-copyright-->
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/3.4.2/js/swiper.min.js"></script>
 </body>
 </html>

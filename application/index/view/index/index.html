@@ -19,12 +19,14 @@
 <!--//webfonts-->
 </head>
 <style>
-	#signature{
+	.canvasWrap{
 		position: fixed;
 		top:0;
 		left:0;
 		z-index:99;
 		background:#fff;
+		width:100%;
+		height:100%;
 	}
 </style>
 <body>
@@ -48,7 +50,7 @@
 					</div>
 					<div class="form-group">
 							<label for="" class="fa fa-tags"></label>
-						<input type="text" placeholder="请输入资产描述" name="">
+							<input type="text" placeholder="请输入资产描述" name="serialdes">
 					</div>
 					<div class="items">
 						<div class="item">
@@ -66,20 +68,10 @@
 							<span><label class="fa fa-plus-circle" style="margin-right:.5em"></label>点击添加配件</span>
 					</div>
 					<div class="form-group">
-							<textarea name="" id="" cols="30" rows="10" placeholder="输入备注信息"></textarea>
+							<textarea name="remarks" id="" cols="30" rows="10" placeholder="输入备注信息"></textarea>
 					</div>	
 				</div>
-				<!-- <div class="item">
-						<div class="form-group">
-								<label for="" class="fa fa-tags"></label>
-								<input type="text" placeholder="请输入配件描述" name="partIntr">
-						</div>
-						<div class="form-group">
-								<label for="" class="fa fa-cubes"></label>
-								<input type="text" placeholder="请输入配件数量" name="partIntr">
-						</div>
-				</div>			 -->
-				<div class="submit"><input type="submit"  value="继续添加" ></div>
+				<div class="submit addInfo"><input type="submit"  value="继续添加" ></div>
 				<div class="submit final"><input type="submit"  value="签名提交"></div>
 				<div class="clear"></div>
 				<div class="new">
@@ -89,7 +81,14 @@
 				</div>
 			</form>
 		</div>
-	 	<div id="signature" style="height: 100%;" style="display:none;"></div>
+		<div class="canvasWrap" style="display:none;">
+				<div id="signature">
+				</div>
+				<div class="bar">
+						<button id="clear"><span class="fa fa-trash-o" style="margin-right:.5em"></span>清除</button>
+						<button id="formSubmit"><span class="fa fa-plus-square" style="margin-right:.5em"></span>签名提交</button>
+				</div>
+		</div>
 	<!--start-copyright-->
    		<div class="copy-right">
 				<p>Copyright &copy; 2019.<a target="_blank" href="#"></a></p>
@@ -103,25 +102,83 @@
 	<script src="http://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
 	<script src="__PUBLIC__/js/common.js"></script>
 	<script>
+			//保存表单信息
+			var formData = [];
 			$(function(){
+					//记录笔画
+					var Strokes = 0;
 					$(".add").on('click',function(){
-						var item=$('.items .item').eq(0).clone();
+						var item=`
+											<div class="item">
+													<div class="form-group">
+															<label for="" class="fa fa-tags"></label>
+															<input type="text" placeholder="请输入配件描述" name="partIntr">
+													</div>
+													<div class="form-group">
+															<label for="" class="fa fa-cubes"></label>
+															<input type="text" placeholder="数量" name="count">
+													</div>
+											</div>	
+									`;
 						$(".items").append(item);	
 					})
+					//继续添加
+					$(".addInfo").on('click',function(e){
+								e.preventDefault();
+								var result = FormValidate();
+								if(result){
+												$(".form")[0].reset();
+												$(".form input[name=uname]").val(result[result.length-1].uname);
+												$(".form input[name=stusno]").val(result[result.length-1].stusno);
+								}
+					});
+					//验证input 
 					$(".form input[name=uname]").blur(checkUname);
 					$(".form input[name=stusno]").blur(checkStusno);
 					$(".form input[name=serialnum]").blur(checkSerialnum);
+					$(".form input[name=serialdes]").blur(checkSerialdes);
+					//最后签名
 					$(".form .final").on('click',function(e){
 							e.preventDefault();
-							$("#signature").fadeIn('fast',function(){
-								var width =  document.body.clientWidth,height= document.body.clientHeight;
-								
+							var res=FormValidate();
+							console.log(res);
+							if(!res)return false;
+							$(".canvasWrap").fadeIn('fast',function(){
+								var width =  document.documentElement.clientWidth,height= document.documentElement.clientHeight;
 								$("#signature").jSignature({
-									height:height,width:width,color:"#000",lineWidth:4
+										height:height,width:width,color:"#000",signatureLine:false,lineWidth:6
 								})
-							});
-							
+								//签名监听
+								$("#signature").bind('change', function(e){
+												//e.stopPropagation();
+												Strokes++;
+								})		
+							});		
 					})
+					//清除画布
+					$("#clear").on('click',function(e){
+									e.preventDefault();
+									e.stopPropagation();
+									// 重置笔画
+									Strokes = 0 ;
+									$("#signature").jSignature("reset");
+					})
+					//签名提交
+					$("#formSubmit").on('click',function(e){
+									if(Strokes<10){
+											toastr.error('请完善签名!');
+											return false;
+									}
+									var datapair = $("#signature").jSignature("getData", "image");
+									var data = {
+											signatureImg : datapair,
+											formData:	formData
+									}
+									$.ajax({
+
+									})
+					})
+				
 			})
 			function checkUname(){
 					var uname = $.trim($(".form input[name=uname]").val());
@@ -144,7 +201,7 @@
 						toastr.error('学号必须是数字!');
 						return false;
 					}
-					else if(stusno){
+					else if(!stusno){
 						toastr.error('学号不能为空!');
 						return false;
 					}
@@ -163,6 +220,62 @@
 						return true;
 					}
 			}
+			function checkSerialdes(){
+					var serialdes = $.trim($(".form input[name=serialdes]").val());	
+					if(!serialdes){
+							toastr.error("物品编号不能为空！");
+							return false;
+					}
+					return true;
+			}
+			function checkitemsVal(){
+					var $items = $(".form .items .item")
+					var bool = true;
+					$items.each(function(i,obj){
+							var v1=$(obj).find('.form-group').eq(0).find('input[name="partIntr"]').val();
+							var v2=$(obj).find('.form-group').eq(1).find('input[name="count"]').val();
+							if(v1 && !v2){
+									toastr.error("请输入对应配件的数量!");
+									bool = false;
+							}
+							else if(!v1 && v2){
+									toastr.error("请输入配件名称!");
+									bool = false;
+							}
+					})
+					return bool;	
+			}
+			function FormValidate(){
+					if(checkUname()&&checkStusno()&&checkSerialnum()&&checkSerialdes()&&checkitemsVal()){
+										var data = $(".form").serializeJson();
+										formData.push(data);	
+										return formData;
+					}
+					else{
+								return false;
+					}
+			}
+
+			//jquery form序列化转换为json对象
+		(function($){  
+			$.fn.serializeJson=function(){  
+				var serializeObj={};  
+				var array=this.serializeArray();  
+				var str=this.serialize();  
+				$(array).each(function(){  
+					if(serializeObj[this.name]){  
+						if($.isArray(serializeObj[this.name])){  
+							serializeObj[this.name].push(this.value);  
+						}else{  
+							serializeObj[this.name]=[serializeObj[this.name],this.value];  
+						}  
+					}else{  
+						serializeObj[this.name]=this.value;   
+					}  
+				});  
+				return serializeObj;  
+			};  
+		})(jQuery);
 	</script>
 </body>
 </html>
