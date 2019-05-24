@@ -46,6 +46,9 @@
 	h4{
 		color:#fff;font-size:1.2em;line-height:2;margin-bottom:1em;
 	}
+	.master_user .el-form-item{
+			margin-top:20px;
+	}
 </style>
 </head>
 <body>
@@ -68,15 +71,16 @@
 					<el-form-item label="学号" prop="sno">
 							<el-input v-model="userInfo.sno" placeholder=""></el-input>
 					</el-form-item>
-				</el-form>
+			</el-form>
+			<el-form :model="master_user.sel" ref="user" class="master_user" :rules="rules">
         <el-table size="mini" :data="master_user.data" border style="width: 100%" highlight-current-row>
 						<!-- <el-table-column type="index"></el-table-column> -->
 						<el-table-column v-for="(v,i) in master_user.columns" :prop="v.field" :label="v.title" :width="v.width">
 								<template slot-scope="scope">
-										<span v-if="scope.row.isSet">
+										<el-form-item v-if="scope.row.isSet" :rules="rules[v.field]" :prop="v.field" >
 												<el-input size="mini" placeholder="请输入内容" v-model="master_user.sel[v.field]">
 												</el-input>
-										</span>
+										</el-form-item>
 										<span v-else>{{scope.row[v.field]}}</span>
 								</template>
 						</el-table-column>
@@ -94,6 +98,7 @@
 								</template>
 						</el-table-column>
 				</el-table>
+			</el-form>		
 				<div class="submit addInfo" @click="addInfo"><input type="submit"  value="添加"></div>
 				<div class="submit" @click="final"><input type="submit"  value="签名提交"></div>
 			</div>		
@@ -130,7 +135,6 @@
 								 uname:'',
 								 sno:''
 						},
-						tableFinshed:false,
 						type:0,
 						master_user: {
                     sel: null,//选中行  
@@ -142,14 +146,21 @@
 													{ field: "remarks", title: "备注" }
 										],
 										data: []
-						},				
+						},		
 						rules:{
 								uname:[
 										{required:true, message:'请输入姓名', trigger:'blur'}
 								],
 								sno:[
 										{required:true, message:'请输入学号',trigger:'blur'}
-								]
+								],
+								serialnum:
+								[
+										{required:true, message:'请输入资产编号', trigger:'blur'}		
+								],
+								serialdes:[
+										{required:true, message:'请输入资产描述', trigger:'blur'}		
+								],
 						},
 						Strokes:0
         },
@@ -167,7 +178,7 @@
 					addInfo(){
 						for (let i of app.master_user.data) {
 											if (i.isSet) return this.$message.warning("请先保存当前编辑项");
-									}
+						}
 						let j = {id:0,"serialnum": "", "serialdes": "", "partIntr": "", "count": "", "remarks": "", "isSet": true, "_temporary": true };
 						this.master_user.data.push(j);
 						this.master_user.sel = JSON.parse(JSON.stringify(j));
@@ -194,101 +205,90 @@
                     }
                     //提交数据
                     if (row.isSet) {
-                        //项目是模拟请求操作  自己修改下
 												//检查数据是否有效
-												this.validateData()
-                        (function () {
-                            let data = JSON.parse(JSON.stringify(app.master_user.sel));
-                            for (let k in data) row[k] = data[k];
-                            app.$message({
-                                type: 'success',
-                                message: "保存成功!"
-                            });
-                            //然后这边重新读取表格数据
-                            app.readMasterUser();
-                            //row.isSet = false;
-                        })();
+														app.$refs["user"].validate((valid)=>{
+																	if(valid){
+																				let data = JSON.parse(JSON.stringify(app.master_user.sel));
+																				for (let k in data) row[k] = data[k];
+																				app.$message({
+																						type: 'success',
+																						message: "保存成功!"
+																				});
+																				//然后这边重新读取表格数据
+																				app.readMasterUser();
+																				row.isSet = false;	
+																	}
+														})	
+														return false;
+													
                     } else {
                         app.master_user.sel = JSON.parse(JSON.stringify(row));
                         row.isSet = true;
                     }
 					},
-					validateData(){
-							this.$refs["ruleForm"].validate((valid)=>{
+					getType(type){
+								this.type = type;
+								this.isModalshow = false;
+					},
+					clear(){
+								this.Strokes = 0 ;
+								$("#signature").jSignature("reset");
+					},
+					formSubmit(){
+						if(this.Strokes<2){
+										toastr.error('请完善签名!');
+										return false;
+								}
+						let datapair = $("#signature").jSignature("getData", "image")[1];
+						console.log(datapair);
+						let data = {
+									datapair:datapair,
+									tableData:app.master_user.data,
+									userInfo:app.userInfo
+						}
+						console.log(data);
+						var self =	this;
+						$.ajax({
+								url:'/index/Upload',
+								type:'POST',
+								data:{
+										data:JSON.stringify(data)
+								},
+								success:function(data){
+											if(data="succ"){
+														toastr.info('上传成功！');
+														self.Strokes = 0 ;
+														$("#signature").jSignature("reset");
+														$(".canvasWrap").fadeOut('slow',function(){
+																	let j = {id:0,"serialnum": "", "serialdes": "", "partIntr": "", "count": "", "remarks": "", "isSet": true, "_temporary": true };
+																	app.master_user.data.push(j);
+																	app.master_user.sel = JSON.parse(JSON.stringify(j));		
+														});
+											}
+								}	
+						})
+					},
+					final(){
+						this.$refs["ruleForm"].validate((valid)=>{
 									if(valid){
-											// let i = this.tableData.length-1;
-											// for(let o in this.tableData[i]){
-											// 	if(!this.tableData[i][o] && (o=='serialnum'||o=='serialdes')){
-											// 				this.tableFinshed = false;
-											// 				toastr.error(`请完善${this.type?'领取':'清退'}信息！`);
-											// 				return false;
-											// 	}
-											// }
-											// this.tableFinshed = true;
+													//点击修改 判断是否已经保存所有操作
+													for (let i of app.master_user.data) {
+															if (i.isSet) {
+																	app.$message.warning("请先保存当前编辑项");
+																	return false;
+															}
+													}
+													$(".canvasWrap").fadeIn('fast',function(){
+													var width =  document.documentElement.clientWidth,height= document.documentElement.clientHeight;
+													$("#signature").jSignature({
+															height:height,width:width,color:"#000",signatureLine:false,lineWidth:6
+													})
+										});			
 									}
-									return false;	
-							})
-						},
-						getType(type){
-									this.type = type;
-									this.isModalshow = false;
-						},
-						clear:function(){
-									this.Strokes = 0 ;
-									$("#signature").jSignature("reset");
-						},
-						formSubmit:function(){
-							if(this.Strokes<2){
-											toastr.error('请完善签名!');
-											return false;
-									}
-							let datapair = $("#signature").jSignature("getData", "image")[1];
-							let tableData = this.tableData;
-							let userInfo = this.userInfo;
-							console.log(datapair);
-							let data = {
-									datapair,
-									tableData,
-									userInfo
-							}
-							console.log(data);
-							var self =	this;
-							$.ajax({
-									url:'/index/Upload',
-									type:'POST',
-									data:{
-											data:JSON.stringify(data)
-									},
-									success:function(data){
-												if(data="succ"){
-															toastr.info('上传成功！');
-															self.Strokes = 0 ;
-															$("#signature").jSignature("reset");
-															$(".canvasWrap").fadeOut('slow',function(){
-																		// 	self.tableData = [{
-																		// 		serialnum: '',
-																		// 		serialdes: '',
-																		// 		partIntr: '',
-																		// 		count:'',
-																		// 		remarks:''
-																		// }];
-															});
-												}
-									}	
-							})
-						},
-						final:function(){
-							this.validateData();
-							if(!this.tableFinshed){
-									toastr.error(`请填写${this.type?'领取':'清退'}纪录!`);
 									return false;
-							}
-							$(".canvasWrap").fadeIn('fast',function(){
-										var width =  document.documentElement.clientWidth,height= document.documentElement.clientHeight;
-										$("#signature").jSignature({
-												height:height,width:width,color:"#000",signatureLine:false,lineWidth:6
-										})
-							});		
+							})
+							return false;
+						
 						}
         }
     })
