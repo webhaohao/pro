@@ -65,15 +65,15 @@
 			<h4>当前仓库:{$store.sname}</h4>
 			<h4>进行的操作:{{type? '领取':'清退'}}</h4>
 			<el-form :inline="true" :model="userInfo" class="demo-form-inline" :rules="rules" ref="ruleForm">
+					<el-form-item label="学号" prop="sno">
+							<el-input v-model="userInfo.sno" placeholder="" @blur="snoBlur"></el-input>
+					</el-form-item>
 					<el-form-item label="姓名" prop="uname">
 						<el-input v-model="userInfo.uname" placeholder=""></el-input>
 					</el-form-item>
-					<el-form-item label="学号" prop="sno">
-							<el-input v-model="userInfo.sno" placeholder=""></el-input>
-					</el-form-item>
 			</el-form>
 			<el-form :model="master_user.sel" ref="user" class="master_user" :rules="rules">
-        <el-table size="mini" :data="master_user.data" border style="width: 100%" highlight-current-row>
+				<el-table size="mini" :data="master_user.data" border style="width: 100%" highlight-current-row>
 						<!-- <el-table-column type="index"></el-table-column> -->
 						<el-table-column v-for="(v,i) in master_user.columns" :prop="v.field" :label="v.title" :width="v.width">
 								<template slot-scope="scope">
@@ -128,43 +128,77 @@
 	<script src="__PUBLIC__/js/common.js"></script>
 	<script>
     var app = new Vue({
-        el: '#app',
-        data: {
-						isModalshow:true,
-						userInfo:{
-								 uname:'',
-								 sno:''
-						},
-						type:0,
-						master_user: {
-                    sel: null,//选中行  
-										columns: [
-													{ field: "serialnum", title: "资产编号", width: 120 },
-													{ field: "serialdes", title: "资产描述", width: 150 },
-													{ field: "partIntr", title: "配件描述", width: 100 },
-													{ field: "count", title: "配件数量", width: 100 },
-													{ field: "remarks", title: "备注" }
-										],
-										data: []
-						},		
-						rules:{
-								uname:[
-										{required:true, message:'请输入姓名', trigger:'blur'}
-								],
-								sno:[
-										{required:true, message:'请输入学号',trigger:'blur'}
-								],
-								serialnum:
-								[
-										{required:true, message:'请输入资产编号', trigger:'blur'}		
-								],
-								serialdes:[
-										{required:true, message:'请输入资产描述', trigger:'blur'}		
-								],
-						},
-						Strokes:0
+			el: '#app',
+			data() {
+				const checkSerialnum = (rule,value,callback)=>{
+						console.log(value);
+						if(value==""&&this.master_user.sel.serialdes){
+							callback(new Error('请输入资产编号'));	
+						}
+						callback();
+				};
+				const checkSerialdes = (rule,value,callback)=>{
+						if(this.master_user.sel.serialnum && value==""){
+								callback(new Error('请输入资产描述'));				
+						}
+						callback();
+				}
+				const checkPartIntr = (rule,value,callback)=>{
+						console.log(value);
+						if(value==""&&this.master_user.sel.count){
+							callback(new Error('请输入配件描述'));	
+						}
+						callback();
+				};
+				const checkCount = (rule,value,callback)=>{
+						if(this.master_user.sel.partIntr && value==""){
+								callback(new Error('请输入数量'));				
+						}
+						callback();
+				}		
+				return {
+					isModalshow:true,
+					userInfo:{
+							uname:'',
+							sno:''
+					},
+					type:0,
+					master_user: {
+						sel: null,//选中行  
+						columns: [
+									{ field: "serialnum", title: "资产编号", width: 120 },
+									{ field: "serialdes", title: "资产描述", width: 150 },
+									{ field: "partIntr", title: "配件描述", width: 120 },
+									{ field: "count", title: "配件数量", width: 100 },
+									{ field: "remarks", title: "备注" }
+						],
+						data: []
+					},
+					rules:{
+							uname:[
+									{required:true, message:'请输入姓名', trigger:'blur'}
+							],
+							sno:[
+									{required:true, message:'请输入学号',trigger:'blur'}
+							],
+							serialnum:
+							[
+									{validator:checkSerialnum, trigger:'blur'}		
+							],
+							serialdes:[
+									{validator:checkSerialdes, trigger:'blur'}		
+							],
+							partIntr:[
+									{validator:checkPartIntr, trigger:'blur'}		
+							],
+							count:[
+									{validator:checkCount, trigger:'blur'}		
+							]
+					},
+					Strokes:0
+			}	
         },
-				mounted() {
+		mounted() {
 						let self  = this;
 						//this.$refs.multipleTable.toggleRowSelection(this.tableData[0],true);
 						$("#signature").on('change',function(){
@@ -190,6 +224,21 @@
                         return i;
                     });
 					},
+					snoBlur(){
+						// alert("111");	
+						$.ajax({
+							url:'/index/index/selectBysno',
+							data:{
+								stusno:app.userInfo.sno	
+							},
+							success:function(data){
+								console.log(data);
+								if(data){
+									app.userInfo.uname = data.uname;
+								}
+							}		
+						})
+					},
 					pwdChange(row, index, cg) {
                     //点击修改 判断是否已经保存所有操作
                     for (let i of app.master_user.data) {
@@ -209,7 +258,17 @@
 														app.$refs["user"].validate((valid)=>{
 																	if(valid){
 																				let data = JSON.parse(JSON.stringify(app.master_user.sel));
-																				for (let k in data) row[k] = data[k];
+																				for (let k in data) {
+																					if(!data['serialnum']&&!data['serialdes']&&!data['partIntr']&&!data['count']){
+																						app.$message({
+																							type:'error',
+																							message:`请填写${this.type?'领取':'清退'}信息!`	
+																						})
+																						return false;
+																					}
+																					row[k] = data[k];
+																				}
+																				
 																				app.$message({
 																						type: 'success',
 																						message: "保存成功!"
@@ -239,31 +298,39 @@
 										toastr.error('请完善签名!');
 										return false;
 								}
+						let base =	 $("#signature").jSignature("getData", "image")[0];	
 						let datapair = $("#signature").jSignature("getData", "image")[1];
 						console.log(datapair);
-						let data = {
+						let info = {
 									datapair:datapair,
 									tableData:app.master_user.data,
-									userInfo:app.userInfo
+									userInfo:app.userInfo,
+									type:app.type,
+									columns:app.master_user.columns,
+									base64:"data:"+base+","+datapair
 						}
-						console.log(data);
 						var self =	this;
 						$.ajax({
 								url:'/index/Upload',
 								type:'POST',
 								data:{
-										data:JSON.stringify(data)
+										data:JSON.stringify(info)
 								},
 								success:function(data){
 											if(data="succ"){
-														toastr.info('上传成功！');
-														self.Strokes = 0 ;
-														$("#signature").jSignature("reset");
-														$(".canvasWrap").fadeOut('slow',function(){
-																	let j = {id:0,"serialnum": "", "serialdes": "", "partIntr": "", "count": "", "remarks": "", "isSet": true, "_temporary": true };
-																	app.master_user.data.push(j);
-																	app.master_user.sel = JSON.parse(JSON.stringify(j));		
-														});
+														toastr.info('上传成功!');
+														setTimeout(function(){
+																sessionStorage.setItem('data',JSON.stringify(info));
+																location.href='/index/Result';
+																
+														},1000)
+													
+														// $(".canvasWrap").fadeOut('slow',function(){
+														// 			let j = {id:0,"serialnum": "", "serialdes": "", "partIntr": "", "count": "", "remarks": "", "isSet": true, "_temporary": true };
+														// 			app.master_user.data=[j]
+														// 			app.master_user.sel = JSON.parse(JSON.stringify(j));
+														// });
+													
 											}
 								}	
 						})

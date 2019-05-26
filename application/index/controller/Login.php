@@ -10,7 +10,7 @@ class Login extends Controller{
       }
       public function login(){
             $id = input('id');
-            session('sid',$id);
-            return $this->redirect('/index/index');
+            // session('sid',$id);
+            return $this->redirect('/index/index?storeid='.$id);
       }
 }

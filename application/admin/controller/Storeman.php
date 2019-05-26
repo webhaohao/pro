@@ -19,7 +19,7 @@ class Storeman extends Base
 
 			$data=[
     			'sname'=>input('sname'),
-    			'pwd'=>input('pwd'),
+    			'pwd'=>md5(input('pwd')),
     		];
     		$validate = \think\Loader::validate('Storeman');
     		if(!$validate->scene('add')->check($data)){

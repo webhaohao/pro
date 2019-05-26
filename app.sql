@@ -18,7 +18,10 @@ create table storeinfo(
     id int primary key auto_increment,
     uname varchar(20),
     stusno varchar(30),
-    path varchar(50)
+    path varchar(50),
+    storeid int,
+    type int,
+    time int
 );
 
 create table partinfo(
@@ -29,4 +32,10 @@ create table partinfo(
    count varchar(30),
    remarks varchar(50),
    sid int 
+);
+
+create table stuinfo(
+   id int primary key auto_increment,
+   uname varchar(20),
+   stusno varchar(20)
 );

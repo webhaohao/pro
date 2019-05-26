@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html><head>
+	    <meta charset="utf-8">
+    <title>无纸化仓库管理</title>
+
+    <meta name="description" content="Dashboard">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!--Basic Styles-->
+    <link href="__PUBLIC__/style/bootstrap.css" rel="stylesheet">
+    <link href="__PUBLIC__/style/font-awesome.css" rel="stylesheet">
+    <link href="__PUBLIC__/style/weather-icons.css" rel="stylesheet">
+
+    <!--Beyond styles-->
+    <link id="beyond-link" href="__PUBLIC__/style/beyond.css" rel="stylesheet" type="text/css">
+    <link href="__PUBLIC__/style/demo.css" rel="stylesheet">
+    <link href="__PUBLIC__/style/typicons.css" rel="stylesheet">
+    <link href="__PUBLIC__/style/animate.css" rel="stylesheet">
+    
+</head>
+<style>
+      table tr td span{
+          margin-right:20px;
+      }  
+      .search{
+          background:#fff;
+          margin:10px 0px;
+          padding:10px;
+      }
+</style>
+<body>
+	<!-- 头部 -->
+	{include file="common/top"}
+	<!-- /头部 -->
+	
+	<div class="main-container container-fluid">
+		<div class="page-container">
+			            <!-- Page Sidebar -->
+            {include file="common/left"}
+            <!-- /Page Sidebar -->
+            <!-- Page Content -->
+            <div class="page-content">
+                <!-- Page Breadcrumb -->
+                <div class="page-breadcrumbs">
+                    <ul class="breadcrumb">
+                        <li>
+                            <a href="#">系统</a>
+                        </li>
+                        <li class="active">仓库信息管理</li>
+                    </ul>
+                </div>
+                <!-- /Page Breadcrumb -->
+
+                <!-- Page Body -->
+<div class="page-body"> 
+<div class="row">
+    <div class="search">
+            <form action="/admin/storelist/search" method="get" class="searchForm">
+                    <div class="row">
+                        <div class="col-md-2">
+                                <input class="form-control" name="stusno" type="text" value="" placeholder="请输入学号">
+                        </div>
+                        <div class="col-md-2">
+                                <input class="form-control" name="uname"  type="text" value="" placeholder="请输入姓名">            
+                        </div>
+                        <div class="col-md-2">
+                                <select class="form-control" name="type">
+                                            <option value="" selected disabled>请选择类型</option>
+                                            <option value="1">领取</option>
+                                            <option value="0">清退</option>
+                                </select>
+                        </div>
+                        <div class="col-md-2">
+                               <button class="btn btn-primary">查询</button> 
+                        </div>
+                    </div>
+            </form>
+    </div>  
+    <div class="col-lg-12 col-sm-12 col-xs-12">
+        <button type="button" tooltip="下载excel" class="btn btn-sm btn-azure btn-addon" onclick="javascript:window.location.href='{:url('storelist/out')}'"><i class="fa fa-download"></i>导出Excel</button>
+        <div class="widget">
+            <div class="widget-body">
+                <div class="flip-scroll">
+                    <table class="table table-bordered table-hover">
+                        <!-- <thead class="">
+                            <tr>
+                                <th class="text-center" width="4%">ID</th>
+                                <th class="text-center">姓名</th>
+                                <th class="text-center">学号</th>
+                                <th class="text-center" width="20%">操作</th>
+                            </tr>
+                        </thead> -->
+                        <tbody>
+                            {volist name="list" id="vo"}
+                            <tr>
+                                <td colspan="5">
+                                        <span>姓名:{$vo.uname}</span>
+                                        <span>学号:{$vo.stusno}</span>
+                                        <span>{$vo.type?'领取时间:':'清退时间:'}{$vo.time|date="Y-m-d H:i:s",###}</span>
+                                        <span>仓库:{$vo.storeman.sname}</span>
+                                </td>
+                            </tr>
+                                <tr>
+                                        <td>
+                                            资产编号
+                                        </td>
+                                        <td>
+                                            资产描述
+                                        </td>
+                                        <td>
+                                            配件描述
+                                        </td>
+                                        <td>配件数量</td>
+                                        <td>备注</td>
+                                </tr>
+                                {volist name="vo.partinfo" id="p"}
+                                <tr>
+                                    <td>
+                                        {$p.serialnum}    
+                                    </td>
+                                    <td>
+                                        {$p.serialdes}
+                                    </td>
+                                    <td>
+                                        {$p.partIntr}
+                                    </td>
+                                    <td>
+                                        {$p.count}
+                                    </td>
+                                    <td>    
+                                        {$p.remarks}
+                                    </td>
+                                </tr>
+                                {/volist}
+                                <tr>
+                                        <td colspan="5">
+                                             <p>电子签名:</p>
+                                              <img src="{$vo.path}" alt="" style="width:200px;">  
+                                        </td>
+                                </tr>
+                                <tr>
+                                    <td align="right" colspan="5">
+                                        <!-- <a href="{:url('storelist/edit',array('id'=>$vo['id']))}" class="btn btn-primary btn-sm shiny">
+                                            <i class="fa fa-edit"></i> 编辑
+                                        </a> -->
+                                        <a href="#" onClick="warning('确实要删除吗', '{:url('storelist/del',array('id'=>$vo['id']))}')" class="btn btn-danger btn-sm shiny">
+                                            <i class="fa fa-trash-o"></i> 删除
+                                        </a>
+                                    </td>
+                                </tr>
+                            {/volist}
+                        </tbody>
+                    </table>
+                </div>
+                <div style="text-align:right; margin-top:10px;">
+                            {$list->render()}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+                </div>
+                <!-- /Page Body -->
+            </div>
+            <!-- /Page Content -->
+		</div>	
+	</div>
+
+	    <!--Basic Scripts-->
+    <script src="__PUBLIC__/style/jquery_002.js"></script>
+    <script src="__PUBLIC__/style/bootstrap.js"></script>
+    <script src="__PUBLIC__/style/jquery.js"></script>
+    <!--Beyond Scripts-->
+    <script src="__PUBLIC__/style/beyond.js"></script>
+    
+    <script>
+            $(function(){
+                $(".searchForm").submit(function(e){
+                        var flag=[];
+                        var t = $(this).serializeArray();
+                        $.each(t,function(i,item){
+                               if(item['value']==""){
+                                   flag.push('false')
+                               } 
+                               else{
+                                    flag.push('true');
+                               }
+                        })
+                        if(flag.indexOf('true')==-1){
+                                alert("请输入查找的内容!");
+                                return false;
+                        }
+                });
+            })
+    </script>
+
+</body></html>

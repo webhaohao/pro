@@ -8,10 +8,14 @@ class Upload extends Base{
             $path=$this->upload($data);
             $tableData = $data -> tableData;
             $userInfo = $data -> userInfo;
+            $type = $data -> type;
             $storeInfo = [
                 'uname' => $userInfo -> uname,
                 'stusno' => $userInfo -> sno,
-                'path' => $path  
+                'path' => $path,
+                'storeid'=>session('sid'),
+                'type' => $type,
+                'time'=>time()  
             ];
             $resId = db('storeinfo')->insertGetId($storeInfo);
             if($resId){
@@ -41,7 +45,7 @@ class Upload extends Base{
           }    
           $fileRes=file_put_contents($path.$filename,base64_decode($data->datapair));
           if($fileRes){
-              return $path.$filename;
+              return substr($path.$filename,strpos($path.$filename,'.')+1);
           }
       }
 }

@@ -4,8 +4,19 @@ use app\index\controller\Base;
 
 class index extends Base{
       public function index(){
-           $store = db('storeman')->where('id',session('sid'))->find();
-           $this->assign('store',$store); 
-           return $this -> fetch();
+           if(input('storeid')){
+                  session('sid',input('storeid'));
+                  $store = db('storeman')->where('id',input('storeid'))->find();
+                  $this->assign('store',$store); 
+                  return $this -> fetch();
+           } 
+           else{
+                  return $this->redirect('/index/Login');
+           }
+        
+      }
+      public function selectBysno(){
+            $res = db('stuinfo')->where('stusno',input('stusno'))->find();
+            return json($res);
       }
 }
