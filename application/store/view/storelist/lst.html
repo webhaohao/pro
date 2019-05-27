@@ -56,7 +56,7 @@
 <div class="page-body"> 
 <div class="row">
     <div class="search">
-            <form action="/admin/storelist/search" method="get" class="searchForm">
+            <form action="./search" method="get" class="searchForm">
                     <div class="row">
                         <div class="col-md-2">
                                 <input class="form-control" name="stusno" type="text" value="" placeholder="请输入学号">
@@ -98,7 +98,6 @@
                                         <span>姓名:{$vo.uname}</span>
                                         <span>学号:{$vo.stusno}</span>
                                         <span>{$vo.type?'领取时间:':'清退时间:'}{$vo.time|date="Y-m-d H:i:s",###}</span>
-                                        <span>仓库:{$vo.storeman.sname}</span>
                                 </td>
                             </tr>
                                 <tr>

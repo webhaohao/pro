@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:3:{s:69:"C:\xampp\htdocs\pro\public/../application/store\view\index\index.html";i:1558917843;s:68:"C:\xampp\htdocs\pro\public/../application/store\view\common\top.html";i:1558917843;s:69:"C:\xampp\htdocs\pro\public/../application/store\view\common\left.html";i:1558917843;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:3:{s:69:"C:\xampp\htdocs\pro\public/../application/store\view\index\index.html";i:1558849723;s:68:"C:\xampp\htdocs\pro\public/../application/store\view\common\top.html";i:1558963113;s:69:"C:\xampp\htdocs\pro\public/../application/store\view\common\left.html";i:1558882260;}*/ ?>
 <!DOCTYPE html>
 <html><head>
 	    <meta charset="utf-8">
@@ -46,8 +46,7 @@
                         <li>
                             <a class="login-area dropdown-toggle" data-toggle="dropdown">
                                 <div class="avatar" title="View your public profile">
-                                    <img 
-src="__PUBLIC__/images/userPhoto.png">
+                                    <img src="__PUBLIC__/images/userPhoto.png">
                                 </div>
                                 <section>
                                     <h2><span class="profile"><span><?php echo \think\Request::instance()->session('sname'); ?></span></span></h2>
@@ -62,7 +61,7 @@ src="__PUBLIC__/images/userPhoto.png">
                                         </a>
                                 </li>
                                 <li class="dropdown-footer">
-                                    <a href="<?php echo url('admin/edit',array('id'=>\think\Request::instance()->session('sid'))); ?>">
+                                    <a href="<?php echo url('Storeman/edit',array('id'=>\think\Request::instance()->session('sid'))); ?>">
                                             修改密码
                                         </a>
                                 </li>

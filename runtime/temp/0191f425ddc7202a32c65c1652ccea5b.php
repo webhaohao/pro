@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:69:"C:\xampp\htdocs\pro\public/../application/index\view\index\index.html";i:1558959572;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:69:"C:\xampp\htdocs\pro\public/../application/index\view\index\index.html";i:1558967331;}*/ ?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -154,7 +154,7 @@
 				};
 				const checkCount = (rule,value,callback)=>{
 						let i = rule.field.split('.')[1];
-						if(this.master_user.data[i] && value==""){
+						if(this.master_user.data[i].partIntr && value==""){
 								callback(new Error('请输入数量'));				
 						}
 						callback();
@@ -185,17 +185,17 @@
 									{required:true, message:'请输入学号',trigger:'blur'}
 							],
 							serialnum:[
-										{validator:checkSerialnum, trigger:'blur'}		
+									{validator:checkSerialnum, trigger:'blur'}		
 							],
 							serialdes:[
-										{validator:checkSerialdes, trigger:'blur'}		
+									{validator:checkSerialdes, trigger:'blur'}		
 							],
 							partIntr:[
-										{validator:checkPartIntr, trigger:'blur'}		
+									{validator:checkPartIntr, trigger:'blur'}		
+							],
+							count:[
+										{validator:checkCount, trigger:'blur'}		
 							]
-							// count:[
-							// 			{validator:checkCount, trigger:'blur'}		
-							// ]
 					},
 					Strokes:0
 			}	
@@ -339,25 +339,25 @@
 					final(){
 						this.$refs["ruleForm"].validate((valid)=>{
 									if(valid){
-													this.$refs["user"].validate((valid)=>{
-																if(valid){
-
-																	for (let k in this.master_user.data) {
-																				// if(!data['serialnum']&&!data['serialdes']&&!data['partIntr']&&!data['count']){
-																				// 	app.$message({
-																				// 		type:'error',
-																				// 		message:`请填写${this.type?'领取':'清退'}信息!`	
-																				// 	})
-																				// 	return false;
-																				// }
+										this.$refs["user"].validate((valid)=>{
+													if(valid){
+														let data = 	this.master_user.data
+														for (let k in data) {
+																	if(!data[k]['serialnum']&&!data[k]['serialdes']&&!data[k]['partIntr']&&!data[k]['count']){
+																		app.$message({
+																			type:'error',
+																			message:`请填写${this.type?'领取':'清退'}信息!`	
+																		})
+																		return false;
 																	}
-																	$(".canvasWrap").fadeIn('fast',function(){
-																				var width =  document.documentElement.clientWidth,height= document.documentElement.clientHeight;
-																			$("#signature").jSignature({
-																				height:height,width:width,color:"#000",signatureLine:false,lineWidth:6
-																			})
-																	})
-																}				
+														}
+														$(".canvasWrap").fadeIn('fast',function(){
+																	var width =  document.documentElement.clientWidth,height= document.documentElement.clientHeight;
+																$("#signature").jSignature({
+																	height:height,width:width,color:"#000",signatureLine:false,lineWidth:6
+																})
+														})
+													}				
 												
 										})		
 									}

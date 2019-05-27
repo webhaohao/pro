@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:3:{s:71:"C:\xampp\htdocs\pro\public/../application/store\view\storeman\edit.html";i:1558923603;s:68:"C:\xampp\htdocs\pro\public/../application/store\view\common\top.html";i:1558923337;s:69:"C:\xampp\htdocs\pro\public/../application/store\view\common\left.html";i:1558917843;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:3:{s:71:"C:\xampp\htdocs\pro\public/../application/store\view\storeman\edit.html";i:1558963113;s:68:"C:\xampp\htdocs\pro\public/../application/store\view\common\top.html";i:1558963113;s:69:"C:\xampp\htdocs\pro\public/../application/store\view\common\left.html";i:1558882260;}*/ ?>
 <!DOCTYPE html>
 <html><head>
 	    <meta charset="utf-8">

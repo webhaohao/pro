@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:3:{s:71:"C:\xampp\htdocs\pro\public/../application/store\view\storelist\lst.html";i:1558917843;s:68:"C:\xampp\htdocs\pro\public/../application/store\view\common\top.html";i:1558923337;s:69:"C:\xampp\htdocs\pro\public/../application/store\view\common\left.html";i:1558917843;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:3:{s:71:"C:\xampp\htdocs\pro\public/../application/store\view\storelist\lst.html";i:1558964703;s:68:"C:\xampp\htdocs\pro\public/../application/store\view\common\top.html";i:1558963113;s:69:"C:\xampp\htdocs\pro\public/../application/store\view\common\left.html";i:1558882260;}*/ ?>
 <!DOCTYPE html>
 <html><head>
 	    <meta charset="utf-8">
@@ -142,7 +142,7 @@
 <div class="page-body"> 
 <div class="row">
     <div class="search">
-            <form action="/admin/storelist/search" method="get" class="searchForm">
+            <form action="./search" method="get" class="searchForm">
                     <div class="row">
                         <div class="col-md-2">
                                 <input class="form-control" name="stusno" type="text" value="" placeholder="请输入学号">
@@ -184,7 +184,6 @@
                                         <span>姓名:<?php echo $vo['uname']; ?></span>
                                         <span>学号:<?php echo $vo['stusno']; ?></span>
                                         <span><?php echo !empty($vo['type'])?'领取时间:':'清退时间:'; ?><?php echo date("Y-m-d H:i:s",$vo['time']); ?></span>
-                                        <span>仓库:<?php echo $vo['storeman']['sname']; ?></span>
                                 </td>
                             </tr>
                                 <tr>
