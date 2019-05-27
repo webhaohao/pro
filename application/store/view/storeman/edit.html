@@ -58,17 +58,16 @@
             <div class="widget-body">
                 <div id="horizontal-form">
                     <form class="form-horizontal" role="form" action="" method="post">
-                        <input type="hidden" name="id" value="{$admins.id}">
+                        <input type="hidden" name="id" value="{$store.id}">
                         <div class="form-group">
-                            <label for="username" class="col-sm-2 control-label no-padding-right">管理员名</label>
+                            <label for="username" class="col-sm-2 control-label no-padding-right">仓库管理员名</label>
                             <div class="col-sm-6">
-                                <input class="form-control" id="username" placeholder="" name="username" value="{$admins.username}"  type="text">
+                                <input class="form-control" id="username" placeholder="" name="username" value="{$store.sname}"  type="text">
                             </div>
                             <p class="help-block col-sm-4 red">* 必填</p>
                         </div>
-
                         <div class="form-group">
-                            <label for="group_id" class="col-sm-2 control-label no-padding-right">管理员密码</label>
+                            <label for="group_id" class="col-sm-2 control-label no-padding-right">仓库管理员密码</label>
                             <div class="col-sm-6">
                                 <input class="form-control" id="password" placeholder="" name="password"  type="text">
                             </div>

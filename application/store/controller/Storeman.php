@@ -2,7 +2,7 @@
 namespace app\store\controller;
 use app\store\model\Store as storeModel;
 use app\store\controller\Base;
-class Admin extends Base
+class Storeman extends Base
 {
 
 
@@ -37,16 +37,16 @@ class Admin extends Base
 
     public function edit(){
     	$id=input('id');
-    	$stores=db('store')->find($id);
+    	$store=db('storeman')->find($id);
     	if(request()->isPost()){
     		$data=[
     			'id'=>input('id'),
-    			'username'=>input('username'),
+    			'sname'=>input('username'),
     		];
     		if(input('password')){
-				$data['password']=md5(input('password'));
+				$data['pwd']=md5(input('password'));
 			}else{
-				$data['password']=$stores['password'];
+				$data['pwd']=$store['password'];
 			}
 			$validate = \think\Loader::validate('store');
     		if(!$validate->scene('edit')->check($data)){
@@ -54,13 +54,13 @@ class Admin extends Base
 			}
             $save=db('store')->update($data);
     		if($save !== false){
-    			$this->success('修改管理员成功！','lst');
+    			$this->success('修改仓库管理员成功！','lst');
     		}else{
-    			$this->error('修改管理员失败！');
+    			$this->error('修改仓库管理员失败！');
     		}
     		return;
     	}
-    	$this->assign('stores',$stores);
+    	$this->assign('store',$store);
     	return $this->fetch();
     }
 

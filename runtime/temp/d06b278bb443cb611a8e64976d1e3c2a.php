@@ -1,3 +1,4 @@
+<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:69:"C:\xampp\htdocs\pro\public/../application/admin\view\login\login.html";i:1558573096;}*/ ?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -22,16 +23,16 @@
     <div class="login-container animated fadeInDown">
         <form action="" method="post">
             <div class="loginbox bg-white">
-                <div class="loginbox-title">仓库管理员登录</div>
+                <div class="loginbox-title">登录</div>
                 <div class="loginbox-textbox">
-                    <input value="" class="form-control" placeholder="username" name="username" type="text">
+                    <input value="admin" class="form-control" placeholder="username" name="username" type="text">
                 </div>
                 <div class="loginbox-textbox">
                     <input class="form-control" placeholder="password" name="password" type="password">
                 </div>
                 <div class="loginbox-textbox">
                     <input class="form-control" placeholder="code" name="code" style="margin:10px 0;width:80px;float:left;" type="text">
-                    <img  style="float:right;cursor:pointer;margin:10px 0px;" src="{:captcha_src()}" alt="captcha" onclick="this.src='{:captcha_src()}?'+Math.random();" />
+                    <img  style="float:right;cursor:pointer;margin:10px 0px;" src="<?php echo captcha_src(); ?>" alt="captcha" onclick="this.src='<?php echo captcha_src(); ?>?'+Math.random();" />
                 </div>
                 <div class="loginbox-submit">
                     <input class="btn btn-primary btn-block" value="Login" type="submit">

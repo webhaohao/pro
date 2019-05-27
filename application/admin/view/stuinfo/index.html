@@ -139,10 +139,11 @@
                 if(data.response == 'succ')
                 {
                     alert(data.files[index].name + "上传成功!");
+                    location.href = './index';
                     //关闭
                     //$(".close").click();
                 }else{
-                    alert(data.files[index].name + "上传失败!" + data.response.message);
+                    alert(data.files[index].name + "上传失败,模板有误!");
                     //重置
                     $("#input-1a").fileinput("clear");
                     $("#input-1a").fileinput("reset");

@@ -22,8 +22,7 @@
                         <li>
                             <a class="login-area dropdown-toggle" data-toggle="dropdown">
                                 <div class="avatar" title="View your public profile">
-                                    <img 
-src="__PUBLIC__/images/userPhoto.png">
+                                    <img src="__PUBLIC__/images/userPhoto.png">
                                 </div>
                                 <section>
                                     <h2><span class="profile"><span>{$Request.session.sname}</span></span></h2>
@@ -38,7 +37,7 @@ src="__PUBLIC__/images/userPhoto.png">
                                         </a>
                                 </li>
                                 <li class="dropdown-footer">
-                                    <a href="{:url('admin/edit',array('id'=>$Request.session.sid))}">
+                                    <a href="{:url('Storeman/edit',array('id'=>$Request.session.sid))}">
                                             修改密码
                                         </a>
                                 </li>

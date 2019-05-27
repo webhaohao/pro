@@ -19,13 +19,17 @@ class Stuinfo extends Controller
 			$objPHPExcel = \PHPExcel_IOFactory::load($excel['tmp_name']);//读取上传的文件
             $arrExcel = $objPHPExcel->getSheet(0)->toArray();//获取其中的数据
             // array_splice($arrExcel, 1, 0);
+            //检查模板是否符合风格
+            if($arrExcel[0][0]!="姓名" || ($arrExcel[0][1]!="学号" && $arrExcel[0][1]!="工号")){
+                return 'fail';
+            }
             $key = array('uname','stusno');
             foreach($arrExcel as $i=>$vals){
                 $arrExcel[$i] = array_combine($key,$vals);
             }
             for($i=1;$i<count($arrExcel);$i++){
                     $data = $arrExcel[$i];
-                    $res = db('stuinfo')->insert($data);
+                    db('stuinfo')->insert($data);
             }
             return 'succ';
         }
@@ -56,11 +60,16 @@ class Stuinfo extends Controller
     	return $this->fetch();
     }
     public function search(){
-            input('stusno')&& $map['stusno'] =['like',input('stusno').'%'];
-            input('uname') && $map['uname'] = ['like','%'.input('uname').'%'];
-            $list = Stu::where($map)->paginate($listRows = 10, $simple = false, $config = [
-                'query'=>$map
-            ]);
+            if(!input('stusno')&&!input('uname')){
+                $list = Stu::paginate(10);
+            }
+            else{
+                input('stusno')&& $map['stusno'] =['eq',input('stusno')];
+                input('uname') && $map['uname'] = ['eq',input('uname')];
+                $list = Stu::where($map)->paginate($listRows = 10, $simple = false, $config = [
+                    'query'=>request()->param()
+                ]);
+            }
             $this -> assign(
                 'list', $list
             );

@@ -1,3 +1,4 @@
+<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:69:"C:\xampp\htdocs\pro\public/../application/index\view\index\index.html";i:1558934462;}*/ ?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -62,7 +63,7 @@
 		<div class="app-location app-main">
 			<h2>无纸化仓库管理</h2>
 			<div class="line"><span></span></div>
-			<h4>当前仓库:{$store.sname}</h4>
+			<h4>当前仓库:<?php echo $store['sname']; ?></h4>
 			<h4>进行的操作:{{type? '领取':'清退'}}</h4>
 			<el-form :inline="true" :model="userInfo" class="demo-form-inline" :rules="rules" ref="ruleForm">
 					<el-form-item label="学号" prop="sno">
