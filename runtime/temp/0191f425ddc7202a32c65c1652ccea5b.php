@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:69:"C:\xampp\htdocs\pro\public/../application/index\view\index\index.html";i:1558934462;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:69:"C:\xampp\htdocs\pro\public/../application/index\view\index\index.html";i:1558959572;}*/ ?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -73,13 +73,13 @@
 						<el-input v-model="userInfo.uname" placeholder=""></el-input>
 					</el-form-item>
 			</el-form>
-			<el-form :model="master_user.sel" ref="user" class="master_user" :rules="rules">
+			<el-form ref="user" class="master_user" :model="master_user" :rules="rules">
 				<el-table size="mini" :data="master_user.data" border style="width: 100%" highlight-current-row>
 						<!-- <el-table-column type="index"></el-table-column> -->
 						<el-table-column v-for="(v,i) in master_user.columns" :prop="v.field" :label="v.title" :width="v.width">
 								<template slot-scope="scope">
-										<el-form-item v-if="scope.row.isSet" :rules="rules[v.field]" :prop="v.field" >
-												<el-input size="mini" placeholder="请输入内容" v-model="master_user.sel[v.field]">
+										<el-form-item v-if="scope.row.isSet" :rules="rules[v.field]" :prop="'data.'+scope.$index+'.'+[v.field]" >
+												<el-input size="mini" placeholder="请输入内容" v-model="scope.row[v.field]">
 												</el-input>
 										</el-form-item>
 										<span v-else>{{scope.row[v.field]}}</span>
@@ -87,15 +87,15 @@
 						</el-table-column>
 						<el-table-column label="操作" width="100">
 								<template slot-scope="scope">
-										<span class="el-tag el-tag--info el-tag--mini" style="cursor: pointer;" @click="pwdChange(scope.row,scope.$index,true)">
+										<!-- <span class="el-tag el-tag--info el-tag--mini" style="cursor: pointer;" @click="pwdChange(scope.row,scope.$index,true)">
 												{{scope.row.isSet?'保存':"修改"}}
-										</span>
-										<span v-if="!scope.row.isSet" class="el-tag el-tag--danger el-tag--mini" style="cursor: pointer;" @click="pwdChange(scope.row,scope.$index,false)">
+										</span> -->
+										<span v-if="scope.row.isSet" class="el-tag el-tag--danger el-tag--mini" style="cursor: pointer;" @click="pwdChange(scope.row,scope.$index,false)">
 												删除
 										</span>
-										<span v-else class="el-tag  el-tag--mini" style="cursor: pointer;" @click="pwdChange(scope.row,scope.$index,false)">
+										<!-- <span v-else class="el-tag  el-tag--mini" style="cursor: pointer;" @click="pwdChange(scope.row,scope.$index,false)">
 												取消
-										</span>
+										</span> -->
 								</template>
 						</el-table-column>
 				</el-table>
@@ -132,27 +132,29 @@
 			el: '#app',
 			data() {
 				const checkSerialnum = (rule,value,callback)=>{
-						console.log(value);
-						if(value==""&&this.master_user.sel.serialdes){
+					  let i = rule.field.split('.')[1];
+						if(value=="" &&this.master_user.data[i].serialdes){
 							callback(new Error('请输入资产编号'));	
 						}
 						callback();
 				};
 				const checkSerialdes = (rule,value,callback)=>{
-						if(this.master_user.sel.serialnum && value==""){
+						let i = rule.field.split('.')[1];
+						if(value==""&&this.master_user.data[i].serialnum){
 								callback(new Error('请输入资产描述'));				
 						}
 						callback();
 				}
 				const checkPartIntr = (rule,value,callback)=>{
-						console.log(value);
-						if(value==""&&this.master_user.sel.count){
-							callback(new Error('请输入配件描述'));	
+						let i = rule.field.split('.')[1];
+						if(value==""&&this.master_user.data[i].count){
+								callback(new Error('请输入配件描述'));	
 						}
 						callback();
 				};
 				const checkCount = (rule,value,callback)=>{
-						if(this.master_user.sel.partIntr && value==""){
+						let i = rule.field.split('.')[1];
+						if(this.master_user.data[i] && value==""){
 								callback(new Error('请输入数量'));				
 						}
 						callback();
@@ -182,19 +184,18 @@
 							sno:[
 									{required:true, message:'请输入学号',trigger:'blur'}
 							],
-							serialnum:
-							[
-									{validator:checkSerialnum, trigger:'blur'}		
+							serialnum:[
+										{validator:checkSerialnum, trigger:'blur'}		
 							],
 							serialdes:[
-									{validator:checkSerialdes, trigger:'blur'}		
+										{validator:checkSerialdes, trigger:'blur'}		
 							],
 							partIntr:[
-									{validator:checkPartIntr, trigger:'blur'}		
-							],
-							count:[
-									{validator:checkCount, trigger:'blur'}		
+										{validator:checkPartIntr, trigger:'blur'}		
 							]
+							// count:[
+							// 			{validator:checkCount, trigger:'blur'}		
+							// ]
 					},
 					Strokes:0
 			}	
@@ -206,14 +207,14 @@
 									self.Strokes++;
 						})		
 						let j = {id:0,"serialnum": "", "serialdes": "", "partIntr": "", "count": "", "remarks": "", "isSet": true, "_temporary": true };
-						this.master_user.data.push(j);
+						this.master_user.data.push(JSON.parse(JSON.stringify(j)));
 						this.master_user.sel = JSON.parse(JSON.stringify(j));		
 				},	
         methods: {
 					addInfo(){
-						for (let i of app.master_user.data) {
-											if (i.isSet) return this.$message.warning("请先保存当前编辑项");
-						}
+						// for (let i of app.master_user.data) {
+						// 				if (i.isSet) return this.$message.warning("请先保存当前编辑项");
+						// }
 						let j = {id:0,"serialnum": "", "serialdes": "", "partIntr": "", "count": "", "remarks": "", "isSet": true, "_temporary": true };
 						this.master_user.data.push(j);
 						this.master_user.sel = JSON.parse(JSON.stringify(j));
@@ -226,7 +227,6 @@
                     });
 					},
 					snoBlur(){
-						// alert("111");	
 						$.ajax({
 							url:'/index/index/selectBysno',
 							data:{
@@ -242,12 +242,12 @@
 					},
 					pwdChange(row, index, cg) {
                     //点击修改 判断是否已经保存所有操作
-                    for (let i of app.master_user.data) {
-                        if (i.isSet && i.id != row.id) {
-                            app.$message.warning("请先保存当前编辑项");
-                            return false;
-                        }
-                    }
+                    // for (let i of app.master_user.data) {
+                    //     if (i.isSet && i.id != row.id) {
+                    //         app.$message.warning("请先保存当前编辑项");
+                    //         return false;
+                    //     }
+                    // }
                     //是否是取消操作
                     if (!cg) {
                         if (!app.master_user.sel.id) app.master_user.data.splice(index, 1);
@@ -339,19 +339,27 @@
 					final(){
 						this.$refs["ruleForm"].validate((valid)=>{
 									if(valid){
-													//点击修改 判断是否已经保存所有操作
-													for (let i of app.master_user.data) {
-															if (i.isSet) {
-																	app.$message.warning("请先保存当前编辑项");
-																	return false;
-															}
-													}
-													$(".canvasWrap").fadeIn('fast',function(){
-													var width =  document.documentElement.clientWidth,height= document.documentElement.clientHeight;
-													$("#signature").jSignature({
-															height:height,width:width,color:"#000",signatureLine:false,lineWidth:6
-													})
-										});			
+													this.$refs["user"].validate((valid)=>{
+																if(valid){
+
+																	for (let k in this.master_user.data) {
+																				// if(!data['serialnum']&&!data['serialdes']&&!data['partIntr']&&!data['count']){
+																				// 	app.$message({
+																				// 		type:'error',
+																				// 		message:`请填写${this.type?'领取':'清退'}信息!`	
+																				// 	})
+																				// 	return false;
+																				// }
+																	}
+																	$(".canvasWrap").fadeIn('fast',function(){
+																				var width =  document.documentElement.clientWidth,height= document.documentElement.clientHeight;
+																			$("#signature").jSignature({
+																				height:height,width:width,color:"#000",signatureLine:false,lineWidth:6
+																			})
+																	})
+																}				
+												
+										})		
 									}
 									return false;
 							})
@@ -361,85 +369,5 @@
         }
     })
 </script> 
-	<script>
-			//保存表单信息
-			function checkUname(){
-					var uname = $.trim($(".form input[name=uname]").val());
-					if(!uname){
-						toastr.error('姓名不能为空!');
-						return false;
-					}
-					else if(uname.length>10){
-						toastr.error('姓名不能超过10位字符!');
-						return false;     
-					}
-					else{
-						return true;
-					}
-			}
-			function checkStusno(){
-					var stusno = $.trim($(".form input[name=stusno]").val());
-					var reg = /^[0-9]+.?[0-9]*$/; 
-					if(!reg.test(stusno)){
-						toastr.error('学号必须是数字!');
-						return false;
-					}
-					else if(!stusno){
-						toastr.error('学号不能为空!');
-						return false;
-					}
-					else{
-						return true;
-					}
-			}
-			function checkSerialnum(){
-					var serialnum = $.trim($(".form input[name=serialnum]").val());
-					var reg =  /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,}$/; 
-					if(!reg.test(serialnum)){
-						toastr.error('物品编号必须是字母和数字组合!');
-						return false;
-					}
-					else{
-						return true;
-					}
-			}
-			function checkSerialdes(){
-					var serialdes = $.trim($(".form input[name=serialdes]").val());	
-					if(!serialdes){
-							toastr.error("物品编号不能为空！");
-							return false;
-					}
-					return true;
-			}
-			function checkitemsVal(){
-					var $items = $(".form .items .item")
-					var bool = true;
-					$items.each(function(i,obj){
-							var v1=$(obj).find('.form-group').eq(0).find('input[name="partIntr"]').val();
-							var v2=$(obj).find('.form-group').eq(1).find('input[name="count"]').val();
-							if(v1 && !v2){
-									toastr.error("请输入对应配件的数量!");
-									bool = false;
-							}
-							else if(!v1 && v2){
-									toastr.error("请输入配件名称!");
-									bool = false;
-							}
-					})
-					return bool;	
-			}
-			function FormValidate(){
-					if(checkUname()&&checkStusno()&&checkSerialnum()&&checkSerialdes()&&checkitemsVal()){
-										var data = $(".form").serializeJson();
-										formData.push(data);	
-										return formData;
-					}
-					else{
-								return false;
-					}
-			}
-
-			//jquery form序列化转换为json对象
-	</script>
 </body>
 </html>
