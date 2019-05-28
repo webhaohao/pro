@@ -27,9 +27,14 @@ class Stuinfo extends Controller
             foreach($arrExcel as $i=>$vals){
                 $arrExcel[$i] = array_combine($key,$vals);
             }
-            for($i=1;$i<count($arrExcel);$i++){
-                    $data = $arrExcel[$i];
-                    db('stuinfo')->insert($data);
+            //删除数组第一项
+            array_shift($arrExcel);
+            $limit = 500;
+            $count = ceil(count($arrExcel)/$limit);
+            for($i=1;$i<=$count;$i++){
+                    $offset=($i-1)*$limit;
+                    $data=array_slice($arrExcel,$offset,$limit);
+                    db('stuinfo')->insertAll($data);
             }
             return 'succ';
         }

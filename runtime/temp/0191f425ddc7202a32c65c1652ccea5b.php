@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:69:"C:\xampp\htdocs\pro\public/../application/index\view\index\index.html";i:1558967331;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:69:"C:\xampp\htdocs\pro\public/../application/index\view\index\index.html";i:1559055796;}*/ ?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -18,7 +18,7 @@
 <!--//webfonts-->
 <style>
 	.tb-edit .el-table__row .el-input {
-   	 	display:none;
+   	 		display:none;
 	}
 	.el-input__inner{
 			padding:0px 2px;
@@ -44,11 +44,14 @@
 	input[type=text]{
 			margin-bottom:0px;
 	}
+	.master_user .el-form-item{
+		margin-bottom:0px;
+	}
+	.master_user .el-table--mini td{
+		padding:3px 0px;
+	}
 	h4{
 		color:#fff;font-size:1.2em;line-height:2;margin-bottom:1em;
-	}
-	.master_user .el-form-item{
-			margin-top:20px;
 	}
 </style>
 </head>
@@ -76,6 +79,17 @@
 			<el-form ref="user" class="master_user" :model="master_user" :rules="rules">
 				<el-table size="mini" :data="master_user.data" border style="width: 100%" highlight-current-row>
 						<!-- <el-table-column type="index"></el-table-column> -->
+					<el-table-column label="删除行" width="100">
+							<template slot-scope="scope">
+									<!-- <span class="el-tag el-tag--info el-tag--mini" style="cursor: pointer;" @click="pwdChange(scope.row,scope.$index,true)">
+											{{scope.row.isSet?'保存':"修改"}}
+									</span> -->
+									<span v-if="scope.row.isSet" class="el-tag el-tag--danger el-tag--mini" style="cursor: pointer;" @click="pwdChange(scope.row,scope.$index,false)">
+											删除
+									</span>
+								
+							</template>
+					</el-table-column>
 						<el-table-column v-for="(v,i) in master_user.columns" :prop="v.field" :label="v.title" :width="v.width">
 								<template slot-scope="scope">
 										<el-form-item v-if="scope.row.isSet" :rules="rules[v.field]" :prop="'data.'+scope.$index+'.'+[v.field]" >
@@ -85,22 +99,18 @@
 										<span v-else>{{scope.row[v.field]}}</span>
 								</template>
 						</el-table-column>
-						<el-table-column label="操作" width="100">
+						<el-table-column label="添加行" width="100">
 								<template slot-scope="scope">
 										<!-- <span class="el-tag el-tag--info el-tag--mini" style="cursor: pointer;" @click="pwdChange(scope.row,scope.$index,true)">
 												{{scope.row.isSet?'保存':"修改"}}
 										</span> -->
-										<span v-if="scope.row.isSet" class="el-tag el-tag--danger el-tag--mini" style="cursor: pointer;" @click="pwdChange(scope.row,scope.$index,false)">
-												删除
+										<span class="el-tag  el-tag--mini" style="cursor: pointer;" @click="addInfo">
+												添加
 										</span>
-										<!-- <span v-else class="el-tag  el-tag--mini" style="cursor: pointer;" @click="pwdChange(scope.row,scope.$index,false)">
-												取消
-										</span> -->
 								</template>
 						</el-table-column>
 				</el-table>
 			</el-form>		
-				<div class="submit addInfo" @click="addInfo"><input type="submit"  value="添加"></div>
 				<div class="submit" @click="final"><input type="submit"  value="签名提交"></div>
 			</div>		
 				<div class="canvasWrap" style="display:none;">
@@ -194,7 +204,7 @@
 									{validator:checkPartIntr, trigger:'blur'}		
 							],
 							count:[
-										{validator:checkCount, trigger:'blur'}		
+									{validator:checkCount, trigger:'blur'}		
 							]
 					},
 					Strokes:0
@@ -208,7 +218,8 @@
 						})		
 						let j = {id:0,"serialnum": "", "serialdes": "", "partIntr": "", "count": "", "remarks": "", "isSet": true, "_temporary": true };
 						this.master_user.data.push(JSON.parse(JSON.stringify(j)));
-						this.master_user.sel = JSON.parse(JSON.stringify(j));		
+						this.master_user.sel = JSON.parse(JSON.stringify(j));
+						console.log(this.getCurrentTime());		
 				},	
         methods: {
 					addInfo(){
@@ -250,36 +261,38 @@
                     // }
                     //是否是取消操作
                     if (!cg) {
-                        if (!app.master_user.sel.id) app.master_user.data.splice(index, 1);
-                        return row.isSet = !row.isSet;
+						if(app.master_user.data.length>1){
+							 app.master_user.data.splice(index, 1);
+                       		 return row.isSet = !row.isSet;
+						}
                     }
                     //提交数据
                     if (row.isSet) {
-												//检查数据是否有效
-														app.$refs["user"].validate((valid)=>{
-																	if(valid){
-																				let data = JSON.parse(JSON.stringify(app.master_user.sel));
-																				for (let k in data) {
-																					if(!data['serialnum']&&!data['serialdes']&&!data['partIntr']&&!data['count']){
-																						app.$message({
-																							type:'error',
-																							message:`请填写${this.type?'领取':'清退'}信息!`	
-																						})
-																						return false;
-																					}
-																					row[k] = data[k];
-																				}
-																				
-																				app.$message({
-																						type: 'success',
-																						message: "保存成功!"
-																				});
-																				//然后这边重新读取表格数据
-																				app.readMasterUser();
-																				row.isSet = false;	
+										//检查数据是否有效
+											app.$refs["user"].validate((valid)=>{
+														if(valid){
+																	let data = JSON.parse(JSON.stringify(app.master_user.sel));
+																	for (let k in data) {
+																		if(!data['serialnum']&&!data['serialdes']&&!data['partIntr']&&!data['count']){
+																			app.$message({
+																				type:'error',
+																				message:`请填写${this.type?'领取':'清退'}信息!`	
+																			})
+																			return false;
+																		}
+																		row[k] = data[k];
 																	}
-														})	
-														return false;
+																	
+																	app.$message({
+																			type: 'success',
+																			message: "保存成功!"
+																	});
+																	//然后这边重新读取表格数据
+																	app.readMasterUser();
+																	row.isSet = false;	
+														}
+											})	
+											return false;
 													
                     } else {
                         app.master_user.sel = JSON.parse(JSON.stringify(row));
@@ -287,12 +300,12 @@
                     }
 					},
 					getType(type){
-								this.type = type;
-								this.isModalshow = false;
+						this.type = type;
+						this.isModalshow = false;
 					},
 					clear(){
-								this.Strokes = 0 ;
-								$("#signature").jSignature("reset");
+						this.Strokes = 0 ;
+						$("#signature").jSignature("reset");
 					},
 					formSubmit(){
 						if(this.Strokes<2){
@@ -308,7 +321,8 @@
 									userInfo:app.userInfo,
 									type:app.type,
 									columns:app.master_user.columns,
-									base64:"data:"+base+","+datapair
+									base64:"data:"+base+","+datapair,
+									time:app.getCurrentTime()
 						}
 						var self =	this;
 						$.ajax({
@@ -365,7 +379,17 @@
 							})
 							return false;
 						
-						}
+					},
+					//获取当前时间
+					getCurrentTime(){
+						let d = new Date();
+						let YMDHMS = d.getFullYear() + "-" +((d.getMonth()+1)<10?"0"+(d.getMonth()+1):(d.getMonth()+1)) + "-" 
+									+ (d.getDate()<10?'0'+d.getDate():d.getDate()) + " "
+									+ (d.getHours()<10?'0'+ d.getHours():d.getHours()) + ":" 
+									+ (d.getMinutes()<10?'0'+d.getMinutes():d.getMinutes()) + ":"  
+									+ (d.getSeconds()<10?'0'+d.getSeconds():d.getSeconds());
+						return YMDHMS;
+					}
         }
     })
 </script> 

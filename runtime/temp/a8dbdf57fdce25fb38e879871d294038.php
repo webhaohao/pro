@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:70:"C:\xampp\htdocs\pro\public/../application/index\view\result\index.html";i:1558963113;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:70:"C:\xampp\htdocs\pro\public/../application/index\view\result\index.html";i:1559056688;}*/ ?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -63,6 +63,14 @@
 	h5{
 		color:#fff;
 	}
+	.userinfo{
+		text-align:left;
+		color:#fff;
+		margin-bottom:1em;
+	}
+	.userinfo span{
+		margin-right:1em;
+	}
 </style>
 </head>
 <body>
@@ -73,7 +81,9 @@
 			<div class="line"><span></span></div>
 			<h4>当前仓库:<?php echo $store['sname']; ?></h4>
 			<h4>{{type? '领取列表':'清退列表'}}</h4>
-
+			<div class="userinfo">
+				<span>学号:{{userInfo.sno}}</span> <span>姓名:{{userInfo.uname}}</span> <span>{{type?'领取时间:':'清退时间:'}}{{time}}</span>
+			</div>
 			<el-table size="mini" :data="tableData" border style="width: 100%" highlight-current-row>
 				<!-- <el-table-column type="index"></el-table-column> -->
 				<el-table-column v-for="(v,i) in columns" :prop="v.field" :label="v.title" :width="v.width">
@@ -111,6 +121,7 @@
 							uname:'',
 							sno:''
 					},
+					time:'',
 					type:0,
 					columns:[],
 					tableData:[],
@@ -124,6 +135,9 @@
 					this.type = data.type;
 					this.columns=data.columns;
 					this.tableData=data.tableData;
+					this.userInfo.uname = data.userInfo.uname;
+					this.userInfo.sno = data.userInfo.sno;
+					this.time = data.time;
 					console.log(data.base64);
 					this.base64 =data.base64;
 					let clock = window.setInterval(()=>{

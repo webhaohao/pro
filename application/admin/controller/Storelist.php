@@ -7,12 +7,12 @@ use think\Cache;
 use PHPExcel_IOFactory;
 class Storelist extends Base
 {
-	public static $pData = 'foo';
     public function lst()
     {
 		$list = StoreModel::paginate(5);
+		$list_2 =  StoreModel::select();
 		$store= db('storeman')->select();
-		Cache::set('store',$list,3600);
+		Cache::set('store',$list_2,7200);
 		//dump(Cache::get('store',''));
 		$this->assign('store',$store);
 		$this->assign('list',$list);
@@ -24,9 +24,10 @@ class Storelist extends Base
 		input('type')!=NULL && $map['type']=['eq',input('type')];
 		input('storeid')&& $map['storeid'] = ['eq',input('storeid')];
 		$list = StoreModel::where($map)->paginate($listRows = 5, $simple = false, $config = [
-			'query'=>$map
+			'query'=>request()->param()
 		]);
-		Cache::set('store',$list,3600);
+		//$list_s = StoreModel::where($map);
+		Cache::set('store',$list,7200);
 		$store= db('storeman')->select();
 		$this->assign('store',$store);
 		$this->assign('list',$list);
@@ -87,21 +88,28 @@ class Storelist extends Base
 			->setCellValue('E1', '姓名')
 			->setCellValue('F1', '学号')
 			->setCellValue('G1','备注')
-			->setCellValue('H1','领取时间');
+			->setCellValue('H1','仓库名称')
+			->setCellValue('I1','领取时间')
+			->setCellValue('J1','签名图片');
 		//$list = StoreModel::paginate(5);
 		$list =Cache::get('store','');
+		$c = 2;
 		$count=count($list);
 		for($i=2;$i<=$count+1;$i++){
 			for($j=0;$j<count($list[$i-2]['partinfo']);$j++){
-				$objPHPExcel->getActiveSheet()->setCellValue('A' .($i+$j), $list[$i-2]['partinfo'][$j]['serialnum']);
-				$objPHPExcel->getActiveSheet()->setCellValue('B' .($i+$j), $list[$i-2]['partinfo'][$j]['serialdes']);
-				$objPHPExcel->getActiveSheet()->setCellValue('C' .($i+$j), $list[$i-2]['partinfo'][$j]['partIntr']);
-				$objPHPExcel->getActiveSheet()->setCellValue('D' .($i+$j), $list[$i-2]['partinfo'][$j]['count']);
-				$objPHPExcel->getActiveSheet()->setCellValue('E' .($i+$j), $list[$i-2]['uname']);
-				$objPHPExcel->getActiveSheet()->setCellValue('F' .($i+$j), $list[$i-2]['stusno']);
-				$objPHPExcel->getActiveSheet()->setCellValue('G' .($i+$j), $list[$i-2]['partinfo'][$j]['remarks']);
-				$objPHPExcel->getActiveSheet()->setCellValue('H' .($i+$j), date("Y-m-d H:i:s",$list[$i-2]['time']));
+				$objPHPExcel->getActiveSheet()->setCellValue('A' .($c+$j), $list[$i-2]['partinfo'][$j]['serialnum']);
+				$objPHPExcel->getActiveSheet()->setCellValue('B' .($c+$j), $list[$i-2]['partinfo'][$j]['serialdes']);
+				$objPHPExcel->getActiveSheet()->setCellValue('C' .($c+$j), $list[$i-2]['partinfo'][$j]['partIntr']);
+				$objPHPExcel->getActiveSheet()->setCellValue('D' .($c+$j), $list[$i-2]['partinfo'][$j]['count']);
+				$objPHPExcel->getActiveSheet()->setCellValue('E' .($c+$j), $list[$i-2]['uname']);
+				$objPHPExcel->getActiveSheet()->setCellValue('F' .($c+$j), $list[$i-2]['stusno']);
+				$objPHPExcel->getActiveSheet()->setCellValue('G' .($c+$j), $list[$i-2]['partinfo'][$j]['remarks']);
+				$objPHPExcel->getActiveSheet()->setCellValue('H' .($c+$j), $list[$i-2]['storeman']['sname']);
+				$objPHPExcel->getActiveSheet()->setCellValue('I' .($c+$j), date("Y-m-d H:i:s",$list[$i-2]['time']));
+				$objPHPExcel->getActiveSheet()->setCellValue('J' .($c+$j), 'http://'.$_SERVER['HTTP_HOST'].$list[$i-2]['path']);
+				$objPHPExcel->getActiveSheet()->getCell('J'.($c+$j))->getHyperlink()->setUrl('http://'.$_SERVER['HTTP_HOST'].$list[$i-2]['path']); 
 			}
+			$c+=count($list[$i-2]['partinfo']);
 		}
 		/*--------------下面是设置其他信息------------------*/
 
