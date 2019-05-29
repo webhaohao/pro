@@ -64,9 +64,9 @@ class Storeman extends Base
 			   $this->error($validate->getError()); die;
 			}
     		if(db('Article')->update($data)){
-    			$this->success('修改文章成功！','lst');
+    			$this->success('修改仓库成功！','lst');
     		}else{
-    			$this->error('修改文章失败！');
+    			$this->error('修改仓库失败！');
     		}
     		return;
     	}
@@ -79,9 +79,9 @@ class Storeman extends Base
     public function del(){
     	$id=input('id');
 		if(db('Article')->delete(input('id'))){
-			$this->success('删除文章成功！','lst');
+			$this->success('删除仓库成功！','lst');
 		}else{
-			$this->error('删除文章失败！');
+			$this->error('删除仓库失败！');
 		}
     	
     }

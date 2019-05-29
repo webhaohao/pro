@@ -9,15 +9,43 @@ class Storelist extends Base
 {
     public function lst()
     {
-		$list = StoreModel::paginate(5);
-		$list_2 =  StoreModel::select();
-		$store= db('storeman')->select();
-		Cache::set('store',$list_2,7200);
-		//dump(Cache::get('store',''));
-		$this->assign('store',$store);
-		$this->assign('list',$list);
-        return $this->fetch();
-    }
+		
+			$store= db('storeman')->select();
+			//Cache::set('store',$list_2,7200);
+			//如果执行了查询操作
+			if(input('search')){
+					input('stusno')&& $map['stusno'] =['like',input('stusno').'%'];
+					input('uname') && $map['uname'] = ['like','%'.input('uname').'%'];
+					input('type')!=NULL && $map['type']=['eq',input('type')];
+					input('storeid')&& $map['storeid'] = ['eq',input('storeid')];
+					$list = StoreModel::where($map)->paginate($listRows = 5, $simple = false, $config = [
+						'query'=>request()->param()
+					]);
+			}
+			else{
+					$list = StoreModel::paginate(5);
+			}
+			if(input('download')){
+					if(input('search')){
+							input('stusno')&& $map['stusno'] =['like',input('stusno').'%'];
+							input('uname') && $map['uname'] = ['like','%'.input('uname').'%'];
+							input('type')!=NULL && $map['type']=['eq',input('type')];
+							input('storeid')&& $map['storeid'] = ['eq',input('storeid')];
+							$result= StoreModel::where($map)->select();
+							$this->out($result);
+							return false;	
+					}
+					else{
+							$result=StoreModel::select();
+							$this->out($result);
+							return false;	
+					}
+			}
+			//dump(Cache::get('store',''));
+			$this->assign('store',$store);
+			$this->assign('list',$list);
+			return $this->fetch();
+		}
 	public function search(){
 		input('stusno')&& $map['stusno'] =['like',input('stusno').'%'];
 		input('uname') && $map['uname'] = ['like','%'.input('uname').'%'];
@@ -26,12 +54,15 @@ class Storelist extends Base
 		$list = StoreModel::where($map)->paginate($listRows = 5, $simple = false, $config = [
 			'query'=>request()->param()
 		]);
+		$result = StoreModel::where($map);
+		$data[0] = $list;
+		$data[1] = $result;
 		//$list_s = StoreModel::where($map);
-		Cache::set('store',$list,7200);
-		$store= db('storeman')->select();
-		$this->assign('store',$store);
-		$this->assign('list',$list);
-		return view('lst');
+		//Cache::set('store',$list,7200);
+		//$store= db('storeman')->select();
+		// $this->assign('store',$store);
+		// $this->assign('list',$list);
+		return json($data);
 	}
     public function edit(){
     	$id=input('id');
@@ -40,8 +71,8 @@ class Storelist extends Base
     		$data=[
     			'id'=>input('id'),
     			'proName'=>input('proName'),
-				'price' => input('price'),
-				'y_price'=>input('y_price')
+					'price' => input('price'),
+					'y_price'=>input('y_price')
     		];
 			// $validate = \think\Loader::validate('cate');
     		// if(!$validate->scene('edit')->check($data)){
@@ -68,7 +99,7 @@ class Storelist extends Base
 		}	
 	}
 	//导出excel
-	public function out(){
+	public function out($list){
 		$path = dirname(__FILE__); //找到当前脚本所在路径
 		vendor("PHPExcel.PHPExcel.PHPExcel");
 		vendor("PHPExcel.PHPExcel.Writer.IWriter");
@@ -91,8 +122,6 @@ class Storelist extends Base
 			->setCellValue('H1','仓库名称')
 			->setCellValue('I1','领取时间')
 			->setCellValue('J1','签名图片');
-		//$list = StoreModel::paginate(5);
-		$list =Cache::get('store','');
 		$c = 2;
 		$count=count($list);
 		for($i=2;$i<=$count+1;$i++){

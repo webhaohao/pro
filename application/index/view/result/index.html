@@ -70,12 +70,21 @@
 	.userinfo span{
 		margin-right:1em;
 	}
+	.return{
+				color:#fff;
+				display:inline-block;
+				padding:5px 10px;
+				margin-top:10px;
+				background:#0BE093;
+				border-radius:2px;
+	}
 </style>
 </head>
 <body>
 		<div id="app">
 		<div class="app-location app-main">
 			<h5 class="title">{{content}}</h5>
+			<a href="/index/index" class="return">返回首页</a>
 			<h2>无纸化仓库管理</h2>
 			<div class="line"><span></span></div>
 			<h4>当前仓库:{$store.sname}</h4>
