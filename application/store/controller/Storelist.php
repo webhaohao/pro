@@ -7,14 +7,13 @@ use think\Cache;
 use PHPExcel_IOFactory;
 class Storelist extends Base
 {
-	public static $pData = 'foo';
     public function lst()
     {
 		$map['storeid'] = [
 			'eq',session('sid')
 		];	
 		$list = StoreModel::where($map)->paginate($listRows = 5, $simple = false, $config = [
-			'query'=>$map
+			'query'=>request()->param()
 		]);
 		Cache::set('store',$list,3600);
 		$this->assign('list',$list);
@@ -27,7 +26,7 @@ class Storelist extends Base
 		input('stusno')&& $map['stusno'] =['like',input('stusno').'%'];
 		input('uname') && $map['uname'] = ['like','%'.input('uname').'%'];
 		input('type')!=NULL && $map['type']=['eq',input('type')];
-		input('storeid')&& $map['storeid'] = ['eq',input('storeid')];
+		//input('storeid')&& $map['storeid'] = ['eq',input('storeid')];
 		$list = StoreModel::where($map)->paginate($listRows = 5, $simple = false, $config = [
 			'query'=>$map
 		]);
@@ -93,7 +92,6 @@ class Storelist extends Base
 			->setCellValue('F1', '学号')
 			->setCellValue('G1','备注')
 			->setCellValue('H1','领取时间');
-		//$list = StoreModel::paginate(5);
 		$list =Cache::get('store','');
 		$count=count($list);
 		for($i=2;$i<=$count+1;$i++){
