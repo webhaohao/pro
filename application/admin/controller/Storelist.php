@@ -18,12 +18,12 @@ class Storelist extends Base
 					input('uname') && $map['uname'] = ['like','%'.input('uname').'%'];
 					input('type')!=NULL && $map['type']=['eq',input('type')];
 					input('storeid')&& $map['storeid'] = ['eq',input('storeid')];
-					$list = StoreModel::where($map)->paginate($listRows = 5, $simple = false, $config = [
+					$list = StoreModel::where($map)->paginate($listRows = 10, $simple = false, $config = [
 						'query'=>request()->param()
 					]);
 			}
 			else{
-					$list = StoreModel::paginate(5);
+					$list = StoreModel::where(true)->order(['id desc'])->paginate(10);
 			}
 			if(input('download')){
 					if(input('search')){
@@ -51,7 +51,7 @@ class Storelist extends Base
 		input('uname') && $map['uname'] = ['like','%'.input('uname').'%'];
 		input('type')!=NULL && $map['type']=['eq',input('type')];
 		input('storeid')&& $map['storeid'] = ['eq',input('storeid')];
-		$list = StoreModel::where($map)->paginate($listRows = 5, $simple = false, $config = [
+		$list = StoreModel::where($map)->paginate($listRows = 10, $simple = false, $config = [
 			'query'=>request()->param()
 		]);
 		$result = StoreModel::where($map);

@@ -11,7 +11,7 @@
     <link href="__PUBLIC__/style/bootstrap.css" rel="stylesheet">
     <link href="__PUBLIC__/style/font-awesome.css" rel="stylesheet">
     <link href="__PUBLIC__/style/weather-icons.css" rel="stylesheet">
-
+    <link href="bootstrap-editable/css/bootstrap-editable.css" rel="stylesheet">
     <!--Beyond styles-->
     <link id="beyond-link" href="__PUBLIC__/style/beyond.css" rel="stylesheet" type="text/css">
     <link href="__PUBLIC__/style/demo.css" rel="stylesheet">
@@ -20,6 +20,12 @@
     
 </head>
 <style>
+      table{
+          text-align:center;
+      }
+      table thead th{
+          text-align:center;
+      }
       table tr td span{
           margin-right:20px;
       }  
@@ -92,41 +98,41 @@
             <div class="widget-body">
                 <div class="flip-scroll">
                     <table class="table table-bordered table-hover">
-                        <!-- <thead class="">
+                        <thead class="">
                             <tr>
-                                <th class="text-center" width="4%">ID</th>
                                 <th class="text-center">姓名</th>
                                 <th class="text-center">学号</th>
-                                <th class="text-center" width="20%">操作</th>
+                                <th>
+                                    资产编号
+                                </th>
+                                <th>
+                                    资产描述
+                                </th>
+                                <th>
+                                    配件描述
+                                </th>
+                                <th>配件数量</th>
+                                <th>仓库</th>
+                                <th>时间</th>
+                                <th>签名</th>
+                                <th>备注</th>
+                                <th>操作</th>
                             </tr>
-                        </thead> -->
+                        </thead>
                         <tbody>
                             {volist name="list" id="vo"}
-                            <tr>
-                                <td colspan="5">
-                                        <span>姓名:{$vo.uname}</span>
-                                        <span>学号:{$vo.stusno}</span>
-                                        <span>{$vo.type?'领取时间:':'清退时间:'}{$vo.time|date="Y-m-d H:i:s",###}</span>
-                                        <span>仓库:{$vo.storeman.sname}</span>
-                                </td>
-                            </tr>
-                                <tr>
-                                        <td>
-                                            资产编号
-                                        </td>
-                                        <td>
-                                            资产描述
-                                        </td>
-                                        <td>
-                                            配件描述
-                                        </td>
-                                        <td>配件数量</td>
-                                        <td>备注</td>
-                                </tr>
                                 {volist name="vo.partinfo" id="p"}
                                 <tr>
                                     <td>
-                                        {$p.serialnum}    
+                                        {$vo.uname}
+                                    </td>
+                                    <td>
+                                        {$vo.stusno}
+                                    </td>
+                                    <td>
+                                        <a href="#" data-type="text" data-pk="{$p.id}">
+                                            {$p.serialnum}  
+                                        </a>  
                                     </td>
                                     <td>
                                         {$p.serialdes}
@@ -137,18 +143,19 @@
                                     <td>
                                         {$p.count}
                                     </td>
+                                    <td>
+                                        {$vo.storeman.sname}
+                                    </td>
+                                    <td>
+                                        {$vo.type?'领取时间:':'清退时间:'}{$vo.time|date="Y-m-d H:i:s",###}
+                                    </td>
+                                    <td>
+                                        <!-- <img src="{$vo.path}" alt="" style="width:200px;">   -->
+                                        <button class="btn">查看签名</button>
+                                    </td>
                                     <td>    
                                         {$p.remarks}
                                     </td>
-                                </tr>
-                                {/volist}
-                                <tr>
-                                        <td colspan="5">
-                                             <p>电子签名:</p>
-                                              <img src="{$vo.path}" alt="" style="width:200px;">  
-                                        </td>
-                                </tr>
-                                <tr>
                                     <td align="right" colspan="5">
                                         <!-- <a href="{:url('storelist/edit',array('id'=>$vo['id']))}" class="btn btn-primary btn-sm shiny">
                                             <i class="fa fa-edit"></i> 编辑
@@ -158,6 +165,7 @@
                                         </a>
                                     </td>
                                 </tr>
+                                {/volist}
                             {/volist}
                         </tbody>
                     </table>
@@ -180,6 +188,7 @@
 	    <!--Basic Scripts-->
     <script src="__PUBLIC__/style/jquery_002.js"></script>
     <script src="__PUBLIC__/style/bootstrap.js"></script>
+    <script src="bootstrap-editable/js/bootstrap-editable.js"></script>
     <script src="__PUBLIC__/style/jquery.js"></script>
     <!--Beyond Scripts-->
     <script src="__PUBLIC__/style/beyond.js"></script>
@@ -217,7 +226,61 @@
                         }
                 })
             })
-            
+            $(function() {
+                        $('#dataGrid').bootstrapTable({
+                            url : 'appMenu/menuForSelect',
+                            method : 'post',
+                            toolbar : '#toolbar',
+                            contentType : 'application/x-www-form-urlencoded',
+                            striped : true,
+                            /* pagination : true, */
+                            pageSize : 9999999,
+                            sidePagination : 'server',
+                            queryParamsType : 'limit',
+                            //queryParams : queryParams,
+                            columns : [ {
+                                checkbox : true
+                            }, {
+                                field : 'name',
+                                title : '功能名称',
+                                width : 150
+                            }, {
+                                field : 'showName',
+                                title : '展示名称',
+                                align : 'center',
+                                width : 100,
+                                formatter : function(value, row, index) {
+                                    if(typeof(value) == 'undefined'){
+                                        row.showName = row.name;
+                                        return row.name;
+                                    } else {
+                                        return value;
+                                    }
+                                },
+                                editable: {
+                                    type: 'text',  
+                                    validate: function (value) {  
+                                        if ($.trim(value) == '') {  
+                                            return '展示名称不能为空!';  
+                                        }  
+                                    }
+                                } 
+                            }, {
+                                field : 'sortNo',
+                                title : '排序',
+                                align : 'center',
+                                width : 100,
+                                editable: {
+                                    type: 'text',  
+                                    validate: function (value) {  
+                                        if ($.trim(value) == '') {  
+                                            return '排序不能为空!';  
+                                        }  
+                                    }
+                                }
+                            } ]
+                        });
+                        });
             function GetQueryString(name)
             {
                 var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");

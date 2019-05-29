@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:3:{s:71:"C:\xampp\htdocs\pro\public/../application/admin\view\storelist\lst.html";i:1559105442;s:68:"C:\xampp\htdocs\pro\public/../application/admin\view\common\top.html";i:1558573096;s:69:"C:\xampp\htdocs\pro\public/../application/admin\view\common\left.html";i:1558917843;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:3:{s:71:"C:\xampp\htdocs\pro\public/../application/admin\view\storelist\lst.html";i:1559145900;s:68:"C:\xampp\htdocs\pro\public/../application/admin\view\common\top.html";i:1559138579;s:69:"C:\xampp\htdocs\pro\public/../application/admin\view\common\left.html";i:1559138579;}*/ ?>
 <!DOCTYPE html>
 <html><head>
 	    <meta charset="utf-8">
@@ -12,7 +12,7 @@
     <link href="__PUBLIC__/style/bootstrap.css" rel="stylesheet">
     <link href="__PUBLIC__/style/font-awesome.css" rel="stylesheet">
     <link href="__PUBLIC__/style/weather-icons.css" rel="stylesheet">
-
+    <link href="bootstrap-editable/css/bootstrap-editable.css" rel="stylesheet">
     <!--Beyond styles-->
     <link id="beyond-link" href="__PUBLIC__/style/beyond.css" rel="stylesheet" type="text/css">
     <link href="__PUBLIC__/style/demo.css" rel="stylesheet">
@@ -21,6 +21,12 @@
     
 </head>
 <style>
+      table{
+          text-align:center;
+      }
+      table thead th{
+          text-align:center;
+      }
       table tr td span{
           margin-right:20px;
       }  
@@ -230,41 +236,40 @@ src="__PUBLIC__/images/userPhoto.png">
             <div class="widget-body">
                 <div class="flip-scroll">
                     <table class="table table-bordered table-hover">
-                        <!-- <thead class="">
+                        <thead class="">
                             <tr>
-                                <th class="text-center" width="4%">ID</th>
                                 <th class="text-center">姓名</th>
                                 <th class="text-center">学号</th>
-                                <th class="text-center" width="20%">操作</th>
+                                <th>
+                                    资产编号
+                                </th>
+                                <th>
+                                    资产描述
+                                </th>
+                                <th>
+                                    配件描述
+                                </th>
+                                <th>配件数量</th>
+                                <th>仓库</th>
+                                <th>时间</th>
+                                <th>签名</th>
+                                <th>备注</th>
+                                <th>操作</th>
                             </tr>
-                        </thead> -->
+                        </thead>
                         <tbody>
-                            <?php if(is_array($list) || $list instanceof \think\Collection || $list instanceof \think\Paginator): $i = 0; $__LIST__ = $list;if( count($__LIST__)==0 ) : echo "" ;else: foreach($__LIST__ as $key=>$vo): $mod = ($i % 2 );++$i;?>
-                            <tr>
-                                <td colspan="5">
-                                        <span>姓名:<?php echo $vo['uname']; ?></span>
-                                        <span>学号:<?php echo $vo['stusno']; ?></span>
-                                        <span><?php echo !empty($vo['type'])?'领取时间:':'清退时间:'; ?><?php echo date("Y-m-d H:i:s",$vo['time']); ?></span>
-                                        <span>仓库:<?php echo $vo['storeman']['sname']; ?></span>
-                                </td>
-                            </tr>
-                                <tr>
-                                        <td>
-                                            资产编号
-                                        </td>
-                                        <td>
-                                            资产描述
-                                        </td>
-                                        <td>
-                                            配件描述
-                                        </td>
-                                        <td>配件数量</td>
-                                        <td>备注</td>
-                                </tr>
-                                <?php if(is_array($vo['partinfo']) || $vo['partinfo'] instanceof \think\Collection || $vo['partinfo'] instanceof \think\Paginator): $i = 0; $__LIST__ = $vo['partinfo'];if( count($__LIST__)==0 ) : echo "" ;else: foreach($__LIST__ as $key=>$p): $mod = ($i % 2 );++$i;?>
+                            <?php if(is_array($list) || $list instanceof \think\Collection || $list instanceof \think\Paginator): $i = 0; $__LIST__ = $list;if( count($__LIST__)==0 ) : echo "" ;else: foreach($__LIST__ as $key=>$vo): $mod = ($i % 2 );++$i;if(is_array($vo['partinfo']) || $vo['partinfo'] instanceof \think\Collection || $vo['partinfo'] instanceof \think\Paginator): $i = 0; $__LIST__ = $vo['partinfo'];if( count($__LIST__)==0 ) : echo "" ;else: foreach($__LIST__ as $key=>$p): $mod = ($i % 2 );++$i;?>
                                 <tr>
                                     <td>
-                                        <?php echo $p['serialnum']; ?>    
+                                        <?php echo $vo['uname']; ?>
+                                    </td>
+                                    <td>
+                                        <?php echo $vo['stusno']; ?>
+                                    </td>
+                                    <td>
+                                        <a href="#" data-type="text" data-pk="<?php echo $p['id']; ?>">
+                                            <?php echo $p['serialnum']; ?>  
+                                        </a>  
                                     </td>
                                     <td>
                                         <?php echo $p['serialdes']; ?>
@@ -275,18 +280,19 @@ src="__PUBLIC__/images/userPhoto.png">
                                     <td>
                                         <?php echo $p['count']; ?>
                                     </td>
+                                    <td>
+                                        <?php echo $vo['storeman']['sname']; ?>
+                                    </td>
+                                    <td>
+                                        <?php echo !empty($vo['type'])?'领取时间:':'清退时间:'; ?><?php echo date("Y-m-d H:i:s",$vo['time']); ?>
+                                    </td>
+                                    <td>
+                                        <!-- <img src="<?php echo $vo['path']; ?>" alt="" style="width:200px;">   -->
+                                        <button class="btn">查看签名</button>
+                                    </td>
                                     <td>    
                                         <?php echo $p['remarks']; ?>
                                     </td>
-                                </tr>
-                                <?php endforeach; endif; else: echo "" ;endif; ?>
-                                <tr>
-                                        <td colspan="5">
-                                             <p>电子签名:</p>
-                                              <img src="<?php echo $vo['path']; ?>" alt="" style="width:200px;">  
-                                        </td>
-                                </tr>
-                                <tr>
                                     <td align="right" colspan="5">
                                         <!-- <a href="<?php echo url('storelist/edit',array('id'=>$vo['id'])); ?>" class="btn btn-primary btn-sm shiny">
                                             <i class="fa fa-edit"></i> 编辑
@@ -296,7 +302,7 @@ src="__PUBLIC__/images/userPhoto.png">
                                         </a>
                                     </td>
                                 </tr>
-                            <?php endforeach; endif; else: echo "" ;endif; ?>
+                                <?php endforeach; endif; else: echo "" ;endif; endforeach; endif; else: echo "" ;endif; ?>
                         </tbody>
                     </table>
                 </div>
@@ -318,6 +324,7 @@ src="__PUBLIC__/images/userPhoto.png">
 	    <!--Basic Scripts-->
     <script src="__PUBLIC__/style/jquery_002.js"></script>
     <script src="__PUBLIC__/style/bootstrap.js"></script>
+    <script src="bootstrap-editable/js/bootstrap-editable.js"></script>
     <script src="__PUBLIC__/style/jquery.js"></script>
     <!--Beyond Scripts-->
     <script src="__PUBLIC__/style/beyond.js"></script>
@@ -355,7 +362,61 @@ src="__PUBLIC__/images/userPhoto.png">
                         }
                 })
             })
-            
+            $(function() {
+                        $('#dataGrid').bootstrapTable({
+                            url : 'appMenu/menuForSelect',
+                            method : 'post',
+                            toolbar : '#toolbar',
+                            contentType : 'application/x-www-form-urlencoded',
+                            striped : true,
+                            /* pagination : true, */
+                            pageSize : 9999999,
+                            sidePagination : 'server',
+                            queryParamsType : 'limit',
+                            //queryParams : queryParams,
+                            columns : [ {
+                                checkbox : true
+                            }, {
+                                field : 'name',
+                                title : '功能名称',
+                                width : 150
+                            }, {
+                                field : 'showName',
+                                title : '展示名称',
+                                align : 'center',
+                                width : 100,
+                                formatter : function(value, row, index) {
+                                    if(typeof(value) == 'undefined'){
+                                        row.showName = row.name;
+                                        return row.name;
+                                    } else {
+                                        return value;
+                                    }
+                                },
+                                editable: {
+                                    type: 'text',  
+                                    validate: function (value) {  
+                                        if ($.trim(value) == '') {  
+                                            return '展示名称不能为空!';  
+                                        }  
+                                    }
+                                } 
+                            }, {
+                                field : 'sortNo',
+                                title : '排序',
+                                align : 'center',
+                                width : 100,
+                                editable: {
+                                    type: 'text',  
+                                    validate: function (value) {  
+                                        if ($.trim(value) == '') {  
+                                            return '排序不能为空!';  
+                                        }  
+                                    }
+                                }
+                            } ]
+                        });
+                        });
             function GetQueryString(name)
             {
                 var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");

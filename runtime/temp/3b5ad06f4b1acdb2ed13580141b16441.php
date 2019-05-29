@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:3:{s:69:"C:\xampp\htdocs\pro\public/../application/admin\view\index\index.html";i:1559138579;s:68:"C:\xampp\htdocs\pro\public/../application/admin\view\common\top.html";i:1559138579;s:69:"C:\xampp\htdocs\pro\public/../application/admin\view\common\left.html";i:1559138579;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:3:{s:70:"C:\xampp\htdocs\pro\public/../application/admin\view\stuinfo\edit.html";i:1559138579;s:68:"C:\xampp\htdocs\pro\public/../application/admin\view\common\top.html";i:1559138579;s:69:"C:\xampp\htdocs\pro\public/../application/admin\view\common\left.html";i:1559138579;}*/ ?>
 <!DOCTYPE html>
 <html><head>
 	    <meta charset="utf-8">
@@ -80,6 +80,7 @@ src="__PUBLIC__/images/userPhoto.png">
         </div>
     </div>
 </div>
+
 	<!-- /头部 -->
 	
 	<div class="main-container container-fluid">
@@ -172,14 +173,56 @@ src="__PUBLIC__/images/userPhoto.png">
                 <!-- Page Breadcrumb -->
                 <div class="page-breadcrumbs">
                     <ul class="breadcrumb">
-                                        <li class="active">控制面板</li>
+                                        <li>
+                        <a href="#">系统</a>
+                    </li>
+                                        <li>
+                        <a href="<?php echo url('stuinfo/lst'); ?>">学生信息管理</a>
+                    </li>
+                                        <li class="active">修改学生信息</li>
                                         </ul>
                 </div>
                 <!-- /Page Breadcrumb -->
 
                 <!-- Page Body -->
                 <div class="page-body">
-                      <h1 style="text-align:center;margin-top:200px;">欢迎来到"无纸化后台管理系统!"</h1>
+                    
+<div class="row">
+    <div class="col-lg-12 col-sm-12 col-xs-12">
+        <div class="widget">
+            <div class="widget-header bordered-bottom bordered-blue">
+                <span class="widget-caption">修改学生信息</span>
+            </div>
+            <div class="widget-body">
+                <div id="horizontal-form">
+                    <form class="form-horizontal" role="form" action="" method="post">
+                        <input type="hidden" name="id" value="<?php echo $stuinfo['id']; ?>">
+                        <div class="form-group">
+                            <label for="username" class="col-sm-2 control-label no-padding-right">姓名</label>
+                            <div class="col-sm-6">
+                                <input class="form-control" id="username" placeholder="" name="uname" value="<?php echo $stuinfo['uname']; ?>"  type="text">
+                            </div>
+                            <p class="help-block col-sm-4 red"></p>
+                        </div>
+                        <div class="form-group">
+                            <label for="group_id" class="col-sm-2 control-label no-padding-right">学号</label>
+                            <div class="col-sm-6">
+                                <input class="form-control" name="stusno"  placeholder="" value="<?php echo $stuinfo['stusno']; ?>" type="text">
+                            </div>
+                            <p class="help-block col-sm-4 red"></p>
+                        </div>  
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-10">
+                                <button type="submit" class="btn btn-default">保存信息</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
                 </div>
                 <!-- /Page Body -->
             </div>

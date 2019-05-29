@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:3:{s:71:"C:\xampp\htdocs\pro\public/../application/admin\view\stuinfo\index.html";i:1559111021;s:68:"C:\xampp\htdocs\pro\public/../application/admin\view\common\top.html";i:1558573096;s:69:"C:\xampp\htdocs\pro\public/../application/admin\view\common\left.html";i:1558917843;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:3:{s:71:"C:\xampp\htdocs\pro\public/../application/admin\view\stuinfo\index.html";i:1559138579;s:68:"C:\xampp\htdocs\pro\public/../application/admin\view\common\top.html";i:1559138579;s:69:"C:\xampp\htdocs\pro\public/../application/admin\view\common\left.html";i:1559138579;}*/ ?>
 <!DOCTYPE html>
 <html><head>
 	    <meta charset="utf-8">
