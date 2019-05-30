@@ -44,6 +44,9 @@ class Storelist extends Base
 			//dump(Cache::get('store',''));
 			$this->assign('store',$store);
 			$this->assign('list',$list);
+			// $list = StoreModel::where()->with('partinfo')->with('storeman')->select();
+			// echo  json_encode($list);
+			// die;
 			return $this->fetch();
 		}
 	public function search(){

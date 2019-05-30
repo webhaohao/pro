@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:3:{s:71:"C:\xampp\htdocs\pro\public/../application/admin\view\storelist\lst.html";i:1559145900;s:68:"C:\xampp\htdocs\pro\public/../application/admin\view\common\top.html";i:1559138579;s:69:"C:\xampp\htdocs\pro\public/../application/admin\view\common\left.html";i:1559138579;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:3:{s:71:"C:\xampp\htdocs\pro\public/../application/admin\view\storelist\lst.html";i:1559217671;s:68:"C:\xampp\htdocs\pro\public/../application/admin\view\common\top.html";i:1558573096;s:69:"C:\xampp\htdocs\pro\public/../application/admin\view\common\left.html";i:1558917843;}*/ ?>
 <!DOCTYPE html>
 <html><head>
 	    <meta charset="utf-8">
@@ -12,7 +12,7 @@
     <link href="__PUBLIC__/style/bootstrap.css" rel="stylesheet">
     <link href="__PUBLIC__/style/font-awesome.css" rel="stylesheet">
     <link href="__PUBLIC__/style/weather-icons.css" rel="stylesheet">
-    <link href="bootstrap-editable/css/bootstrap-editable.css" rel="stylesheet">
+    <link href="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet"/>
     <!--Beyond styles-->
     <link id="beyond-link" href="__PUBLIC__/style/beyond.css" rel="stylesheet" type="text/css">
     <link href="__PUBLIC__/style/demo.css" rel="stylesheet">
@@ -235,11 +235,11 @@ src="__PUBLIC__/images/userPhoto.png">
         <div class="widget">
             <div class="widget-body">
                 <div class="flip-scroll">
-                    <table class="table table-bordered table-hover">
+                    <table class="table table-bordered table-hover" id="dataGrid">
                         <thead class="">
                             <tr>
-                                <th class="text-center">姓名</th>
-                                <th class="text-center">学号</th>
+                                <th>姓名</th>
+                                <th>学号</th>
                                 <th>
                                     资产编号
                                 </th>
@@ -267,9 +267,7 @@ src="__PUBLIC__/images/userPhoto.png">
                                         <?php echo $vo['stusno']; ?>
                                     </td>
                                     <td>
-                                        <a href="#" data-type="text" data-pk="<?php echo $p['id']; ?>">
-                                            <?php echo $p['serialnum']; ?>  
-                                        </a>  
+                                        <?php echo $p['serialnum']; ?>  
                                     </td>
                                     <td>
                                         <?php echo $p['serialdes']; ?>
@@ -320,16 +318,16 @@ src="__PUBLIC__/images/userPhoto.png">
             <!-- /Page Content -->
 		</div>	
 	</div>
-
 	    <!--Basic Scripts-->
     <script src="__PUBLIC__/style/jquery_002.js"></script>
     <script src="__PUBLIC__/style/bootstrap.js"></script>
-    <script src="bootstrap-editable/js/bootstrap-editable.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
     <script src="__PUBLIC__/style/jquery.js"></script>
     <!--Beyond Scripts-->
     <script src="__PUBLIC__/style/beyond.js"></script>
     
     <script>
+             
             $(function(){
                 var type =<?php echo \think\Request::instance()->param('type')?\think\Request::instance()->param('type'):'null'; ?>;
                 var store = <?php echo \think\Request::instance()->param('storeid')?\think\Request::instance()->param('storeid'):'null'; ?>;
@@ -361,68 +359,35 @@ src="__PUBLIC__/images/userPhoto.png">
                             window.location.href='./lst?download=1'; 
                         }
                 })
+
+                $('#dataGrid').editable({
+                    columns: [  {
+                    title: '产品线',
+                    field: 'aoneProductName',
+                    align: 'center',
+                    valign: 'middle',
+                    formatter: (value, row, index) => {
+                        return value;
+                        }
+                    },
+                    {
+                        title: '应用',
+                        field: 'appName',
+                        align: 'center',
+                        valign: 'middle',
+                        formatter: (value, row, index) => {
+                            return value;
+                        }
+                    }]
+                })
             })
-            $(function() {
-                        $('#dataGrid').bootstrapTable({
-                            url : 'appMenu/menuForSelect',
-                            method : 'post',
-                            toolbar : '#toolbar',
-                            contentType : 'application/x-www-form-urlencoded',
-                            striped : true,
-                            /* pagination : true, */
-                            pageSize : 9999999,
-                            sidePagination : 'server',
-                            queryParamsType : 'limit',
-                            //queryParams : queryParams,
-                            columns : [ {
-                                checkbox : true
-                            }, {
-                                field : 'name',
-                                title : '功能名称',
-                                width : 150
-                            }, {
-                                field : 'showName',
-                                title : '展示名称',
-                                align : 'center',
-                                width : 100,
-                                formatter : function(value, row, index) {
-                                    if(typeof(value) == 'undefined'){
-                                        row.showName = row.name;
-                                        return row.name;
-                                    } else {
-                                        return value;
-                                    }
-                                },
-                                editable: {
-                                    type: 'text',  
-                                    validate: function (value) {  
-                                        if ($.trim(value) == '') {  
-                                            return '展示名称不能为空!';  
-                                        }  
-                                    }
-                                } 
-                            }, {
-                                field : 'sortNo',
-                                title : '排序',
-                                align : 'center',
-                                width : 100,
-                                editable: {
-                                    type: 'text',  
-                                    validate: function (value) {  
-                                        if ($.trim(value) == '') {  
-                                            return '排序不能为空!';  
-                                        }  
-                                    }
-                                }
-                            } ]
-                        });
-                        });
-            function GetQueryString(name)
-            {
-                var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
-                var r = window.location.search.substr(1).match(reg);
-                if(r!=null)return  unescape(r[2]); return null;
-            }
+                function GetQueryString(name)
+                {
+                    var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+                    var r = window.location.search.substr(1).match(reg);
+                    if(r!=null)return  unescape(r[2]); return null;
+                }
     </script>
 
-</body></html>
+</body>
+</html>
