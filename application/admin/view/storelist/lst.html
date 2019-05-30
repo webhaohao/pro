@@ -11,6 +11,7 @@
     <link href="__PUBLIC__/style/bootstrap.css" rel="stylesheet">
     <link href="__PUBLIC__/style/font-awesome.css" rel="stylesheet">
     <link href="__PUBLIC__/style/weather-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.14.2/bootstrap-table.min.css">
     <link href="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet"/>
     <!--Beyond styles-->
     <link id="beyond-link" href="__PUBLIC__/style/beyond.css" rel="stylesheet" type="text/css">
@@ -98,83 +99,12 @@
             <div class="widget-body">
                 <div class="flip-scroll">
                     <table class="table table-bordered table-hover" id="dataGrid">
-                        <thead class="">
-                            <tr>
-                                <th>姓名</th>
-                                <th>学号</th>
-                                <th>
-                                    资产编号
-                                </th>
-                                <th>
-                                    资产描述
-                                </th>
-                                <th>
-                                    配件描述
-                                </th>
-                                <th>配件数量</th>
-                                <th>仓库</th>
-                                <th>时间</th>
-                                <th>签名</th>
-                                <th>备注</th>
-                                <th>操作</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {volist name="list" id="vo"}
-                                {volist name="vo.partinfo" id="p"}
-                                <tr>
-                                    <td>
-                                        {$vo.uname}
-                                    </td>
-                                    <td>
-                                        {$vo.stusno}
-                                    </td>
-                                    <td>
-                                        {$p.serialnum}  
-                                    </td>
-                                    <td>
-                                        {$p.serialdes}
-                                    </td>
-                                    <td>
-                                        {$p.partIntr}
-                                    </td>
-                                    <td>
-                                        {$p.count}
-                                    </td>
-                                    <td>
-                                        {$vo.storeman.sname}
-                                    </td>
-                                    <td>
-                                        {$vo.type?'领取时间:':'清退时间:'}{$vo.time|date="Y-m-d H:i:s",###}
-                                    </td>
-                                    <td>
-                                        <!-- <img src="{$vo.path}" alt="" style="width:200px;">   -->
-                                        <button class="btn">查看签名</button>
-                                    </td>
-                                    <td>    
-                                        {$p.remarks}
-                                    </td>
-                                    <td align="right" colspan="5">
-                                        <!-- <a href="{:url('storelist/edit',array('id'=>$vo['id']))}" class="btn btn-primary btn-sm shiny">
-                                            <i class="fa fa-edit"></i> 编辑
-                                        </a> -->
-                                        <a href="#" onClick="warning('确实要删除吗', '{:url('storelist/del',array('id'=>$vo['id']))}')" class="btn btn-danger btn-sm shiny">
-                                            <i class="fa fa-trash-o"></i> 删除
-                                        </a>
-                                    </td>
-                                </tr>
-                                {/volist}
-                            {/volist}
-                        </tbody>
                     </table>
-                </div>
-                <div style="text-align:right; margin-top:10px;">
-                            {$list->render()}
                 </div>
             </div>
         </div>
+        </div>
     </div>
-</div>
 
                 </div>
                 <!-- /Page Body -->
@@ -185,7 +115,10 @@
 	    <!--Basic Scripts-->
     <script src="__PUBLIC__/style/jquery_002.js"></script>
     <script src="__PUBLIC__/style/bootstrap.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.14.2/bootstrap-table.min.js"></script>
+    <script src="__PUBLIC__/style/bootstrap-editable.min.js"></script>
+    <script src="__PUBLIC__/style/bootstrap-table-editable.js"></script>
+    <script src="__PUBLIC__/style/bootstrap-table-zh-CN.js"></script>
     <script src="__PUBLIC__/style/jquery.js"></script>
     <!--Beyond Scripts-->
     <script src="__PUBLIC__/style/beyond.js"></script>
@@ -193,10 +126,10 @@
     <script>
              
             $(function(){
-                var type ={$Request.param.type?$Request.param.type:'null'};
-                var store = {$Request.param.storeid?$Request.param.storeid:'null'};
-                type&&$(".type").val(type);
-                store&&$(".store").val(store);
+                // var type ={$Request.param.type?$Request.param.type:'null'};
+                // var store = {$Request.param.storeid?$Request.param.storeid:'null'};
+                // type&&$(".type").val(type);
+                // store&&$(".store").val(store);
                 $(".searchForm").submit(function(e){
                         var flag=[];
                         var t = $(this).serializeArray();
@@ -223,11 +156,16 @@
                             window.location.href='./lst?download=1'; 
                         }
                 })
-
-                $('#dataGrid').editable({
+                $('#dataGrid').bootstrapTable({
+                    url: './allData', //请求后台的URL（*）
+                    pageSize:"10",
+                    search:false,
+                    pageNumber:"1",
+                    pagination:true,
+                    pageList: [10, 25, 50, 100],  
                     columns: [  {
-                    title: '产品线',
-                    field: 'aoneProductName',
+                    title: '姓名',
+                    field: 'uname',
                     align: 'center',
                     valign: 'middle',
                     formatter: (value, row, index) => {
@@ -235,22 +173,142 @@
                         }
                     },
                     {
-                        title: '应用',
-                        field: 'appName',
+                        title:'id',
+                        field:'id',
+                        align: 'center',
+                        valign: 'middle',
+                        visible:false,
+                        formatter: (value, row, index) => {
+                            return value;
+                        }
+                    },
+                    {
+                        title: '学号',
+                        field: 'stusno',
                         align: 'center',
                         valign: 'middle',
                         formatter: (value, row, index) => {
                             return value;
                         }
-                    }]
+                    },
+                    {
+                        title: '资产编号',
+                        field: 'serialnum',
+                        align: 'center',
+                        valign: 'middle',
+                        editable:{
+                            type:'text'
+                        }
+                    },
+                    {
+                        title: '资产描述',
+                        field: 'serialdes',
+                        align: 'center',
+                        valign: 'middle',
+                        editable:{
+                            type:'text',
+                            emptytext:''
+                        }
+                    },
+                    {
+                        title: '配件描述',
+                        field: 'partIntr',
+                        align: 'center',
+                        valign: 'middle',
+                        editable:{
+                            type:'text',
+                            emptytext:'点击编辑'
+                        }
+                    },
+                    {
+                        title: '配件数量',
+                        field: 'count',
+                        align: 'center',
+                        valign: 'middle',
+                        editable:{
+                            type:'text',
+                            emptytext:'点击编辑'
+                        }
+                    },
+                    {
+                        title: '仓库',
+                        field: 'sname',
+                        align: 'center',
+                        valign: 'middle',
+                        editable:{
+                            type:'text',
+                            title:'仓库',
+                            pk:'',
+                            source:function(){
+                                var result=[];
+                                {volist name="store" id="st"}
+                                    result.push(
+                                        {
+                                        vaule:"{$st.id}",
+                                        text:"{$st.sname}"
+                                        }
+                                    )
+                                {/volist}
+                                console.log(result);
+                                return result;
+                            }
+                        }
+                    },
+                    {
+                        title: '类型',
+                        field: 'type',
+                        align: 'center',
+                        valign: 'middle',
+                        formatter: (value, row, index) => {
+                            return value==0?'清退':'领取';
+                        }
+                    },
+                    {
+                        field: 'path',
+                        title: '查看签名',formatter:function(value,row,index){
+                            var updt='<a target="blank" class="btn btn-primary btn-sm shiny" href="'+value+'">查看签名</a>';
+                            return updt;
+                        }
+                    },
+                    {
+                            
+                        title: '时间',
+                        field: 'time',
+                        align: 'center',
+                        valign: 'middle',
+                        formatter: (value, row, index) => {
+                            return value;
+                        }
+                    },
+                    {
+                        title: '备注',
+                        field: 'remarks',
+                        align: 'center',
+                        valign: 'middle',
+                        editable:{
+                            type:'text',
+                            emptytext:'点击编辑'
+                        }
+                    }, 
+                    {
+                        field: '#',
+                        title: '操作',formatter:function(value,row,index){
+                            var updt='<a class="btn btn-primary btn-sm shiny" href="supdate.jsp?Id='+row.Id+'"><i class="fa fa-edit"></i>修改</a>';
+                            var del=`<a class="btn btn-danger btn-sm shiny"  onClick="warning('确定要删除吗?','./del?id=${row.pid}')"><i class="fa fa-trash-o"></i>删除</a>`;
+                            return updt+" "+del;
+                        }
+                    }
+                    ]
                 })
             })
-                function GetQueryString(name)
-                {
-                    var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
-                    var r = window.location.search.substr(1).match(reg);
-                    if(r!=null)return  unescape(r[2]); return null;
-                }
+            function GetQueryString(name)
+            {
+                var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+                var r = window.location.search.substr(1).match(reg);
+                if(r!=null)return  unescape(r[2]); return null;
+            }
+           
+   
     </script>
 
 </body>

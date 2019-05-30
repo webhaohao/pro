@@ -11,7 +11,6 @@ class Storelist extends Base
     {
 		
 			$store= db('storeman')->select();
-			//Cache::set('store',$list_2,7200);
 			//如果执行了查询操作
 			if(input('search')){
 					input('stusno')&& $map['stusno'] =['like',input('stusno').'%'];
@@ -41,9 +40,8 @@ class Storelist extends Base
 							return false;	
 					}
 			}
-			//dump(Cache::get('store',''));
 			$this->assign('store',$store);
-			$this->assign('list',$list);
+			//$this->assign('list',$list);
 			// $list = StoreModel::where()->with('partinfo')->with('storeman')->select();
 			// echo  json_encode($list);
 			// die;
@@ -92,10 +90,25 @@ class Storelist extends Base
     	$this->assign('list',$list);
     	return $this->fetch();
     }
+	public function allData(){
+			// $list = StoreModel::where(true)->with('partinfo')->with('storeman')->select();
+			// foreach($list as $key=>$value){
 
+			// }
+			$list=db('storeinfo')->alias('s')
+						   ->join('partinfo p','s.id = p.sid','right')
+						   ->join('storeman t','t.id = s.storeid')
+						   ->Field(['p.*','p.id as pid','t.sname as sname','s.*'])
+						   ->select();
+			foreach($list as $k=>$val){
+					$list[$k]['time'] = date("Y-m-d H:i:s",$val['time']);
+					$list[$k]['path'] = 'http://'.$_SERVER['HTTP_HOST'].$val['path'];
+			}	   
+			echo  json_encode($list);
+	}
     public function del(){
 		$id=input('id');
-		if(db('storeinfo')->delete(input('id'))){
+		if(db('partinfo')->delete(input('id'))){
 			$this->success('删除成功！','lst');
 		}else{
 			$this->error('删除失败！');

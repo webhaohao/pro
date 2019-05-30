@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:3:{s:71:"C:\xampp\htdocs\pro\public/../application/admin\view\storelist\lst.html";i:1559217671;s:68:"C:\xampp\htdocs\pro\public/../application/admin\view\common\top.html";i:1558573096;s:69:"C:\xampp\htdocs\pro\public/../application/admin\view\common\left.html";i:1558917843;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:3:{s:71:"C:\xampp\htdocs\pro\public/../application/admin\view\storelist\lst.html";i:1559240200;s:68:"C:\xampp\htdocs\pro\public/../application/admin\view\common\top.html";i:1559138579;s:69:"C:\xampp\htdocs\pro\public/../application/admin\view\common\left.html";i:1559138579;}*/ ?>
 <!DOCTYPE html>
 <html><head>
 	    <meta charset="utf-8">
@@ -12,6 +12,7 @@
     <link href="__PUBLIC__/style/bootstrap.css" rel="stylesheet">
     <link href="__PUBLIC__/style/font-awesome.css" rel="stylesheet">
     <link href="__PUBLIC__/style/weather-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.14.2/bootstrap-table.min.css">
     <link href="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet"/>
     <!--Beyond styles-->
     <link id="beyond-link" href="__PUBLIC__/style/beyond.css" rel="stylesheet" type="text/css">
@@ -236,81 +237,12 @@ src="__PUBLIC__/images/userPhoto.png">
             <div class="widget-body">
                 <div class="flip-scroll">
                     <table class="table table-bordered table-hover" id="dataGrid">
-                        <thead class="">
-                            <tr>
-                                <th>姓名</th>
-                                <th>学号</th>
-                                <th>
-                                    资产编号
-                                </th>
-                                <th>
-                                    资产描述
-                                </th>
-                                <th>
-                                    配件描述
-                                </th>
-                                <th>配件数量</th>
-                                <th>仓库</th>
-                                <th>时间</th>
-                                <th>签名</th>
-                                <th>备注</th>
-                                <th>操作</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php if(is_array($list) || $list instanceof \think\Collection || $list instanceof \think\Paginator): $i = 0; $__LIST__ = $list;if( count($__LIST__)==0 ) : echo "" ;else: foreach($__LIST__ as $key=>$vo): $mod = ($i % 2 );++$i;if(is_array($vo['partinfo']) || $vo['partinfo'] instanceof \think\Collection || $vo['partinfo'] instanceof \think\Paginator): $i = 0; $__LIST__ = $vo['partinfo'];if( count($__LIST__)==0 ) : echo "" ;else: foreach($__LIST__ as $key=>$p): $mod = ($i % 2 );++$i;?>
-                                <tr>
-                                    <td>
-                                        <?php echo $vo['uname']; ?>
-                                    </td>
-                                    <td>
-                                        <?php echo $vo['stusno']; ?>
-                                    </td>
-                                    <td>
-                                        <?php echo $p['serialnum']; ?>  
-                                    </td>
-                                    <td>
-                                        <?php echo $p['serialdes']; ?>
-                                    </td>
-                                    <td>
-                                        <?php echo $p['partIntr']; ?>
-                                    </td>
-                                    <td>
-                                        <?php echo $p['count']; ?>
-                                    </td>
-                                    <td>
-                                        <?php echo $vo['storeman']['sname']; ?>
-                                    </td>
-                                    <td>
-                                        <?php echo !empty($vo['type'])?'领取时间:':'清退时间:'; ?><?php echo date("Y-m-d H:i:s",$vo['time']); ?>
-                                    </td>
-                                    <td>
-                                        <!-- <img src="<?php echo $vo['path']; ?>" alt="" style="width:200px;">   -->
-                                        <button class="btn">查看签名</button>
-                                    </td>
-                                    <td>    
-                                        <?php echo $p['remarks']; ?>
-                                    </td>
-                                    <td align="right" colspan="5">
-                                        <!-- <a href="<?php echo url('storelist/edit',array('id'=>$vo['id'])); ?>" class="btn btn-primary btn-sm shiny">
-                                            <i class="fa fa-edit"></i> 编辑
-                                        </a> -->
-                                        <a href="#" onClick="warning('确实要删除吗', '<?php echo url('storelist/del',array('id'=>$vo['id'])); ?>')" class="btn btn-danger btn-sm shiny">
-                                            <i class="fa fa-trash-o"></i> 删除
-                                        </a>
-                                    </td>
-                                </tr>
-                                <?php endforeach; endif; else: echo "" ;endif; endforeach; endif; else: echo "" ;endif; ?>
-                        </tbody>
                     </table>
-                </div>
-                <div style="text-align:right; margin-top:10px;">
-                            <?php echo $list->render(); ?>
                 </div>
             </div>
         </div>
+        </div>
     </div>
-</div>
 
                 </div>
                 <!-- /Page Body -->
@@ -321,7 +253,10 @@ src="__PUBLIC__/images/userPhoto.png">
 	    <!--Basic Scripts-->
     <script src="__PUBLIC__/style/jquery_002.js"></script>
     <script src="__PUBLIC__/style/bootstrap.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.14.2/bootstrap-table.min.js"></script>
+    <script src="__PUBLIC__/style/bootstrap-editable.min.js"></script>
+    <script src="__PUBLIC__/style/bootstrap-table-editable.js"></script>
+    <script src="__PUBLIC__/style/bootstrap-table-zh-CN.js"></script>
     <script src="__PUBLIC__/style/jquery.js"></script>
     <!--Beyond Scripts-->
     <script src="__PUBLIC__/style/beyond.js"></script>
@@ -329,10 +264,10 @@ src="__PUBLIC__/images/userPhoto.png">
     <script>
              
             $(function(){
-                var type =<?php echo \think\Request::instance()->param('type')?\think\Request::instance()->param('type'):'null'; ?>;
-                var store = <?php echo \think\Request::instance()->param('storeid')?\think\Request::instance()->param('storeid'):'null'; ?>;
-                type&&$(".type").val(type);
-                store&&$(".store").val(store);
+                // var type =<?php echo \think\Request::instance()->param('type')?\think\Request::instance()->param('type'):'null'; ?>;
+                // var store = <?php echo \think\Request::instance()->param('storeid')?\think\Request::instance()->param('storeid'):'null'; ?>;
+                // type&&$(".type").val(type);
+                // store&&$(".store").val(store);
                 $(".searchForm").submit(function(e){
                         var flag=[];
                         var t = $(this).serializeArray();
@@ -359,11 +294,16 @@ src="__PUBLIC__/images/userPhoto.png">
                             window.location.href='./lst?download=1'; 
                         }
                 })
-
-                $('#dataGrid').editable({
+                $('#dataGrid').bootstrapTable({
+                    url: './allData', //请求后台的URL（*）
+                    pageSize:"10",
+                    search:false,
+                    pageNumber:"1",
+                    pagination:true,
+                    pageList: [10, 25, 50, 100],  
                     columns: [  {
-                    title: '产品线',
-                    field: 'aoneProductName',
+                    title: '姓名',
+                    field: 'uname',
                     align: 'center',
                     valign: 'middle',
                     formatter: (value, row, index) => {
@@ -371,22 +311,142 @@ src="__PUBLIC__/images/userPhoto.png">
                         }
                     },
                     {
-                        title: '应用',
-                        field: 'appName',
+                        title:'id',
+                        field:'id',
+                        align: 'center',
+                        valign: 'middle',
+                        visible:false,
+                        formatter: (value, row, index) => {
+                            return value;
+                        }
+                    },
+                    {
+                        title: '学号',
+                        field: 'stusno',
                         align: 'center',
                         valign: 'middle',
                         formatter: (value, row, index) => {
                             return value;
                         }
-                    }]
+                    },
+                    {
+                        title: '资产编号',
+                        field: 'serialnum',
+                        align: 'center',
+                        valign: 'middle',
+                        editable:{
+                            type:'text'
+                        }
+                    },
+                    {
+                        title: '资产描述',
+                        field: 'serialdes',
+                        align: 'center',
+                        valign: 'middle',
+                        editable:{
+                            type:'text',
+                            emptytext:''
+                        }
+                    },
+                    {
+                        title: '配件描述',
+                        field: 'partIntr',
+                        align: 'center',
+                        valign: 'middle',
+                        editable:{
+                            type:'text',
+                            emptytext:'点击编辑'
+                        }
+                    },
+                    {
+                        title: '配件数量',
+                        field: 'count',
+                        align: 'center',
+                        valign: 'middle',
+                        editable:{
+                            type:'text',
+                            emptytext:'点击编辑'
+                        }
+                    },
+                    {
+                        title: '仓库',
+                        field: 'sname',
+                        align: 'center',
+                        valign: 'middle',
+                        editable:{
+                            type:'text',
+                            title:'仓库',
+                            pk:'',
+                            source:function(){
+                                var result=[];
+                                <?php if(is_array($store) || $store instanceof \think\Collection || $store instanceof \think\Paginator): $i = 0; $__LIST__ = $store;if( count($__LIST__)==0 ) : echo "" ;else: foreach($__LIST__ as $key=>$st): $mod = ($i % 2 );++$i;?>
+                                    result.push(
+                                        {
+                                        vaule:"<?php echo $st['id']; ?>",
+                                        text:"<?php echo $st['sname']; ?>"
+                                        }
+                                    )
+                                <?php endforeach; endif; else: echo "" ;endif; ?>
+                                console.log(result);
+                                return result;
+                            }
+                        }
+                    },
+                    {
+                        title: '类型',
+                        field: 'type',
+                        align: 'center',
+                        valign: 'middle',
+                        formatter: (value, row, index) => {
+                            return value==0?'清退':'领取';
+                        }
+                    },
+                    {
+                        field: 'path',
+                        title: '查看签名',formatter:function(value,row,index){
+                            var updt='<a target="blank" class="btn btn-primary btn-sm shiny" href="'+value+'">查看签名</a>';
+                            return updt;
+                        }
+                    },
+                    {
+                            
+                        title: '时间',
+                        field: 'time',
+                        align: 'center',
+                        valign: 'middle',
+                        formatter: (value, row, index) => {
+                            return value;
+                        }
+                    },
+                    {
+                        title: '备注',
+                        field: 'remarks',
+                        align: 'center',
+                        valign: 'middle',
+                        editable:{
+                            type:'text',
+                            emptytext:'点击编辑'
+                        }
+                    }, 
+                    {
+                        field: '#',
+                        title: '操作',formatter:function(value,row,index){
+                            var updt='<a class="btn btn-primary btn-sm shiny" href="supdate.jsp?Id='+row.Id+'"><i class="fa fa-edit"></i>修改</a>';
+                            var del=`<a class="btn btn-danger btn-sm shiny"  onClick="warning('确定要删除吗?','./del?id=${row.pid}')"><i class="fa fa-trash-o"></i>删除</a>`;
+                            return updt+" "+del;
+                        }
+                    }
+                    ]
                 })
             })
-                function GetQueryString(name)
-                {
-                    var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
-                    var r = window.location.search.substr(1).match(reg);
-                    if(r!=null)return  unescape(r[2]); return null;
-                }
+            function GetQueryString(name)
+            {
+                var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+                var r = window.location.search.substr(1).match(reg);
+                if(r!=null)return  unescape(r[2]); return null;
+            }
+           
+   
     </script>
 
 </body>
