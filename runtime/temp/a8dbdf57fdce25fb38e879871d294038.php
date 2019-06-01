@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:70:"C:\xampp\htdocs\pro\public/../application/index\view\result\index.html";i:1559106063;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:70:"C:\xampp\htdocs\pro\public/../application/index\view\result\index.html";i:1559311332;}*/ ?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -85,7 +85,7 @@
 		<div id="app">
 		<div class="app-location app-main">
 			<h5 class="title">{{content}}</h5>
-			<a href="/index/index" class="return">返回首页</a>
+			<a href="/index/index?storeid=<?php echo $store['id']; ?>" class="return">返回首页</a>
 			<h2>无纸化仓库管理</h2>
 			<div class="line"><span></span></div>
 			<h4>当前仓库:<?php echo $store['sname']; ?></h4>
@@ -154,7 +154,7 @@
 							this.content = this.totalTime+'秒自动跳转到首页';
 							if(this.totalTime<=0){
 								window.clearInterval(clock);
-								location.href='/index/index';
+								location.href='/index/index?storeid=<?php echo $store['id']; ?>';
 							}	
 					},1000)
 		},	

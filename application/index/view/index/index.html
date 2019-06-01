@@ -89,11 +89,15 @@
 								
 							</template>
 					</el-table-column>
+					<el-table-column label="序号" width="50">
+						<template slot-scope="scope">
+								<span>{{scope.$index+1}}</span>
+						</template>
+				</el-table-column>
 						<el-table-column v-for="(v,i) in master_user.columns" :prop="v.field" :label="v.title" :width="v.width">
 								<template slot-scope="scope">
 										<el-form-item v-if="scope.row.isSet" :rules="rules[v.field]" :prop="'data.'+scope.$index+'.'+[v.field]" >
-												<el-input size="mini" placeholder="请输入内容" v-model="scope.row[v.field]">
-												</el-input>
+												<el-input size="mini" :ref="scope.row.id" placeholder="请输入内容" v-model="scope.row[v.field]" @keydown.native="nextFocus(scope.row, scope.$index, $event)" ></el-input>
 										</el-form-item>
 										<span v-else>{{scope.row[v.field]}}</span>
 								</template>
@@ -225,16 +229,16 @@
 						// for (let i of app.master_user.data) {
 						// 				if (i.isSet) return this.$message.warning("请先保存当前编辑项");
 						// }
-						let j = {id:0,"serialnum": "", "serialdes": "", "partIntr": "", "count": "", "remarks": "", "isSet": true, "_temporary": true };
+						let j = {id:this.master_user.data.length,"serialnum": "", "serialdes": "", "partIntr": "", "count": "", "remarks": "", "isSet": true, "_temporary": true };
 						this.master_user.data.push(j);
 						this.master_user.sel = JSON.parse(JSON.stringify(j));
 					},
 					readMasterUser() {
-                    app.master_user.data.map(i => {
-                        // i.id = generateId.get();//模拟后台插入成功后有了id
-                        i.isSet=false;//给后台返回数据添加`isSet`标识
-                        return i;
-                    });
+						app.master_user.data.map(i => {
+							// i.id = generateId.get();//模拟后台插入成功后有了id
+							i.isSet=false;//给后台返回数据添加`isSet`标识
+							return i;
+						});
 					},
 					snoBlur(){
 						$.ajax({
@@ -249,6 +253,12 @@
 								}
 							}		
 						})
+					},
+					nextFocus(row, index, e){
+						if([Object.keys(this.$refs)[index+1]]!="ruleForm"){
+							this.$refs[row.id][index].blur();
+							this.$refs[Object.keys(this.$refs)[index+1]][0].focus();
+						}	
 					},
 					pwdChange(row, index, cg) {
                     //点击修改 判断是否已经保存所有操作
