@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:3:{s:71:"C:\xampp\htdocs\pro\public/../application/admin\view\storelist\lst.html";i:1559240200;s:68:"C:\xampp\htdocs\pro\public/../application/admin\view\common\top.html";i:1559138579;s:69:"C:\xampp\htdocs\pro\public/../application/admin\view\common\left.html";i:1559138579;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:3:{s:71:"C:\xampp\htdocs\pro\public/../application/admin\view\storelist\lst.html";i:1559279758;s:68:"C:\xampp\htdocs\pro\public/../application/admin\view\common\top.html";i:1558573096;s:69:"C:\xampp\htdocs\pro\public/../application/admin\view\common\left.html";i:1558917843;}*/ ?>
 <!DOCTYPE html>
 <html><head>
 	    <meta charset="utf-8">
@@ -19,7 +19,7 @@
     <link href="__PUBLIC__/style/demo.css" rel="stylesheet">
     <link href="__PUBLIC__/style/typicons.css" rel="stylesheet">
     <link href="__PUBLIC__/style/animate.css" rel="stylesheet">
-    
+ 
 </head>
 <style>
       table{
@@ -28,14 +28,18 @@
       table thead th{
           text-align:center;
       }
-      table tr td span{
-          margin-right:20px;
-      }  
       .search{
           background:#fff;
           margin:10px 0px;
           padding:10px;
       }
+      input[type=checkbox], input[type=radio] {
+            opacity:1;
+            position:static;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
 </style>
 <body>
 	<!-- 头部 -->
@@ -262,7 +266,7 @@ src="__PUBLIC__/images/userPhoto.png">
     <script src="__PUBLIC__/style/beyond.js"></script>
     
     <script>
-             
+            var overAllIds = new Array();  //全局数组
             $(function(){
                 // var type =<?php echo \think\Request::instance()->param('type')?\think\Request::instance()->param('type'):'null'; ?>;
                 // var store = <?php echo \think\Request::instance()->param('storeid')?\think\Request::instance()->param('storeid'):'null'; ?>;
@@ -300,8 +304,22 @@ src="__PUBLIC__/images/userPhoto.png">
                     search:false,
                     pageNumber:"1",
                     pagination:true,
+                    clickToSelect:true,
                     pageList: [10, 25, 50, 100],  
-                    columns: [  {
+                    columns: [  
+                    {
+                        align: 'center',
+                        valign: 'middle',
+                        checkbox:true,
+                        formatter:function(i,row){
+                            // if($.inArray(row.pid,Array.from(overAllIds))!=-1){    // 因为 Set是集合,需要先转换成数组  
+                            //     return {
+                            //         checked : true               // 存在则选中
+                            //     }
+                            // }
+                        }
+                    },    
+                    {
                     title: '姓名',
                     field: 'uname',
                     align: 'center',
@@ -370,20 +388,18 @@ src="__PUBLIC__/images/userPhoto.png">
                     },
                     {
                         title: '仓库',
-                        field: 'sname',
+                        field: 'storeid',
                         align: 'center',
                         valign: 'middle',
                         editable:{
-                            type:'text',
-                            title:'仓库',
-                            pk:'',
+                            type:'select',
                             source:function(){
                                 var result=[];
                                 <?php if(is_array($store) || $store instanceof \think\Collection || $store instanceof \think\Paginator): $i = 0; $__LIST__ = $store;if( count($__LIST__)==0 ) : echo "" ;else: foreach($__LIST__ as $key=>$st): $mod = ($i % 2 );++$i;?>
                                     result.push(
                                         {
-                                        vaule:"<?php echo $st['id']; ?>",
-                                        text:"<?php echo $st['sname']; ?>"
+                                            value:"<?php echo $st['id']; ?>",
+                                            text:"<?php echo $st['sname']; ?>"
                                         }
                                     )
                                 <?php endforeach; endif; else: echo "" ;endif; ?>

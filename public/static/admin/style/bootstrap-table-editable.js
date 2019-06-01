@@ -94,7 +94,9 @@ $.BootstrapTable = class extends $.BootstrapTable {
       if (!column.editable) {
         return
       }
-
+      if (column.editable.type == "select" && column.editable.source == null) {
+        column.editable.source = this.getData()[0][column.field]
+      }
       const data = this.getData()
       const $field = this.$body.find(`a[data-name="${column.field}"]`)
 

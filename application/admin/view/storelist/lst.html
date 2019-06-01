@@ -18,7 +18,7 @@
     <link href="__PUBLIC__/style/demo.css" rel="stylesheet">
     <link href="__PUBLIC__/style/typicons.css" rel="stylesheet">
     <link href="__PUBLIC__/style/animate.css" rel="stylesheet">
-    
+ 
 </head>
 <style>
       table{
@@ -27,14 +27,18 @@
       table thead th{
           text-align:center;
       }
-      table tr td span{
-          margin-right:20px;
-      }  
       .search{
           background:#fff;
           margin:10px 0px;
           padding:10px;
       }
+      input[type=checkbox], input[type=radio] {
+            opacity:1;
+            position:static;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
 </style>
 <body>
 	<!-- 头部 -->
@@ -124,7 +128,7 @@
     <script src="__PUBLIC__/style/beyond.js"></script>
     
     <script>
-             
+            var overAllIds = new Array();  //全局数组
             $(function(){
                 // var type ={$Request.param.type?$Request.param.type:'null'};
                 // var store = {$Request.param.storeid?$Request.param.storeid:'null'};
@@ -162,8 +166,22 @@
                     search:false,
                     pageNumber:"1",
                     pagination:true,
+                    clickToSelect:true,
                     pageList: [10, 25, 50, 100],  
-                    columns: [  {
+                    columns: [  
+                    {
+                        align: 'center',
+                        valign: 'middle',
+                        checkbox:true,
+                        formatter:function(i,row){
+                            // if($.inArray(row.pid,Array.from(overAllIds))!=-1){    // 因为 Set是集合,需要先转换成数组  
+                            //     return {
+                            //         checked : true               // 存在则选中
+                            //     }
+                            // }
+                        }
+                    },    
+                    {
                     title: '姓名',
                     field: 'uname',
                     align: 'center',
@@ -232,20 +250,18 @@
                     },
                     {
                         title: '仓库',
-                        field: 'sname',
+                        field: 'storeid',
                         align: 'center',
                         valign: 'middle',
                         editable:{
-                            type:'text',
-                            title:'仓库',
-                            pk:'',
+                            type:'select',
                             source:function(){
                                 var result=[];
                                 {volist name="store" id="st"}
                                     result.push(
                                         {
-                                        vaule:"{$st.id}",
-                                        text:"{$st.sname}"
+                                            value:"{$st.id}",
+                                            text:"{$st.sname}"
                                         }
                                     )
                                 {/volist}
