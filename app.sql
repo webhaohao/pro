@@ -31,6 +31,7 @@ create table partinfo(
    partIntr varchar(50),
    count varchar(30),
    remarks varchar(50),
+   status int default 0, #状态
    sid int 
 );
 

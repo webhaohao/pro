@@ -11,7 +11,7 @@ class index extends Base{
                   return $this -> fetch();
            } 
            else{
-                  return $this->redirect('/index/Login');
+                  return $this->redirect('/index/login');
            }
         
       }

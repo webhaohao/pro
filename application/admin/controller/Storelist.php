@@ -1,6 +1,7 @@
 <?php
 namespace app\admin\controller;
 use app\admin\model\Storeinfo as StoreModel;
+use app\admin\model\Partinfo as Part;
 use app\admin\controller\Base;
 use think\Loader;
 use think\Cache;
@@ -65,40 +66,61 @@ class Storelist extends Base
 		// $this->assign('list',$list);
 		return json($data);
 	}
+	public function updateData(){
+			$status= input('status');
+			$idlist =json_decode(input('idList'));
+			$data = array();
+			for($i=0;$i<count($idlist);$i++){
+				$data[$i]['id'] = $idlist[$i];
+				$data[$i]['status']	= $status;
+			}
+			$part = new Part;
+			$part -> saveAll($data);
+	 }
+	 public function itemRemove(){
+		$idlist =json_decode(input('idList'));
+		db('partinfo')->delete($idlist);	
+    }
     public function edit(){
-    	$id=input('id');
-    	$list=StoreModel::where('id','eq',$id)->find();
-    	if(request()->isPost()){
-    		$data=[
-    			'id'=>input('id'),
-    			'proName'=>input('proName'),
-					'price' => input('price'),
-					'y_price'=>input('y_price')
-    		];
-			// $validate = \think\Loader::validate('cate');
-    		// if(!$validate->scene('edit')->check($data)){
-			//    $this->error($validate->getError()); die;
-			// }
-            $save=db('prolist')->update($data);
-    		if($save !== false){
-    			$this->success('修改成功！','lst');
-    		}else{
-    			$this->error('修改失败！');
-    		}
-    		return;
-    	}
-    	$this->assign('list',$list);
-    	return $this->fetch();
+			$data =file_get_contents('php://input');
+			$data=json_decode($data);
+			$storeinfo=[
+					'storeid'=>$data->storeid,
+					'type' => $data->type,
+					'id' => $data->id		
+			];
+			$partinfo =[
+					'serialnum'=>$data->serialnum,
+					'serialdes'=>$data->serialdes,
+					'partIntr' =>$data ->partIntr,
+					'count' => $data->count,
+					'remarks'=>$data->remarks,
+					'id'  => $data->pid
+ 			];
+			$res = db('storeinfo')->update($storeinfo);
+			$result = db('partinfo')->update($partinfo);
+			echo 'succ';
     }
 	public function allData(){
 			// $list = StoreModel::where(true)->with('partinfo')->with('storeman')->select();
 			// foreach($list as $key=>$value){
 
 			// }
+			// dump(input('storeid'));
+			// die;
+			$map=array();
+			input('stusno')&& $map['stusno'] =['eq',input('stusno')];
+			input('uname') && $map['uname'] = ['eq',input('uname')];
+			input('type')!=NULL && $map['type']=['eq',input('type')];
+			input('storeid')&& $map['storeid'] = ['eq',input('storeid')];
+			input('serialnum') && $map['serialnum']=['eq',input('serialnum')];
+			input('status') && $map['status']=['eq',input('status')];
 			$list=db('storeinfo')->alias('s')
 						   ->join('partinfo p','s.id = p.sid','right')
 						   ->join('storeman t','t.id = s.storeid')
 						   ->Field(['p.*','p.id as pid','t.sname as sname','s.*'])
+						   ->where($map)
+						   ->order('s.id desc')
 						   ->select();
 			foreach($list as $k=>$val){
 					$list[$k]['time'] = date("Y-m-d H:i:s",$val['time']);

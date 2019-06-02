@@ -37,48 +37,36 @@ class Storeman extends Base
 
     public function edit(){
     	$id=input('id');
-    	$articles=db('Article')->find($id);
-    	if(request()->isPost()){
+		$list=db('storeman')->where('id',$id)->find();
+		if(request()->isPost()){
     		$data=[
     			'id'=>input('id'),
-                'title'=>input('title'),
-                'author'=>input('author'),
-                'desc'=>input('desc'),
-                'keywords'=>str_replace('，', ',', input('keywords')),
-                'content'=>input('content'),
-                'cateid'=>input('cateid'),
+    			'sname'=>input('username'),
     		];
-            if(input('state')=='on'){
-                $data['state']=1;
-            }else{
-                $data['state']=0;
-            }
-            if($_FILES['pic']['tmp_name']){
-                
-                $file = request()->file('pic');
-                $info = $file->move(ROOT_PATH . 'public' . DS . 'static/uploads');
-                $data['pic']='/uploads/'.$info->getSaveName();
-            }
-			$validate = \think\Loader::validate('Article');
+    		if(input('password')){
+				$data['pwd']=md5(input('password'));
+			}else{
+				$data['pwd']=$list['pwd'];
+			}
+			$validate = \think\Loader::validate('Storeman');
     		if(!$validate->scene('edit')->check($data)){
 			   $this->error($validate->getError()); die;
 			}
-    		if(db('Article')->update($data)){
-    			$this->success('修改仓库成功！','lst');
+            $save=db('storeman')->update($data);
+    		if($save !== false){
+    			$this->success('修改仓库管理员成功！','lst');
     		}else{
-    			$this->error('修改仓库失败！');
+    			$this->error('修改仓库管理员失败！');
     		}
     		return;
     	}
-    	$this->assign('articles',$articles);
-        $cateres=db('cate')->select();
-        $this->assign('cateres',$cateres);
+		$this->assign('list',$list);
     	return $this->fetch();
     }
 
     public function del(){
     	$id=input('id');
-		if(db('Article')->delete(input('id'))){
+		if(db('storeman')->delete(input('id'))){
 			$this->success('删除仓库成功！','lst');
 		}else{
 			$this->error('删除仓库失败！');

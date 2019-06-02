@@ -78,7 +78,7 @@ class Storeman extends Base
     	
     }
 
-    public function logout(){
+	public function logout(){
         session(null);
         $this->success('退出成功！','Login/index');
     }

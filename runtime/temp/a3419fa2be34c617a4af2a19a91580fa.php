@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:3:{s:70:"C:\xampp\htdocs\pro\public/../application/admin\view\storeman\lst.html";i:1559484489;s:68:"C:\xampp\htdocs\pro\public/../application/admin\view\common\top.html";i:1559464798;s:69:"C:\xampp\htdocs\pro\public/../application/admin\view\common\left.html";i:1559138579;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:3:{s:71:"C:\xampp\htdocs\pro\public/../application/admin\view\storeman\edit.html";i:1559484761;s:68:"C:\xampp\htdocs\pro\public/../application/admin\view\common\top.html";i:1559464798;s:69:"C:\xampp\htdocs\pro\public/../application/admin\view\common\left.html";i:1559138579;}*/ ?>
 <!DOCTYPE html>
 <html><head>
 	    <meta charset="utf-8">
@@ -80,6 +80,7 @@ src="__PUBLIC__/images/userPhoto.png">
         </div>
     </div>
 </div>
+
 	<!-- /头部 -->
 	
 	<div class="main-container container-fluid">
@@ -175,7 +176,10 @@ src="__PUBLIC__/images/userPhoto.png">
                                         <li>
                         <a href="#">系统</a>
                     </li>
-                                        <li class="active">仓库管理</li>
+                                        <li>
+                        <a href="<?php echo url('admin/lst'); ?>">管理员管理</a>
+                    </li>
+                                        <li class="active">修改普通管理员</li>
                                         </ul>
                 </div>
                 <!-- /Page Breadcrumb -->
@@ -183,42 +187,38 @@ src="__PUBLIC__/images/userPhoto.png">
                 <!-- Page Body -->
                 <div class="page-body">
                     
-<button type="button" tooltip="添加仓库" class="btn btn-sm btn-azure btn-addon" onClick="javascript:window.location.href = '<?php echo url('Storeman/add'); ?>'"> <i class="fa fa-plus"></i> Add
-</button>
 <div class="row">
     <div class="col-lg-12 col-sm-12 col-xs-12">
         <div class="widget">
+            <div class="widget-header bordered-bottom bordered-blue">
+                <span class="widget-caption">修改管理员信息</span>
+            </div>
             <div class="widget-body">
-                <div class="flip-scroll">
-                    <table class="table table-bordered table-hover">
-                        <thead class="">
-                            <tr>
-                                <th class="text-center" width="4%">ID</th>
-                                <th class="text-center">仓库名称</th>
-                                <th class="text-center" width="20%">操作</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php if(is_array($list) || $list instanceof \think\Collection || $list instanceof \think\Paginator): $i = 0; $__LIST__ = $list;if( count($__LIST__)==0 ) : echo "" ;else: foreach($__LIST__ as $key=>$vo): $mod = ($i % 2 );++$i;?>
-                            <tr>
-                                <td align="center"><?php echo $vo['id']; ?></td>
-                                <td align="center"><?php echo $vo['sname']; ?></td>
-                                <td align="center">
-                                    <a href="<?php echo url('storeman/edit',array('id'=>$vo['id'])); ?>" class="btn btn-primary btn-sm shiny">
-                                        <i class="fa fa-edit"></i> 编辑
-                                    </a>
-                                    <a href="#" onClick="warning('确实要删除吗', '<?php echo url('storeman/del',array('id'=>$vo['id'])); ?>')" class="btn btn-danger btn-sm shiny">
-                                        <i class="fa fa-trash-o"></i> 删除
-                                    </a>
-                                </td>
-                            </tr>
-                            <?php endforeach; endif; else: echo "" ;endif; ?>
-                        </tbody>
-                    </table>
+                <div id="horizontal-form">
+                    <form class="form-horizontal" role="form" action="" method="post">
+                        <input type="hidden" name="id" value="<?php echo $list['id']; ?>">
+                        <div class="form-group">
+                            <label for="username" class="col-sm-2 control-label no-padding-right">仓库管理员名</label>
+                            <div class="col-sm-6">
+                                <input class="form-control" id="username" placeholder="" name="username" value="<?php echo $list['sname']; ?>"  type="text">
+                            </div>
+                            <p class="help-block col-sm-4 red">* 必填</p>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="group_id" class="col-sm-2 control-label no-padding-right">仓库管理员密码</label>
+                            <div class="col-sm-6">
+                                <input class="form-control" id="password" placeholder="" name="password"  type="text">
+                            </div>
+                            <p class="help-block col-sm-4 red">* 留空则表示不修改密码</p>
+                        </div>  
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-10">
+                                <button type="submit" class="btn btn-default">保存信息</button>
+                            </div>
+                        </div>
+                    </form>
                 </div>
-                <div style="text-align:right; margin-top:10px;">
-                <?php echo $list->render(); ?>
-                                    </div>
             </div>
         </div>
     </div>
@@ -232,15 +232,11 @@ src="__PUBLIC__/images/userPhoto.png">
 	</div>
 
 	    <!--Basic Scripts-->
-    <script src="__PUBLIC__
-/style/jquery_002.js"></script>
-    <script src="__PUBLIC__
-/style/bootstrap.js"></script>
-    <script src="__PUBLIC__
-/style/jquery.js"></script>
+    <script src="__PUBLIC__/style/jquery_002.js"></script>
+    <script src="__PUBLIC__/style/bootstrap.js"></script>
+    <script src="__PUBLIC__/style/jquery.js"></script>
     <!--Beyond Scripts-->
-    <script src="__PUBLIC__
-/style/beyond.js"></script>
+    <script src="__PUBLIC__/style/beyond.js"></script>
     
 
 

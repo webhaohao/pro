@@ -1,3 +1,4 @@
+<?php if (!defined('THINK_PATH')) exit(); /*a:3:{s:71:"C:\xampp\htdocs\pro\public/../application/store\view\storelist\lst.html";i:1559467723;s:68:"C:\xampp\htdocs\pro\public/../application/store\view\common\top.html";i:1559464823;s:69:"C:\xampp\htdocs\pro\public/../application/store\view\common\left.html";i:1559138579;}*/ ?>
 <!DOCTYPE html>
 <html><head>
 	    <meta charset="utf-8">
@@ -34,28 +35,106 @@
       }
       input[type=checkbox], input[type=radio] {
             opacity:1;
-            position: static !important;
+            position:static;
             width: 18px;
             height: 18px;
             cursor: pointer;
-    }
-    .search .row >div{
-        margin-bottom:20px;
-    }
-    .radio-inline{
-        display:inline-block;
-        margin-right:10px;
-    }
+        }
 </style>
 <body>
 	<!-- 头部 -->
-	{include file="common/top"}
+	<div class="navbar">
+    <div class="navbar-inner">
+        <div class="navbar-container">
+            <!-- Navbar Barnd -->
+            <div class="navbar-header pull-left">
+                <a href="#" class="navbar-brand" style="font-size:16px;">
+                    <small>
+                            无纸化仓库管理(仓库管理员)
+                    </small>
+                </a>
+            </div>
+            <!-- /Navbar Barnd -->
+            <!-- Sidebar Collapse -->
+            <div class="sidebar-collapse" id="sidebar-collapse">
+                <i class="collapse-icon fa fa-bars"></i>
+            </div>
+            <!-- /Sidebar Collapse -->
+            <!-- Account Area and Settings -->
+            <div class="navbar-header pull-right">
+                <div class="navbar-account">
+                    <ul class="account-area">
+                        <li>
+                            <a class="login-area dropdown-toggle" data-toggle="dropdown">
+                                <div class="avatar" title="View your public profile">
+                                    <img src="__PUBLIC__/images/userPhoto.png">
+                                </div>
+                                <section>
+                                    <h2><span class="profile"><span><?php echo \think\Request::instance()->session('sname'); ?></span></span></h2>
+                                </section>
+                            </a>
+                            <!--Login Area Dropdown-->
+                            <ul class="pull-right dropdown-menu dropdown-arrow dropdown-login-area">
+                                <li class="username"><a>David Stevenson</a></li>
+                                <li class="dropdown-footer">
+                                    <a href="<?php echo url('Storeman/logout'); ?>">
+                                            退出登录
+                                        </a>
+                                </li>
+                                <li class="dropdown-footer">
+                                    <a href="<?php echo url('Storeman/edit',array('id'=>\think\Request::instance()->session('sid'))); ?>">
+                                            修改密码
+                                        </a>
+                                </li>
+                            </ul>
+                            <!--/Login Area Dropdown-->
+                        </li>
+                        <!-- /Account Area -->
+                        <!--Note: notice that setting div must start right after account area list.
+                            no space must be between these elements-->
+                        <!-- Settings -->
+                    </ul>
+                </div>
+            </div>
+            <!-- /Account Area and Settings -->
+        </div>
+    </div>
+</div>
 	<!-- /头部 -->
 	
 	<div class="main-container container-fluid">
 		<div class="page-container">
 			            <!-- Page Sidebar -->
-            {include file="common/left"}
+            <div class="page-sidebar" id="sidebar">
+                <!-- Page Sidebar Header-->
+                <div class="sidebar-header-wrapper">
+                    <input class="searchinput" type="text">
+                    <i class="searchicon fa fa-search"></i>
+                    <div class="searchhelper">Search Reports, Charts, Emails or Notifications</div>
+                </div>
+                <!-- /Page Sidebar Header -->
+                <!-- Sidebar Menu -->
+                <ul class="nav sidebar-menu">
+                    <li>
+                        <a href="#" class="menu-dropdown">
+                            <i class="menu-icon fa fa-file-text"></i>
+                            <span class="menu-text">仓库信息管理</span>
+                            <i class="menu-expand"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li>
+                                <a href="<?php echo url('storelist/lst'); ?>">
+                                    <span class="menu-text">
+                                            仓库信息列表                             
+                                    </span>
+                                    <i class="menu-expand"></i>
+                                </a>
+                            </li>
+                        </ul>                            
+                    </li>                   
+                </ul>
+                <!-- /Sidebar Menu -->
+            </div>
             <!-- /Page Sidebar -->
             <!-- Page Content -->
             <div class="page-content">
@@ -76,45 +155,30 @@
     <div class="search">
             <form action="" method="get" class="searchForm">
                     <div class="row">
-                        <div class="col-md-3">
-                                <input class="form-control" name="serialnum" type="text" value="{$Request.param.stusno}" placeholder="资产编号" >
+                        <div class="col-md-2">
+                                <input class="form-control" name="serialnum" type="text" value="<?php echo \think\Request::instance()->param('stusno'); ?>" placeholder="资产编号" >
                         </div>
-                        <div class="col-md-3">
-                                <input class="form-control" name="stusno" type="text" value="{$Request.param.stusno}" placeholder="请输入学号" >
+                        <div class="col-md-2">
+                                <input class="form-control" name="stusno" type="text" value="<?php echo \think\Request::instance()->param('stusno'); ?>" placeholder="请输入学号" >
                         </div>
-                        <div class="col-md-3">
-                                <input class="form-control" name="uname"  type="text" value="{$Request.param.uname}" placeholder="请输入姓名">            
+                        <div class="col-md-2">
+                                <input class="form-control" name="uname"  type="text" value="<?php echo \think\Request::instance()->param('uname'); ?>" placeholder="请输入姓名">            
                         </div>
-                        <div class="col-md-3">
-                                <select class="form-control store" name="storeid">
-                                        <option value="" selected disabled>请选择仓库</option>
-                                        {volist name="store" id="st"}
-                                            <option value="{$st.id}">{$st.sname}</option>
-                                        {/volist}
-                                </select>
-                        </div>
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                                 <select class="form-control type" name="type" vaule="">
                                             <option value="" selected disabled>请选择类型</option>
                                             <option value="1">领取</option>
                                             <option value="0">清退</option>
                                 </select>
                         </div>
-                        <div class="col-md-3">
-                            <select class="form-control store" name="status">
-                                <option value="" selected disabled>请选择状态</option>
-                                    <option value="0">未处理</option>
-                                    <option value="1">已处理</option>
-                            </select>
-                        </div>
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                                <input type="submit" class="btn btn-primary" value="查询" name="search">
                         </div>
                     </div>
             </form>
     </div>  
     <div class="col-lg-12 col-sm-12 col-xs-12">
-        <!-- <button type="button" tooltip="下载excel" class="btn btn-sm btn-azure btn-addon download" onclick="javascript:window.location.href='{:url('storelist/lst?download=1')}'"><i class="fa fa-download"></i>导出Excel</button> -->
+        <!-- <button type="button" tooltip="下载excel" class="btn btn-sm btn-azure btn-addon download" onclick="javascript:window.location.href='<?php echo url('storelist/lst?download=1'); ?>'"><i class="fa fa-download"></i>导出Excel</button> -->
         <button type="button" tooltip="下载excel" class="btn btn-sm btn-azure btn-addon download"><i class="fa fa-download"></i>导出Excel</button>
         <button type="button" tooltip="将勾选项设为已处理" class="btn btn-sm btn-info btn-addon processed"><i class="fa fa-edit"></i>将勾选项设为已处理</button>
         <button type="button" tooltip="将勾选项待处理" class="btn btn-sm btn-info btn-addon process"><i class="fa fa-edit"></i>将勾选项待处理</button>
@@ -166,8 +230,8 @@
     <script>
             var overAllIds = new Array();  //全局数组
             $(function(){
-                // var type ={$Request.param.type?$Request.param.type:'null'};
-                // var store = {$Request.param.storeid?$Request.param.storeid:'null'};
+                // var type =<?php echo \think\Request::instance()->param('type')?\think\Request::instance()->param('type'):'null'; ?>;
+                // var store = <?php echo \think\Request::instance()->param('storeid')?\think\Request::instance()->param('storeid'):'null'; ?>;
                 // type&&$(".type").val(type);
                 // store&&$(".store").val(store);
                 $(".searchForm").submit(function(e){
@@ -357,9 +421,8 @@
                         field: 'serialnum',
                         align: 'center',
                         valign: 'middle',
-                        editable:{
-                            emptytext:'点击编辑',
-                            type:'text'
+                        formatter: (value, row, index) => {
+                            return value;
                         }
                     },
                     {
@@ -367,10 +430,8 @@
                         field: 'serialdes',
                         align: 'center',
                         valign: 'middle',
-                        editable:{
-                            emptytext:'点击编辑',
-                            type:'text'
-                           
+                        formatter: (value, row, index) => {
+                            return value;
                         }
                     },
                     {
@@ -378,9 +439,8 @@
                         field: 'partIntr',
                         align: 'center',
                         valign: 'middle',
-                        editable:{
-                            type:'text',
-                            emptytext:'点击编辑'
+                        formatter: (value, row, index) => {
+                            return value;
                         }
                     },
                     {
@@ -394,45 +454,12 @@
                         }
                     },
                     {
-                        title: '仓库',
-                        field: 'storeid',
-                        align: 'center',
-                        valign: 'middle',
-                        editable:{
-                            type:'select',
-                            source:function(){
-                                var result=[];
-                                {volist name="store" id="st"}
-                                    result.push(
-                                        {
-                                            value:"{$st.id}",
-                                            text:"{$st.sname}"
-                                        }
-                                    )
-                                {/volist}
-                                console.log(result);
-                                return result;
-                            }
-                        }
-                    },
-                    {
                         title: '类型',
                         field: 'type',
                         align: 'center',
                         valign: 'middle',
-                        editable:{
-                            type:'select',
-                            emptytext:'点击编辑',
-                            source:[
-                                    {
-                                        value:0,
-                                        text:'清退'
-                                    },
-                                    {
-                                        value:1,
-                                        text:'领取'
-                                    }
-                            ]
+                        formatter: (value, row, index) => {
+                            return value? '领取':'清退';
                         }
                     },
                     {
@@ -457,9 +484,8 @@
                         field: 'remarks',
                         align: 'center',
                         valign: 'middle',
-                        editable:{
-                            type:'text',
-                            emptytext:'点击编辑'
+                        formatter: (value, row, index) => {
+                            return value;
                         }
                     }, 
                     {

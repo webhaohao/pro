@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:3:{s:69:"C:\xampp\htdocs\pro\public/../application/admin\view\index\index.html";i:1559138579;s:68:"C:\xampp\htdocs\pro\public/../application/admin\view\common\top.html";i:1559464798;s:69:"C:\xampp\htdocs\pro\public/../application/admin\view\common\left.html";i:1559138579;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:3:{s:69:"C:\xampp\htdocs\pro\public/../application/store\view\index\index.html";i:1559138579;s:68:"C:\xampp\htdocs\pro\public/../application/store\view\common\top.html";i:1559464823;s:69:"C:\xampp\htdocs\pro\public/../application/store\view\common\left.html";i:1559138579;}*/ ?>
 <!DOCTYPE html>
 <html><head>
 	    <meta charset="utf-8">
@@ -27,9 +27,9 @@
         <div class="navbar-container">
             <!-- Navbar Barnd -->
             <div class="navbar-header pull-left">
-                <a href="#" class="navbar-brand">
+                <a href="#" class="navbar-brand" style="font-size:16px;">
                     <small>
-                            无纸化仓库管理
+                            无纸化仓库管理(仓库管理员)
                     </small>
                 </a>
             </div>
@@ -46,23 +46,22 @@
                         <li>
                             <a class="login-area dropdown-toggle" data-toggle="dropdown">
                                 <div class="avatar" title="View your public profile">
-                                    <img 
-src="__PUBLIC__/images/userPhoto.png">
+                                    <img src="__PUBLIC__/images/userPhoto.png">
                                 </div>
                                 <section>
-                                    <h2><span class="profile"><span><?php echo \think\Request::instance()->session('username'); ?></span></span></h2>
+                                    <h2><span class="profile"><span><?php echo \think\Request::instance()->session('sname'); ?></span></span></h2>
                                 </section>
                             </a>
                             <!--Login Area Dropdown-->
                             <ul class="pull-right dropdown-menu dropdown-arrow dropdown-login-area">
                                 <li class="username"><a>David Stevenson</a></li>
                                 <li class="dropdown-footer">
-                                    <a href="<?php echo url('admin/logout'); ?>">
+                                    <a href="<?php echo url('Storeman/logout'); ?>">
                                             退出登录
                                         </a>
                                 </li>
                                 <li class="dropdown-footer">
-                                    <a href="<?php echo url('admin/edit',array('id'=>\think\Request::instance()->session('uid'))); ?>">
+                                    <a href="<?php echo url('Storeman/edit',array('id'=>\think\Request::instance()->session('sid'))); ?>">
                                             修改密码
                                         </a>
                                 </li>
@@ -97,40 +96,6 @@ src="__PUBLIC__/images/userPhoto.png">
                 <ul class="nav sidebar-menu">
                     <li>
                         <a href="#" class="menu-dropdown">
-                            <i class="menu-icon fa fa-user"></i>
-                            <span class="menu-text">管理员 </span>
-                            <i class="menu-expand"></i>
-                        </a>
-                        <ul class="submenu">
-                            <li>
-                                <a href="<?php echo url('admin/lst'); ?>">
-                                    <span class="menu-text">
-                                        管理列表                                    </span>
-                                    <i class="menu-expand"></i>
-                                </a>
-                            </li>
-                        </ul>                            
-                    </li> 
-                    <li>
-                        <a href="#" class="menu-dropdown">
-                            <i class="menu-icon fa fa-list"></i>
-                            <span class="menu-text">仓库管理</span>
-                            <i class="menu-expand"></i>
-                        </a>
-                        <ul class="submenu">
-                            <li>
-                                <a href="<?php echo url('Storeman/lst'); ?>">
-                                    <span class="menu-text">
-                                            仓库列表                                   
-                                    </span>
-                                    <i class="menu-expand"></i>
-                                </a>
-                            </li> 
-                        </ul> 
-                                                       
-                    </li> 
-                    <li>
-                        <a href="#" class="menu-dropdown">
                             <i class="menu-icon fa fa-file-text"></i>
                             <span class="menu-text">仓库信息管理</span>
                             <i class="menu-expand"></i>
@@ -145,24 +110,7 @@ src="__PUBLIC__/images/userPhoto.png">
                                 </a>
                             </li>
                         </ul>                            
-                    </li>
-                    <li>
-                            <a href="#" class="menu-dropdown">
-                                <i class="menu-icon fa fa-file-text"></i>
-                                <span class="menu-text">学生信息管理</span>
-                                <i class="menu-expand"></i>
-                            </a>
-                            <ul class="submenu">
-                                <li>
-                                    <a href="<?php echo url('stuinfo/index'); ?>">
-                                        <span class="menu-text">
-                                                学生信息列表                             
-                                        </span>
-                                        <i class="menu-expand"></i>
-                                    </a>
-                                </li>
-                            </ul>                            
-                        </li>                         
+                    </li>                   
                 </ul>
                 <!-- /Sidebar Menu -->
             </div>

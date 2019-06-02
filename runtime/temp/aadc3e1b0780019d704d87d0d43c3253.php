@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:3:{s:71:"C:\xampp\htdocs\pro\public/../application/admin\view\stuinfo\index.html";i:1559138579;s:68:"C:\xampp\htdocs\pro\public/../application/admin\view\common\top.html";i:1559138579;s:69:"C:\xampp\htdocs\pro\public/../application/admin\view\common\left.html";i:1559138579;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:3:{s:71:"C:\xampp\htdocs\pro\public/../application/admin\view\stuinfo\index.html";i:1559443594;s:68:"C:\xampp\htdocs\pro\public/../application/admin\view\common\top.html";i:1559464798;s:69:"C:\xampp\htdocs\pro\public/../application/admin\view\common\left.html";i:1559138579;}*/ ?>
 <!DOCTYPE html>
 <html><head>
 	    <meta charset="utf-8">
@@ -213,6 +213,10 @@ src="__PUBLIC__/images/userPhoto.png">
                             </div>
                         </div>
                     </form> 
+                    <div style="margin-bottom:20px;">
+                             <button type="button" tooltip="下载excel" class="btn btn-danger download" onClick="warning('确实要全部删除吗?', '<?php echo url('stuinfo/allRemove'); ?>')"><i class="fa fa-trash-o"></i>全部删除</button>
+                             <button type="button" tooltip="下载excel" class="btn btn-info download" onClick="jump('<?php echo url('stuinfo/exportExcel'); ?>')"><i class="fa fa-download"></i>导出Excel</button>
+                    </div>
                     <table class="table table-bordered table-hover">
                         <thead class="">
                             <tr>

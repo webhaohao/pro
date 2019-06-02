@@ -10,7 +10,14 @@ class Login extends Controller{
       }
       public function login(){
             $id = input('id');
-            // session('sid',$id);
-            return $this->redirect('/index/index?storeid='.$id);
+            $pwd = input('pwd');
+            $res = db('storeman')->where('id',$id)->find();
+            if($res['pwd']==md5($pwd)){
+                  session('login_time',time());
+                  echo 'succ';
+            }
+            else{
+                 echo 'error'; 
+            }
       }
 }

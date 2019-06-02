@@ -249,16 +249,25 @@
 							success:function(data){
 								console.log(data);
 								if(data){
-									app.userInfo.uname = data.uname;
+									if(data.code==0){
+											toastr.error(data.msg);
+											location.href=data.url;
+									}
+									else{
+											app.userInfo.uname = data.uname;
+									}
 								}
 							}		
 						})
 					},
 					nextFocus(row, index, e){
-						if([Object.keys(this.$refs)[index+1]]!="ruleForm"){
-							this.$refs[row.id][index].blur();
-							this.$refs[Object.keys(this.$refs)[index+1]][0].focus();
-						}	
+						if(e.keyCode===13){
+							if([Object.keys(this.$refs)[index+1]]!="ruleForm"){
+								this.$refs[row.id][index].blur();
+								this.$refs[Object.keys(this.$refs)[index+1]][0].focus();
+							}	
+						}
+						
 					},
 					pwdChange(row, index, cg) {
                     //点击修改 判断是否已经保存所有操作
@@ -341,6 +350,10 @@
 										data:JSON.stringify(info)
 								},
 								success:function(data){
+											if(data.code==0){
+													toastr.error(data.msg);
+													location.href=data.url;
+											}
 											if(data="succ"){
 														toastr.info('上传成功!');
 														setTimeout(function(){

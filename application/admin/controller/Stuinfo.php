@@ -29,6 +29,14 @@ class Stuinfo extends Controller
             }
             //删除数组第一项
             array_shift($arrExcel);
+            $data=db('stuinfo')->field('uname,stusno')->select();
+            $arr = array();
+            foreach ($arrExcel as $key => $value) {
+                    if(!in_array($value,$data)){
+                    $arr[]=$value;
+                }
+            }
+            $arrExcel = $arr;
             $limit = 500;
             $count = ceil(count($arrExcel)/$limit);
             for($i=1;$i<=$count;$i++){
@@ -40,7 +48,7 @@ class Stuinfo extends Controller
         }
         $list = Stu::paginate(10);
         $this -> assign(
-                'list' ,$list
+                'list',$list
         );
         return $this->fetch();
     }
@@ -80,6 +88,10 @@ class Stuinfo extends Controller
             );
             return $this -> fetch('index');
     }
+    public function allRemove(){
+            db('stuinfo')->delete(true);
+            $this->success('删除成功！','index');
+    }
     public function del(){
 		$id=input('id');
 		if(db('stuinfo')->delete(input('id'))){
@@ -87,5 +99,39 @@ class Stuinfo extends Controller
 		}else{
 			$this->error('删除失败！');
 		}	
+    }
+    	//导出excel
+	public function exportExcel(){
+		$path = dirname(__FILE__); //找到当前脚本所在路径
+		vendor("PHPExcel.PHPExcel.PHPExcel");
+		vendor("PHPExcel.PHPExcel.Writer.IWriter");
+		vendor("PHPExcel.PHPExcel.Writer.Abstract");
+		vendor("PHPExcel.PHPExcel.Writer.Excel5");
+		vendor("PHPExcel.PHPExcel.Writer.Excel2007");
+		vendor("PHPExcel.PHPExcel.IOFactory");
+		$objPHPExcel = new \PHPExcel();
+		$objWriter = new \PHPExcel_Writer_Excel5($objPHPExcel);
+		$objWriter = new \PHPExcel_Writer_Excel2007($objPHPExcel);
+		// 设置表头信息
+		$objPHPExcel->setActiveSheetIndex(0)
+			->setCellValue('A1', '姓名')
+			->setCellValue('B1', '学号');
+        $c = 2;
+        $list = db('stuinfo')->select();
+		$count=count($list);
+		for($i=2;$i<=$count+1;$i++){
+				$objPHPExcel->getActiveSheet()->setCellValue('A' .$i, $list[$i-2]['uname']);
+				$objPHPExcel->getActiveSheet()->setCellValue('B' .$i, $list[$i-2]['stusno']);
+		}
+		/*--------------下面是设置其他信息------------------*/
+
+		$objPHPExcel->getActiveSheet()->setTitle('productaccess');      //设置sheet的名称
+		$objPHPExcel->setActiveSheetIndex(0);                   //设置sheet的起始位置
+		$objWriter = \PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');   //通过PHPExcel_IOFactory的写函数将上面数据写出来
+		$PHPWriter = \PHPExcel_IOFactory::createWriter( $objPHPExcel,"Excel2007");
+		header('Content-Disposition: attachment;filename="无纸化仓库管理_学生信息.xlsx"');
+		header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+		$PHPWriter->save("php://output"); //表示在$path路径下面生成demo.xlsx文件
+		exit;
 	}
 }

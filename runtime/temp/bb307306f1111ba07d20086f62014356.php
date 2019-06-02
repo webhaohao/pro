@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:3:{s:71:"C:\xampp\htdocs\pro\public/../application/admin\view\storelist\lst.html";i:1559279758;s:68:"C:\xampp\htdocs\pro\public/../application/admin\view\common\top.html";i:1558573096;s:69:"C:\xampp\htdocs\pro\public/../application/admin\view\common\left.html";i:1558917843;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:3:{s:71:"C:\xampp\htdocs\pro\public/../application/admin\view\storelist\lst.html";i:1559486403;s:68:"C:\xampp\htdocs\pro\public/../application/admin\view\common\top.html";i:1559464798;s:69:"C:\xampp\htdocs\pro\public/../application/admin\view\common\left.html";i:1559138579;}*/ ?>
 <!DOCTYPE html>
 <html><head>
 	    <meta charset="utf-8">
@@ -12,8 +12,8 @@
     <link href="__PUBLIC__/style/bootstrap.css" rel="stylesheet">
     <link href="__PUBLIC__/style/font-awesome.css" rel="stylesheet">
     <link href="__PUBLIC__/style/weather-icons.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.14.2/bootstrap-table.min.css">
-    <link href="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="__PUBLIC__/style/bootstrap-table.min.css">
+    <link href="__PUBLIC__/style/bootstrap-editable.css" rel="stylesheet"/>
     <!--Beyond styles-->
     <link id="beyond-link" href="__PUBLIC__/style/beyond.css" rel="stylesheet" type="text/css">
     <link href="__PUBLIC__/style/demo.css" rel="stylesheet">
@@ -35,11 +35,18 @@
       }
       input[type=checkbox], input[type=radio] {
             opacity:1;
-            position:static;
+            position: static !important;
             width: 18px;
             height: 18px;
             cursor: pointer;
-        }
+    }
+    .search .row >div{
+        margin-bottom:20px;
+    }
+    .radio-inline{
+        display:inline-block;
+        margin-right:10px;
+    }
 </style>
 <body>
 	<!-- 头部 -->
@@ -207,13 +214,16 @@ src="__PUBLIC__/images/userPhoto.png">
     <div class="search">
             <form action="" method="get" class="searchForm">
                     <div class="row">
-                        <div class="col-md-2">
+                        <div class="col-md-3">
+                                <input class="form-control" name="serialnum" type="text" value="<?php echo \think\Request::instance()->param('stusno'); ?>" placeholder="资产编号" >
+                        </div>
+                        <div class="col-md-3">
                                 <input class="form-control" name="stusno" type="text" value="<?php echo \think\Request::instance()->param('stusno'); ?>" placeholder="请输入学号" >
                         </div>
-                        <div class="col-md-2">
+                        <div class="col-md-3">
                                 <input class="form-control" name="uname"  type="text" value="<?php echo \think\Request::instance()->param('uname'); ?>" placeholder="请输入姓名">            
                         </div>
-                        <div class="col-md-2">
+                        <div class="col-md-3">
                                 <select class="form-control store" name="storeid">
                                         <option value="" selected disabled>请选择仓库</option>
                                         <?php if(is_array($store) || $store instanceof \think\Collection || $store instanceof \think\Paginator): $i = 0; $__LIST__ = $store;if( count($__LIST__)==0 ) : echo "" ;else: foreach($__LIST__ as $key=>$st): $mod = ($i % 2 );++$i;?>
@@ -221,14 +231,21 @@ src="__PUBLIC__/images/userPhoto.png">
                                         <?php endforeach; endif; else: echo "" ;endif; ?>
                                 </select>
                         </div>
-                        <div class="col-md-2">
+                        <div class="col-md-3">
                                 <select class="form-control type" name="type" vaule="">
                                             <option value="" selected disabled>请选择类型</option>
                                             <option value="1">领取</option>
                                             <option value="0">清退</option>
                                 </select>
                         </div>
-                        <div class="col-md-2">
+                        <div class="col-md-3">
+                            <select class="form-control store" name="status">
+                                <option value="" selected disabled>请选择状态</option>
+                                    <option value="0">未处理</option>
+                                    <option value="1">已处理</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
                                <input type="submit" class="btn btn-primary" value="查询" name="search">
                         </div>
                     </div>
@@ -237,6 +254,9 @@ src="__PUBLIC__/images/userPhoto.png">
     <div class="col-lg-12 col-sm-12 col-xs-12">
         <!-- <button type="button" tooltip="下载excel" class="btn btn-sm btn-azure btn-addon download" onclick="javascript:window.location.href='<?php echo url('storelist/lst?download=1'); ?>'"><i class="fa fa-download"></i>导出Excel</button> -->
         <button type="button" tooltip="下载excel" class="btn btn-sm btn-azure btn-addon download"><i class="fa fa-download"></i>导出Excel</button>
+        <button type="button" tooltip="将勾选项设为已处理" class="btn btn-sm btn-info btn-addon processed"><i class="fa fa-edit"></i>将勾选项设为已处理</button>
+        <button type="button" tooltip="将勾选项待处理" class="btn btn-sm btn-info btn-addon process"><i class="fa fa-edit"></i>将勾选项待处理</button>
+        <button type="button" tooltip="将勾选项删除" class="btn btn-sm btn-danger btn-addon itemRemove"><i class="fa fa-trash-o"></i>勾选项删除</button>
         <div class="widget">
             <div class="widget-body">
                 <div class="flip-scroll">
@@ -252,12 +272,28 @@ src="__PUBLIC__/images/userPhoto.png">
                 <!-- /Page Body -->
             </div>
             <!-- /Page Content -->
-		</div>	
+        </div>
+            <!-- 按钮触发模态框 -->
+            <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">开始演示模态框</button>
+            <!-- 模态框（Modal） -->
+            <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                            <h4 class="modal-title" id="myModalLabel">签名图片</h4>
+                        </div>
+                        <div class="modal-body">
+
+                        </div>
+                    </div><!-- /.modal-content -->
+                </div><!-- /.modal -->
+        </div>	
 	</div>
 	    <!--Basic Scripts-->
     <script src="__PUBLIC__/style/jquery_002.js"></script>
     <script src="__PUBLIC__/style/bootstrap.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.14.2/bootstrap-table.min.js"></script>
+    <script src="__PUBLIC__/style/bootstrap-table.min.js"></script>
     <script src="__PUBLIC__/style/bootstrap-editable.min.js"></script>
     <script src="__PUBLIC__/style/bootstrap-table-editable.js"></script>
     <script src="__PUBLIC__/style/bootstrap-table-zh-CN.js"></script>
@@ -273,21 +309,28 @@ src="__PUBLIC__/images/userPhoto.png">
                 // type&&$(".type").val(type);
                 // store&&$(".store").val(store);
                 $(".searchForm").submit(function(e){
-                        var flag=[];
-                        var t = $(this).serializeArray();
-                        $.each(t,function(i,item){
-                               if(item['value']==""){
-                                   flag.push('false')
-                               } 
-                               else{
-                                    flag.push('true');
-                               }
-                        })
-                        if(flag.indexOf('true')==-1){
-                                alert("请输入查找的内容!");
-                                return false;
-                        }
+                        // var flag=[];
+                        // var t = $(this).serializeArray();
+                        // $.each(t,function(i,item){
+                        //        if(item['value']==""){
+                        //            flag.push('false')
+                        //        } 
+                        //        else{
+                        //             flag.push('true');
+                        //        }
+                        // })
+                        // if(flag.indexOf('true')==-1){
+                        //         alert("请输入查找的内容!");
+                        //         return false;
+                        // }
+                        e.preventDefault();
+                        $('#dataGrid').bootstrapTable('refresh');
                 });
+                $("#dataGrid").on('click','.sign',function(e){
+                        e.preventDefault();
+                        $("#myModal .modal-body").html(`<img style="width:100%" src="${$(this).attr('href')}"/>`);
+                        $('#myModal').modal();
+                })
                 $(".download").on('click',function(){
                         if(GetQueryString('search')){
                             var serializeUrl = $(".searchForm").serialize();
@@ -298,14 +341,114 @@ src="__PUBLIC__/images/userPhoto.png">
                             window.location.href='./lst?download=1'; 
                         }
                 })
+                $(".processed").on('click',function(){
+                    updataStatus(1);
+                })
+                $(".process").on('click',function(){
+                    updataStatus(0);
+                })
+                $(".itemRemove").on('click',function(){
+                     itemRemove();
+                })
+                function itemRemove(){
+                    var rows = $("#dataGrid").bootstrapTable('getSelections');
+                    console.log(rows);
+                    if (rows.length == 0) {
+                        alert("请先勾选!");
+                        return;
+                    } 
+                    else{
+                        var arrays = new Array();
+                        $(rows).each(function () {
+                            arrays.push(this.pid);
+                        });
+                        var idcard = arrays 
+                        console.log(idcard);
+                        $.ajax({
+                            url:'./itemRemove',
+                            data:{
+                                idList:JSON.stringify(idcard)
+                            },
+                            success:function(data){
+                                $('#dataGrid').bootstrapTable('refresh');
+                            }
+                        })
+                    }
+                }
+                function updataStatus(status){
+                    var rows = $("#dataGrid").bootstrapTable('getSelections');
+                    console.log(rows);
+                    if (rows.length == 0) {
+                        alert("请先勾选!");
+                        return;
+                    } 
+                    else{
+                        var arrays = new Array();
+                        $(rows).each(function () {
+                            arrays.push(this.pid);
+                        });
+                        var idcard = arrays 
+                        console.log(idcard);
+                        $.ajax({
+                            url:'./updateData',
+                            data:{
+                                idList:JSON.stringify(idcard),
+                                status:status
+                            },
+                            success:function(data){
+                                $('#dataGrid').bootstrapTable('refresh');
+                            }
+                        })
+                    }
+                }
                 $('#dataGrid').bootstrapTable({
-                    url: './allData', //请求后台的URL（*）
+                     //请求后台的URL（*）
+                     ajax:function(request) {
+                        $.ajax({
+                            url:"./allData",
+                            type:"POST",
+                            dataType:"json",
+                            data:$(".searchForm").serialize(),
+                            success:function(data){
+                                request.success({
+                                    row : data
+                                });
+                                $('#dataGrid').bootstrapTable('load', data);
+                            },
+                            error:function(error){
+                                console.log(error);
+                            }
+                        })
+                    },
                     pageSize:"10",
                     search:false,
                     pageNumber:"1",
                     pagination:true,
-                    clickToSelect:true,
-                    pageList: [10, 25, 50, 100],  
+                    // clickToSelect:true,
+                    pageList: [10, 25, 50, 100],
+                    //编辑单元格事件
+                    onEditableSave: function (field, row, oldValue, $el) {
+                                $.ajax({
+                                    type : "POST",
+                                    url : '/admin/Storelist/edit',
+                                    data : JSON.stringify(row),
+                                    cache : false,
+                                    success : function(data) {
+                                        if (data=="succ") {
+                                            alert("编辑成功");
+                                            $('#dataGrid').bootstrapTable('refresh');
+                                        } else {
+                                             alert(data);
+                                        }
+                                    },
+                                    error: function () {
+                                          alert('编辑失败');
+                                    },
+                                    complete: function () {
+                                        
+                                    }
+                                });
+                    },  
                     columns: [  
                     {
                         align: 'center',
@@ -353,6 +496,7 @@ src="__PUBLIC__/images/userPhoto.png">
                         align: 'center',
                         valign: 'middle',
                         editable:{
+                            emptytext:'点击编辑',
                             type:'text'
                         }
                     },
@@ -362,8 +506,9 @@ src="__PUBLIC__/images/userPhoto.png">
                         align: 'center',
                         valign: 'middle',
                         editable:{
-                            type:'text',
-                            emptytext:''
+                            emptytext:'点击编辑',
+                            type:'text'
+                           
                         }
                     },
                     {
@@ -413,14 +558,25 @@ src="__PUBLIC__/images/userPhoto.png">
                         field: 'type',
                         align: 'center',
                         valign: 'middle',
-                        formatter: (value, row, index) => {
-                            return value==0?'清退':'领取';
+                        editable:{
+                            type:'select',
+                            emptytext:'点击编辑',
+                            source:[
+                                    {
+                                        value:0,
+                                        text:'清退'
+                                    },
+                                    {
+                                        value:1,
+                                        text:'领取'
+                                    }
+                            ]
                         }
                     },
                     {
                         field: 'path',
                         title: '查看签名',formatter:function(value,row,index){
-                            var updt='<a target="blank" class="btn btn-primary btn-sm shiny" href="'+value+'">查看签名</a>';
+                            var updt='<a target="blank" class="btn sign btn-primary btn-sm shiny" href="'+value+'">查看签名</a>';
                             return updt;
                         }
                     },
@@ -445,11 +601,20 @@ src="__PUBLIC__/images/userPhoto.png">
                         }
                     }, 
                     {
+                        title: '状态',
+                        field: 'status',
+                        align: 'center',
+                        valign: 'middle',
+                        formatter: (value, row, index) => {
+                            return value ? '已处理':'待处理';
+                        }
+                    }, 
+                    {
                         field: '#',
                         title: '操作',formatter:function(value,row,index){
-                            var updt='<a class="btn btn-primary btn-sm shiny" href="supdate.jsp?Id='+row.Id+'"><i class="fa fa-edit"></i>修改</a>';
+                           // var updt='<a class="btn btn-primary btn-sm shiny" href="supdate.jsp?Id='+row.Id+'"><i class="fa fa-edit"></i>修改</a>';
                             var del=`<a class="btn btn-danger btn-sm shiny"  onClick="warning('确定要删除吗?','./del?id=${row.pid}')"><i class="fa fa-trash-o"></i>删除</a>`;
-                            return updt+" "+del;
+                            return del;
                         }
                     }
                     ]

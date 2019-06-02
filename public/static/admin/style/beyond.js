@@ -335,3 +335,6 @@ function warning(info, url){
         window.location.href = url;
     }
 }
+function jump(url){
+    window.location.href = url; 
+}

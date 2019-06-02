@@ -1,6 +1,7 @@
 <?php
 namespace app\store\controller;
 use app\store\model\Storeinfo as StoreModel;
+use app\store\model\Partinfo as Part;
 use app\store\controller\Base;
 use think\Loader;
 use think\Cache;
@@ -9,69 +10,131 @@ class Storelist extends Base
 {
     public function lst()
     {
-		$map['storeid'] = [
-			'eq',session('sid')
-		];	
-		$list = StoreModel::where($map)->paginate($listRows = 5, $simple = false, $config = [
-			'query'=>request()->param()
-		]);
-		Cache::set('store',$list,3600);
-		$this->assign('list',$list);
-        return $this->fetch();
-    }
+		
+			//如果执行了查询操作
+			if(input('search')){
+					input('stusno')&& $map['stusno'] =['like',input('stusno').'%'];
+					input('uname') && $map['uname'] = ['like','%'.input('uname').'%'];
+					input('type')!=NULL && $map['type']=['eq',input('type')];
+					input('storeid')&& $map['storeid'] = ['eq',session('sid')];
+					$list = StoreModel::where($map)->paginate($listRows = 10, $simple = false, $config = [
+						'query'=>request()->param()
+					]);
+			}
+			else{
+					$list = StoreModel::where(true)->order(['id desc'])->paginate(10);
+			}
+			if(input('download')){
+					if(input('search')){
+							input('stusno')&& $map['stusno'] =['like',input('stusno').'%'];
+							input('uname') && $map['uname'] = ['like','%'.input('uname').'%'];
+							input('type')!=NULL && $map['type']=['eq',input('type')];
+							input('storeid')&& $map['storeid'] = ['eq',session('sid')];
+							$result= StoreModel::where($map)->select();
+							$this->out($result);
+							return false;	
+					}
+					else{
+							$result=StoreModel::select();
+							$this->out($result);
+							return false;	
+					}
+				}
+			//$this->assign('list',$list);
+			// $list = StoreModel::where()->with('partinfo')->with('storeman')->select();
+			// echo  json_encode($list);
+			// die;
+			return $this->fetch();
+		}
 	public function search(){
-		$map['storeid'] = [
-			'eq',session('sid')
-		];
 		input('stusno')&& $map['stusno'] =['like',input('stusno').'%'];
 		input('uname') && $map['uname'] = ['like','%'.input('uname').'%'];
 		input('type')!=NULL && $map['type']=['eq',input('type')];
-		//input('storeid')&& $map['storeid'] = ['eq',input('storeid')];
-		$list = StoreModel::where($map)->paginate($listRows = 5, $simple = false, $config = [
-			'query'=>$map
+		input('storeid')&& $map['storeid'] = ['eq',input('storeid')];
+		$list = StoreModel::where($map)->paginate($listRows = 10, $simple = false, $config = [
+			'query'=>request()->param()
 		]);
-		Cache::set('store',$list,3600);
-		$store= db('storeman')->select();
-		$this->assign('store',$store);
-		$this->assign('list',$list);
-		return view('lst');
+		$result = StoreModel::where($map);
+		$data[0] = $list;
+		$data[1] = $result;
+		//$list_s = StoreModel::where($map);
+		//Cache::set('store',$list,7200);
+		//$store= db('storeman')->select();
+		// $this->assign('store',$store);
+		// $this->assign('list',$list);
+		return json($data);
 	}
-    public function edit(){
-    	$id=input('id');
-    	$list=StoreModel::where('id','eq',$id)->find();
-    	if(request()->isPost()){
-    		$data=[
-    			'id'=>input('id'),
-    			'proName'=>input('proName'),
-				'price' => input('price'),
-				'y_price'=>input('y_price')
-    		];
-			// $validate = \think\Loader::validate('cate');
-    		// if(!$validate->scene('edit')->check($data)){
-			//    $this->error($validate->getError()); die;
-			// }
-            $save=db('prolist')->update($data);
-    		if($save !== false){
-    			$this->success('修改成功！','lst');
-    		}else{
-    			$this->error('修改失败！');
-    		}
-    		return;
-    	}
-    	$this->assign('list',$list);
-    	return $this->fetch();
+	public function updateData(){
+			$status= input('status');
+			$idlist =json_decode(input('idList'));
+			$data = array();
+			for($i=0;$i<count($idlist);$i++){
+				$data[$i]['id'] = $idlist[$i];
+				$data[$i]['status']	= $status;
+			}
+			$part = new Part;
+			$part -> saveAll($data);
+	 }
+	 public function itemRemove(){
+			$idlist =json_decode(input('idList'));
+			db('partinfo')->delete($idlist);	
+			}
+			public function edit(){
+				$data =file_get_contents('php://input');
+				$data=json_decode($data);
+				$storeinfo=[
+						'storeid'=>$data->storeid,
+						'type' => $data->type,
+						'id' => $data->id		
+				];
+				$partinfo =[
+						'serialnum'=>$data->serialnum,
+						'serialdes'=>$data->serialdes,
+						'partIntr' =>$data ->partIntr,
+						'count' => $data->count,
+						'remarks'=>$data->remarks,
+						'id'  => $data->pid
+				];
+				$res = db('storeinfo')->update($storeinfo);
+				$result = db('partinfo')->update($partinfo);
+				echo 'succ';
     }
+	public function allData(){
+			// $list = StoreModel::where(true)->with('partinfo')->with('storeman')->select();
+			// foreach($list as $key=>$value){
 
+			// }
+			// dump(input('storeid'));
+			// die;
+			$map=array();
+			input('stusno')&& $map['stusno'] =['eq',input('stusno')];
+			input('uname') && $map['uname'] = ['eq',input('uname')];
+			input('type')!=NULL && $map['type']=['eq',input('type')];
+			$map['storeid'] = ['eq',session('sid')];
+			input('serialnum') && $map['serialnum']=['eq',input('serialnum')];
+			$list=db('storeinfo')->alias('s')
+						   ->join('partinfo p','s.id = p.sid','right')
+						   ->join('storeman t','t.id = s.storeid')
+						   ->Field(['p.*','p.id as pid','t.sname as sname','s.*'])
+						   ->where($map)
+						   ->order('s.id desc')
+						   ->select();
+			foreach($list as $k=>$val){
+					$list[$k]['time'] = date("Y-m-d H:i:s",$val['time']);
+					$list[$k]['path'] = 'http://'.$_SERVER['HTTP_HOST'].$val['path'];
+			}	   
+			echo  json_encode($list);
+	}
     public function del(){
 		$id=input('id');
-		if(db('storeinfo')->delete(input('id'))){
+		if(db('partinfo')->delete(input('id'))){
 			$this->success('删除成功！','lst');
 		}else{
 			$this->error('删除失败！');
 		}	
 	}
 	//导出excel
-	public function out(){
+	public function out($list){
 		$path = dirname(__FILE__); //找到当前脚本所在路径
 		vendor("PHPExcel.PHPExcel.PHPExcel");
 		vendor("PHPExcel.PHPExcel.Writer.IWriter");
@@ -91,20 +154,24 @@ class Storelist extends Base
 			->setCellValue('E1', '姓名')
 			->setCellValue('F1', '学号')
 			->setCellValue('G1','备注')
-			->setCellValue('H1','领取时间');
-		$list =Cache::get('store','');
+			->setCellValue('I1','领取时间')
+			->setCellValue('J1','签名图片');
+		$c = 2;
 		$count=count($list);
 		for($i=2;$i<=$count+1;$i++){
 			for($j=0;$j<count($list[$i-2]['partinfo']);$j++){
-				$objPHPExcel->getActiveSheet()->setCellValue('A' .($i+$j), $list[$i-2]['partinfo'][$j]['serialnum']);
-				$objPHPExcel->getActiveSheet()->setCellValue('B' .($i+$j), $list[$i-2]['partinfo'][$j]['serialdes']);
-				$objPHPExcel->getActiveSheet()->setCellValue('C' .($i+$j), $list[$i-2]['partinfo'][$j]['partIntr']);
-				$objPHPExcel->getActiveSheet()->setCellValue('D' .($i+$j), $list[$i-2]['partinfo'][$j]['count']);
-				$objPHPExcel->getActiveSheet()->setCellValue('E' .($i+$j), $list[$i-2]['uname']);
-				$objPHPExcel->getActiveSheet()->setCellValue('F' .($i+$j), $list[$i-2]['stusno']);
-				$objPHPExcel->getActiveSheet()->setCellValue('G' .($i+$j), $list[$i-2]['partinfo'][$j]['remarks']);
-				$objPHPExcel->getActiveSheet()->setCellValue('H' .($i+$j), date("Y-m-d H:i:s",$list[$i-2]['time']));
+				$objPHPExcel->getActiveSheet()->setCellValue('A' .($c+$j), $list[$i-2]['partinfo'][$j]['serialnum']);
+				$objPHPExcel->getActiveSheet()->setCellValue('B' .($c+$j), $list[$i-2]['partinfo'][$j]['serialdes']);
+				$objPHPExcel->getActiveSheet()->setCellValue('C' .($c+$j), $list[$i-2]['partinfo'][$j]['partIntr']);
+				$objPHPExcel->getActiveSheet()->setCellValue('D' .($c+$j), $list[$i-2]['partinfo'][$j]['count']);
+				$objPHPExcel->getActiveSheet()->setCellValue('E' .($c+$j), $list[$i-2]['uname']);
+				$objPHPExcel->getActiveSheet()->setCellValue('F' .($c+$j), $list[$i-2]['stusno']);
+				$objPHPExcel->getActiveSheet()->setCellValue('G' .($c+$j), $list[$i-2]['partinfo'][$j]['remarks']);
+				$objPHPExcel->getActiveSheet()->setCellValue('I' .($c+$j), date("Y-m-d H:i:s",$list[$i-2]['time']));
+				$objPHPExcel->getActiveSheet()->setCellValue('J' .($c+$j), 'http://'.$_SERVER['HTTP_HOST'].$list[$i-2]['path']);
+				$objPHPExcel->getActiveSheet()->getCell('J'.($c+$j))->getHyperlink()->setUrl('http://'.$_SERVER['HTTP_HOST'].$list[$i-2]['path']); 
 			}
+			$c+=count($list[$i-2]['partinfo']);
 		}
 		/*--------------下面是设置其他信息------------------*/
 

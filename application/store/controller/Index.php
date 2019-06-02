@@ -8,4 +8,8 @@ class Index extends Base
     {
         return $this->fetch();
     }
+    public function logout(){
+        session(null);
+        $this->success('退出成功！','Login/index');
+    }
 }
