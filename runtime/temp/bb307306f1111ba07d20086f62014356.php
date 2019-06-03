@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:3:{s:71:"C:\xampp\htdocs\pro\public/../application/admin\view\storelist\lst.html";i:1559564212;s:68:"C:\xampp\htdocs\pro\public/../application/admin\view\common\top.html";i:1558573096;s:69:"C:\xampp\htdocs\pro\public/../application/admin\view\common\left.html";i:1558917843;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:3:{s:71:"C:\xampp\htdocs\pro\public/../application/admin\view\storelist\lst.html";i:1559578998;s:68:"C:\xampp\htdocs\pro\public/../application/admin\view\common\top.html";i:1559464798;s:69:"C:\xampp\htdocs\pro\public/../application/admin\view\common\left.html";i:1559138579;}*/ ?>
 <!DOCTYPE html>
 <html>
     <head>
@@ -585,7 +585,12 @@ src="__PUBLIC__/images/userPhoto.png">
                     {
                         field: 'path',
                         title: '查看签名',formatter:function(value,row,index){
-                            var updt='<a target="blank" class="btn sign btn-primary btn-sm shiny" href="'+value+'">查看签名</a>';
+                            if(value){
+                                var updt='<a target="blank" class="btn sign btn-primary btn-sm shiny" href="'+value+'">查看签名</a>';
+                            }
+                            else{
+                                var updt='无签名';
+                            }
                             return updt;
                         }
                     },
@@ -628,7 +633,28 @@ src="__PUBLIC__/images/userPhoto.png">
                     }
                     ]
                 })
-            })
+                        $('#input-1a').fileinput({
+                            language: 'zh',
+                            uploadUrl: './uploadExcel',
+                            allowedFileExtensions: ["xls", "xlsx"],
+                        });
+                        $("#input-1a").on("fileuploaded", function (event, data, previewId, index) {
+                            console.log(data);
+                            if(data.response == 'succ')
+                            {
+                                $('#dataGrid').bootstrapTable('refresh');
+                                //关闭
+                                //$(".close").click();
+                            }else{
+                                alert(data.files[index].name + "上传失败,模板有误!");
+                                //重置
+                                // $("#input-1a").fileinput("clear");
+                                // $("#input-1a").fileinput("reset");
+                                // $('#input-1a').fileinput('refresh');
+                            // $('#input-1a').fileinput('enable');
+                            }
+                    });
+                })
             function GetQueryString(name)
             {
                 var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
@@ -636,30 +662,6 @@ src="__PUBLIC__/images/userPhoto.png">
                 if(r!=null)return  unescape(r[2]); return null;
             }
            
-            $(function(){
-                $('#input-1a').fileinput({
-                    language: 'zh',
-                    uploadUrl: './index',
-                    allowedFileExtensions: ["xls", "xlsx"],
-                });
-                $("#input-1a").on("fileuploaded", function (event, data, previewId, index) {
-                    console.log(data);
-                    if(data.response == 'succ')
-                    {
-                        alert(data.files[index].name + "上传成功!");
-                        location.href = './index';
-                        //关闭
-                        //$(".close").click();
-                    }else{
-                        alert(data.files[index].name + "上传失败,模板有误!");
-                        //重置
-                        // $("#input-1a").fileinput("clear");
-                        // $("#input-1a").fileinput("reset");
-                        // $('#input-1a').fileinput('refresh');
-                    // $('#input-1a').fileinput('enable');
-                    }
-            });
-        })
     </script>
 
 </body>

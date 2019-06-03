@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:3:{s:71:"C:\xampp\htdocs\pro\public/../application/store\view\storelist\lst.html";i:1559560324;s:68:"C:\xampp\htdocs\pro\public/../application/store\view\common\top.html";i:1559558259;s:69:"C:\xampp\htdocs\pro\public/../application/store\view\common\left.html";i:1558917843;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:3:{s:71:"C:\xampp\htdocs\pro\public/../application/store\view\storelist\lst.html";i:1559579542;s:68:"C:\xampp\htdocs\pro\public/../application/store\view\common\top.html";i:1559464823;s:69:"C:\xampp\htdocs\pro\public/../application/store\view\common\left.html";i:1559138579;}*/ ?>
 <!DOCTYPE html>
 <html><head>
 	    <meta charset="utf-8">
@@ -172,6 +172,13 @@
                                 </select>
                         </div>
                         <div class="col-md-2">
+                            <select class="form-control store" name="status">
+                                <option value="" selected disabled>请选择状态</option>
+                                    <option value="0">待处理</option>
+                                    <option value="1">已处理</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
                                <input type="submit" class="btn btn-primary" value="查询" name="search">
                         </div>
                     </div>
@@ -226,7 +233,7 @@
     <script src="__PUBLIC__/style/jquery.js"></script>
     <!--Beyond Scripts-->
     <script src="__PUBLIC__/style/beyond.js"></script>
-    
+   
     <script>
             var overAllIds = new Array();  //全局数组
             $(function(){
@@ -464,7 +471,12 @@
                     {
                         field: 'path',
                         title: '查看签名',formatter:function(value,row,index){
-                            var updt='<a target="blank" class="btn sign btn-primary btn-sm shiny" href="'+value+'">查看签名</a>';
+                            if(value){
+                                var updt='<a target="blank" class="btn sign btn-primary btn-sm shiny" href="'+value+'">查看签名</a>';
+                            }
+                            else{
+                                var updt='无签名';
+                            }
                             return updt;
                         }
                     },

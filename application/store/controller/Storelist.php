@@ -110,6 +110,7 @@ class Storelist extends Base
 			input('stusno')&& $map['stusno'] =['eq',input('stusno')];
 			input('uname') && $map['uname'] = ['eq',input('uname')];
 			input('type')!=NULL && $map['type']=['eq',input('type')];
+			input('status')!=NULL && $map['status']=['eq',input('status')];
 			$map['storeid'] = ['eq',session('sid')];
 			input('serialnum') && $map['serialnum']=['eq',input('serialnum')];
 			$list=db('storeinfo')->alias('s')
@@ -121,7 +122,7 @@ class Storelist extends Base
 						   ->select();
 			foreach($list as $k=>$val){
 					$list[$k]['time'] = date("Y-m-d H:i:s",$val['time']);
-					$list[$k]['path'] = 'http://'.$_SERVER['HTTP_HOST'].$val['path'];
+					$list[$k]['path'] = $list[$k]['path']?'http://'.$_SERVER['HTTP_HOST'].$val['path']:'';
 			}	   
 			echo  json_encode($list);
 	}
@@ -154,7 +155,7 @@ class Storelist extends Base
 			->setCellValue('E1', '姓名')
 			->setCellValue('F1', '学号')
 			->setCellValue('G1','备注')
-			->setCellValue('I1','领取时间')
+			->setCellValue('I1','时间')
 			->setCellValue('J1','签名图片');
 		$c = 2;
 		$count=count($list);

@@ -114,17 +114,17 @@ class Storelist extends Base
 			input('type')!=NULL && $map['type']=['eq',input('type')];
 			input('storeid')&& $map['storeid'] = ['eq',input('storeid')];
 			input('serialnum') && $map['serialnum']=['eq',input('serialnum')];
-			input('status') && $map['status']=['eq',input('status')];
+			input('status')!=NULL && $map['status']=['eq',input('status')];
 			$list=db('storeinfo')->alias('s')
 						   ->join('partinfo p','s.id = p.sid','right')
 						   ->join('storeman t','t.id = s.storeid')
 						   ->Field(['p.*','p.id as pid','t.sname as sname','s.*'])
 						   ->where($map)
-						   ->order('s.id desc')
+						   ->order('s.time desc')
 						   ->select();
 			foreach($list as $k=>$val){
 					$list[$k]['time'] = date("Y-m-d H:i:s",$val['time']);
-					$list[$k]['path'] = 'http://'.$_SERVER['HTTP_HOST'].$val['path'];
+					$list[$k]['path'] =$list[$k]['path']?'http://'.$_SERVER['HTTP_HOST'].$val['path']:'';
 			}	
 			cache('list', $list, 7200);   
 			echo  json_encode($list);
@@ -159,8 +159,9 @@ class Storelist extends Base
 			->setCellValue('F1', '学号')
 			->setCellValue('G1','备注')
 			->setCellValue('H1','仓库名称')
-			->setCellValue('I1','领取时间')
-			->setCellValue('J1','签名图片');
+			->setCellValue('I1','类型')
+			->setCellValue('J1','时间')
+			->setCellValue('K1','签名图片');
 		$c = 2;
 		$list =cache('list');
 		$count=count($list);
@@ -173,8 +174,9 @@ class Storelist extends Base
 				$objPHPExcel->getActiveSheet()->setCellValue('F' .$i, $list[$i-2]['stusno']);
 				$objPHPExcel->getActiveSheet()->setCellValue('G' .$i, $list[$i-2]['remarks']);
 				$objPHPExcel->getActiveSheet()->setCellValue('H' .$i, $list[$i-2]['sname']);
-				$objPHPExcel->getActiveSheet()->setCellValue('I' .$i, $list[$i-2]['time']);
-				$objPHPExcel->getActiveSheet()->setCellValue('J' .$i, $list[$i-2]['path']);
+				$objPHPExcel->getActiveSheet()->setCellValue('I' .$i, $list[$i-2]['type']?'领取':'清退');
+				$objPHPExcel->getActiveSheet()->setCellValue('J' .$i, $list[$i-2]['time']);
+				$objPHPExcel->getActiveSheet()->setCellValue('K' .$i, $list[$i-2]['path']);
 				$objPHPExcel->getActiveSheet()->getCell('J'.$i)->getHyperlink()->setUrl($list[$i-2]['path']); 
 		}
 		/*--------------下面是设置其他信息------------------*/
@@ -201,10 +203,10 @@ class Storelist extends Base
 						$arrExcel = $objPHPExcel->getSheet(0)->toArray();//获取其中的数据
 						// array_splice($arrExcel, 1, 0);
 						//检查模板是否符合风格
-						if($arrExcel[0][0]!="姓名" || ($arrExcel[0][1]!="学号" && $arrExcel[0][1]!="工号")){
-								return 'fail';
-						}
-						$key = array('uname','stusno');
+						// if($arrExcel[0][0]!="姓名" || ($arrExcel[0][1]!="学号" && $arrExcel[0][1]!="工号")){
+						// 		return 'fail';
+						// }
+						$key = array('serialnum','serialdes','partIntr','count','uname','stusno','remarks','sname','type','time');
 						foreach($arrExcel as $i=>$vals){
 								$arrExcel[$i] = array_combine($key,$vals);
 						}
@@ -212,19 +214,32 @@ class Storelist extends Base
 						array_shift($arrExcel);
 						// $data=db('stuinfo')->field('uname,stusno')->select();
 						// $arr = array();
-						// foreach ($arrExcel as $key => $value) {
-						// 				if(!in_array($value,$data)){
-						// 				$arr[]=$value;
-						// 		}
-						// }
-						// $arrExcel = $arr;
-						// $limit = 500;
-						// $count = ceil(count($arrExcel)/$limit);
-						// for($i=1;$i<=$count;$i++){
-						// 				$offset=($i-1)*$limit;
-						// 				$data=array_slice($arrExcel,$offset,$limit);
-						// 				db('stuinfo')->insertAll($data);
-						// }
+						$storeinfo =array();
+						$partinfo = array();
+						foreach ($arrExcel as $k => $value) {
+									$store=db('storeman')->where('sname',$value['sname'])->find();
+									$store['id']?$storeinfo[$k]['storeid']=$store['id']:$storeinfo[$k]['storeid']="";
+									$storeinfo[$k]['uname']=$value['uname'];
+									$storeinfo[$k]['stusno']=$value['stusno'];
+									$storeinfo[$k]['type']=$value['type']=="领取"?1:0;
+									$storeinfo[$k]['time']=strtotime($value['time']);
+									$partinfo[$k]['partIntr']=$value['partIntr'];
+									$partinfo[$k]['remarks']=$value['remarks'];
+									$partinfo[$k]['serialnum']=$value['serialnum'];
+									$partinfo[$k]['serialdes']=$value['serialdes'];
+						}
+						$limit = 500;
+						$count = ceil(count($storeinfo)/$limit);
+						for($i=1;$i<=$count;$i++){
+										$offset=($i-1)*$limit;
+										$data=array_slice($storeinfo,$offset,$limit);
+										$res=StoreModel::insertAll($data);
+										$ids=StoreModel::getLastInsID();
+										for($i=0;$i<$res;$i++){
+											 $partinfo[$i]['sid']=$ids++;	
+											 Part::insert($partinfo[$i]);
+										}
+						}
 						return 'succ';
 				}
 	}
