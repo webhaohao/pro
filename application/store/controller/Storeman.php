@@ -48,13 +48,13 @@ class Storeman extends Base
 			}else{
 				$data['pwd']=$store['password'];
 			}
-			$validate = \think\Loader::validate('store');
+			$validate = \think\Loader::validate('storeman');
     		if(!$validate->scene('edit')->check($data)){
 			   $this->error($validate->getError()); die;
 			}
-            $save=db('store')->update($data);
+            $save=db('storeman')->update($data);
     		if($save !== false){
-    			$this->success('修改仓库管理员成功！','lst');
+    			$this->success('修改仓库管理员成功！','edit');
     		}else{
     			$this->error('修改仓库管理员失败！');
     		}

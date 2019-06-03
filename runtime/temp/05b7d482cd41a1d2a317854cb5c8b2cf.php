@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:3:{s:69:"C:\xampp\htdocs\pro\public/../application/store\view\index\index.html";i:1558917843;s:68:"C:\xampp\htdocs\pro\public/../application/store\view\common\top.html";i:1559558259;s:69:"C:\xampp\htdocs\pro\public/../application/store\view\common\left.html";i:1558917843;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:3:{s:71:"C:\xampp\htdocs\pro\public/../application/store\view\storeman\edit.html";i:1558923603;s:68:"C:\xampp\htdocs\pro\public/../application/store\view\common\top.html";i:1559558259;s:69:"C:\xampp\htdocs\pro\public/../application/store\view\common\left.html";i:1558917843;}*/ ?>
 <!DOCTYPE html>
 <html><head>
 	    <meta charset="utf-8">
@@ -79,6 +79,7 @@
         </div>
     </div>
 </div>
+
 	<!-- /头部 -->
 	
 	<div class="main-container container-fluid">
@@ -120,14 +121,56 @@
                 <!-- Page Breadcrumb -->
                 <div class="page-breadcrumbs">
                     <ul class="breadcrumb">
-                                        <li class="active">控制面板</li>
+                                        <li>
+                        <a href="#">系统</a>
+                    </li>
+                                        <li>
+                        <a href="<?php echo url('admin/lst'); ?>">管理员管理</a>
+                    </li>
+                                        <li class="active">修改管理员</li>
                                         </ul>
                 </div>
                 <!-- /Page Breadcrumb -->
 
                 <!-- Page Body -->
                 <div class="page-body">
-                      <h1 style="text-align:center;margin-top:200px;">欢迎来到"无纸化后台管理系统!"</h1>
+                    
+<div class="row">
+    <div class="col-lg-12 col-sm-12 col-xs-12">
+        <div class="widget">
+            <div class="widget-header bordered-bottom bordered-blue">
+                <span class="widget-caption">修改管理员信息</span>
+            </div>
+            <div class="widget-body">
+                <div id="horizontal-form">
+                    <form class="form-horizontal" role="form" action="" method="post">
+                        <input type="hidden" name="id" value="<?php echo $store['id']; ?>">
+                        <div class="form-group">
+                            <label for="username" class="col-sm-2 control-label no-padding-right">仓库管理员名</label>
+                            <div class="col-sm-6">
+                                <input class="form-control" id="username" placeholder="" name="username" value="<?php echo $store['sname']; ?>"  type="text">
+                            </div>
+                            <p class="help-block col-sm-4 red">* 必填</p>
+                        </div>
+                        <div class="form-group">
+                            <label for="group_id" class="col-sm-2 control-label no-padding-right">仓库管理员密码</label>
+                            <div class="col-sm-6">
+                                <input class="form-control" id="password" placeholder="" name="password"  type="text">
+                            </div>
+                            <p class="help-block col-sm-4 red">* 留空则表示不修改密码</p>
+                        </div>  
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-10">
+                                <button type="submit" class="btn btn-default">保存信息</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
                 </div>
                 <!-- /Page Body -->
             </div>

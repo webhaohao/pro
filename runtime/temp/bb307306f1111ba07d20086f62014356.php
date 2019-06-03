@@ -1,6 +1,7 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:3:{s:71:"C:\xampp\htdocs\pro\public/../application/admin\view\storelist\lst.html";i:1559486403;s:68:"C:\xampp\htdocs\pro\public/../application/admin\view\common\top.html";i:1559464798;s:69:"C:\xampp\htdocs\pro\public/../application/admin\view\common\left.html";i:1559138579;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:3:{s:71:"C:\xampp\htdocs\pro\public/../application/admin\view\storelist\lst.html";i:1559564212;s:68:"C:\xampp\htdocs\pro\public/../application/admin\view\common\top.html";i:1558573096;s:69:"C:\xampp\htdocs\pro\public/../application/admin\view\common\left.html";i:1558917843;}*/ ?>
 <!DOCTYPE html>
-<html><head>
+<html>
+    <head>
 	    <meta charset="utf-8">
     <title>无纸化仓库管理</title>
 
@@ -14,6 +15,7 @@
     <link href="__PUBLIC__/style/weather-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="__PUBLIC__/style/bootstrap-table.min.css">
     <link href="__PUBLIC__/style/bootstrap-editable.css" rel="stylesheet"/>
+    <link href="__PUBLIC__/style/fileinput.min.css" rel="stylesheet"/>
     <!--Beyond styles-->
     <link id="beyond-link" href="__PUBLIC__/style/beyond.css" rel="stylesheet" type="text/css">
     <link href="__PUBLIC__/style/demo.css" rel="stylesheet">
@@ -241,7 +243,7 @@ src="__PUBLIC__/images/userPhoto.png">
                         <div class="col-md-3">
                             <select class="form-control store" name="status">
                                 <option value="" selected disabled>请选择状态</option>
-                                    <option value="0">未处理</option>
+                                    <option value="0">待处理</option>
                                     <option value="1">已处理</option>
                             </select>
                         </div>
@@ -252,8 +254,12 @@ src="__PUBLIC__/images/userPhoto.png">
             </form>
     </div>  
     <div class="col-lg-12 col-sm-12 col-xs-12">
-        <!-- <button type="button" tooltip="下载excel" class="btn btn-sm btn-azure btn-addon download" onclick="javascript:window.location.href='<?php echo url('storelist/lst?download=1'); ?>'"><i class="fa fa-download"></i>导出Excel</button> -->
-        <button type="button" tooltip="下载excel" class="btn btn-sm btn-azure btn-addon download"><i class="fa fa-download"></i>导出Excel</button>
+        <form class="form-horizontal uploadForm" role="form" action="" enctype="multipart/form-data" method="post" style="margin:20px 0px;">  
+            <input id="input-1a" type="file" data-show-preview="false" name="excel"> 
+        </form>  
+        <button type="button" tooltip="下载excel" class="btn btn-sm btn-azure btn-addon download" onclick="javascript:window.location.href='<?php echo url('storelist/out'); ?>'"><i class="fa fa-download"></i>导出Excel</button>
+        <!-- <button type="button" tooltip="下载excel" class="btn btn-sm btn-azure btn-addon download"><i class="fa fa-download"></i>导出Excel</button> -->
+        <!-- <button type="button" tooltip="下载excel" class="btn btn-sm btn-azure btn-addon download" onClick ="$('#dataGrid').tableExport({ type: 'excel', escape: 'false' })"><i class="fa fa-download"></i>导出Excel</button> -->
         <button type="button" tooltip="将勾选项设为已处理" class="btn btn-sm btn-info btn-addon processed"><i class="fa fa-edit"></i>将勾选项设为已处理</button>
         <button type="button" tooltip="将勾选项待处理" class="btn btn-sm btn-info btn-addon process"><i class="fa fa-edit"></i>将勾选项待处理</button>
         <button type="button" tooltip="将勾选项删除" class="btn btn-sm btn-danger btn-addon itemRemove"><i class="fa fa-trash-o"></i>勾选项删除</button>
@@ -297,6 +303,9 @@ src="__PUBLIC__/images/userPhoto.png">
     <script src="__PUBLIC__/style/bootstrap-editable.min.js"></script>
     <script src="__PUBLIC__/style/bootstrap-table-editable.js"></script>
     <script src="__PUBLIC__/style/bootstrap-table-zh-CN.js"></script>
+    <script src="__PUBLIC__/style/tableExport.min.js"></script>
+    <script src="__PUBLIC__/style/fileinput.min.js"></script>
+    <script src="__PUBLIC__/style/locales/zh.js"></script>
     <script src="__PUBLIC__/style/jquery.js"></script>
     <!--Beyond Scripts-->
     <script src="__PUBLIC__/style/beyond.js"></script>
@@ -627,7 +636,30 @@ src="__PUBLIC__/images/userPhoto.png">
                 if(r!=null)return  unescape(r[2]); return null;
             }
            
-   
+            $(function(){
+                $('#input-1a').fileinput({
+                    language: 'zh',
+                    uploadUrl: './index',
+                    allowedFileExtensions: ["xls", "xlsx"],
+                });
+                $("#input-1a").on("fileuploaded", function (event, data, previewId, index) {
+                    console.log(data);
+                    if(data.response == 'succ')
+                    {
+                        alert(data.files[index].name + "上传成功!");
+                        location.href = './index';
+                        //关闭
+                        //$(".close").click();
+                    }else{
+                        alert(data.files[index].name + "上传失败,模板有误!");
+                        //重置
+                        // $("#input-1a").fileinput("clear");
+                        // $("#input-1a").fileinput("reset");
+                        // $('#input-1a').fileinput('refresh');
+                    // $('#input-1a').fileinput('enable');
+                    }
+            });
+        })
     </script>
 
 </body>

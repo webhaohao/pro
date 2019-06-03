@@ -125,7 +125,8 @@ class Storelist extends Base
 			foreach($list as $k=>$val){
 					$list[$k]['time'] = date("Y-m-d H:i:s",$val['time']);
 					$list[$k]['path'] = 'http://'.$_SERVER['HTTP_HOST'].$val['path'];
-			}	   
+			}	
+			cache('list', $list, 7200);   
 			echo  json_encode($list);
 	}
     public function del(){
@@ -137,7 +138,7 @@ class Storelist extends Base
 		}	
 	}
 	//导出excel
-	public function out($list){
+	public function out(){
 		$path = dirname(__FILE__); //找到当前脚本所在路径
 		vendor("PHPExcel.PHPExcel.PHPExcel");
 		vendor("PHPExcel.PHPExcel.Writer.IWriter");
@@ -161,22 +162,20 @@ class Storelist extends Base
 			->setCellValue('I1','领取时间')
 			->setCellValue('J1','签名图片');
 		$c = 2;
+		$list =cache('list');
 		$count=count($list);
 		for($i=2;$i<=$count+1;$i++){
-			for($j=0;$j<count($list[$i-2]['partinfo']);$j++){
-				$objPHPExcel->getActiveSheet()->setCellValue('A' .($c+$j), $list[$i-2]['partinfo'][$j]['serialnum']);
-				$objPHPExcel->getActiveSheet()->setCellValue('B' .($c+$j), $list[$i-2]['partinfo'][$j]['serialdes']);
-				$objPHPExcel->getActiveSheet()->setCellValue('C' .($c+$j), $list[$i-2]['partinfo'][$j]['partIntr']);
-				$objPHPExcel->getActiveSheet()->setCellValue('D' .($c+$j), $list[$i-2]['partinfo'][$j]['count']);
-				$objPHPExcel->getActiveSheet()->setCellValue('E' .($c+$j), $list[$i-2]['uname']);
-				$objPHPExcel->getActiveSheet()->setCellValue('F' .($c+$j), $list[$i-2]['stusno']);
-				$objPHPExcel->getActiveSheet()->setCellValue('G' .($c+$j), $list[$i-2]['partinfo'][$j]['remarks']);
-				$objPHPExcel->getActiveSheet()->setCellValue('H' .($c+$j), $list[$i-2]['storeman']['sname']);
-				$objPHPExcel->getActiveSheet()->setCellValue('I' .($c+$j), date("Y-m-d H:i:s",$list[$i-2]['time']));
-				$objPHPExcel->getActiveSheet()->setCellValue('J' .($c+$j), 'http://'.$_SERVER['HTTP_HOST'].$list[$i-2]['path']);
-				$objPHPExcel->getActiveSheet()->getCell('J'.($c+$j))->getHyperlink()->setUrl('http://'.$_SERVER['HTTP_HOST'].$list[$i-2]['path']); 
-			}
-			$c+=count($list[$i-2]['partinfo']);
+				$objPHPExcel->getActiveSheet()->setCellValue('A' .$i, $list[$i-2]['serialnum']);
+				$objPHPExcel->getActiveSheet()->setCellValue('B' .$i, $list[$i-2]['serialdes']);
+				$objPHPExcel->getActiveSheet()->setCellValue('C' .$i, $list[$i-2]['partIntr']);
+				$objPHPExcel->getActiveSheet()->setCellValue('D' .$i, $list[$i-2]['count']);
+				$objPHPExcel->getActiveSheet()->setCellValue('E' .$i, $list[$i-2]['uname']);
+				$objPHPExcel->getActiveSheet()->setCellValue('F' .$i, $list[$i-2]['stusno']);
+				$objPHPExcel->getActiveSheet()->setCellValue('G' .$i, $list[$i-2]['remarks']);
+				$objPHPExcel->getActiveSheet()->setCellValue('H' .$i, $list[$i-2]['sname']);
+				$objPHPExcel->getActiveSheet()->setCellValue('I' .$i, $list[$i-2]['time']);
+				$objPHPExcel->getActiveSheet()->setCellValue('J' .$i, $list[$i-2]['path']);
+				$objPHPExcel->getActiveSheet()->getCell('J'.$i)->getHyperlink()->setUrl($list[$i-2]['path']); 
 		}
 		/*--------------下面是设置其他信息------------------*/
 
@@ -188,5 +187,45 @@ class Storelist extends Base
 		header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
 		$PHPWriter->save("php://output"); //表示在$path路径下面生成demo.xlsx文件
 		exit;
+	}
+	public function uploadExcel(){
+				if(request()->isPost()){
+						$excel = request()->file('excel')->getInfo();
+						vendor("PHPExcel.PHPExcel.PHPExcel");
+						vendor("PHPExcel.PHPExcel.Writer.IWriter");
+						vendor("PHPExcel.PHPExcel.Writer.Abstract");
+						vendor("PHPExcel.PHPExcel.Writer.Excel5");
+						vendor("PHPExcel.PHPExcel.Writer.Excel2007");
+						vendor("PHPExcel.PHPExcel.IOFactory");
+						$objPHPExcel = \PHPExcel_IOFactory::load($excel['tmp_name']);//读取上传的文件
+						$arrExcel = $objPHPExcel->getSheet(0)->toArray();//获取其中的数据
+						// array_splice($arrExcel, 1, 0);
+						//检查模板是否符合风格
+						if($arrExcel[0][0]!="姓名" || ($arrExcel[0][1]!="学号" && $arrExcel[0][1]!="工号")){
+								return 'fail';
+						}
+						$key = array('uname','stusno');
+						foreach($arrExcel as $i=>$vals){
+								$arrExcel[$i] = array_combine($key,$vals);
+						}
+						//删除数组第一项
+						array_shift($arrExcel);
+						// $data=db('stuinfo')->field('uname,stusno')->select();
+						// $arr = array();
+						// foreach ($arrExcel as $key => $value) {
+						// 				if(!in_array($value,$data)){
+						// 				$arr[]=$value;
+						// 		}
+						// }
+						// $arrExcel = $arr;
+						// $limit = 500;
+						// $count = ceil(count($arrExcel)/$limit);
+						// for($i=1;$i<=$count;$i++){
+						// 				$offset=($i-1)*$limit;
+						// 				$data=array_slice($arrExcel,$offset,$limit);
+						// 				db('stuinfo')->insertAll($data);
+						// }
+						return 'succ';
+				}
 	}
 }

@@ -140,7 +140,7 @@
     <script src="__PUBLIC__/style/jquery.js"></script>
     <!--Beyond Scripts-->
     <script src="__PUBLIC__/style/beyond.js"></script>
-    
+   
     <script>
             var overAllIds = new Array();  //全局数组
             $(function(){
@@ -362,9 +362,8 @@
                         field: 'count',
                         align: 'center',
                         valign: 'middle',
-                        editable:{
-                            type:'text',
-                            emptytext:'点击编辑'
+                        formatter: (value, row, index) => {
+                            return value;
                         }
                     },
                     {

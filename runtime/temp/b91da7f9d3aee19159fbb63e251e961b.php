@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:3:{s:71:"C:\xampp\htdocs\pro\public/../application/store\view\storelist\lst.html";i:1559467723;s:68:"C:\xampp\htdocs\pro\public/../application/store\view\common\top.html";i:1559464823;s:69:"C:\xampp\htdocs\pro\public/../application/store\view\common\left.html";i:1559138579;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:3:{s:71:"C:\xampp\htdocs\pro\public/../application/store\view\storelist\lst.html";i:1559560324;s:68:"C:\xampp\htdocs\pro\public/../application/store\view\common\top.html";i:1559558259;s:69:"C:\xampp\htdocs\pro\public/../application/store\view\common\left.html";i:1558917843;}*/ ?>
 <!DOCTYPE html>
 <html><head>
 	    <meta charset="utf-8">
@@ -448,9 +448,8 @@
                         field: 'count',
                         align: 'center',
                         valign: 'middle',
-                        editable:{
-                            type:'text',
-                            emptytext:'点击编辑'
+                        formatter: (value, row, index) => {
+                            return value;
                         }
                     },
                     {

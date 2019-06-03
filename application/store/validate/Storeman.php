@@ -1,5 +1,5 @@
 <?php
-namespace app\admin\validate;
+namespace app\store\validate;
 use think\Validate;
 class Storeman extends Validate
 {
