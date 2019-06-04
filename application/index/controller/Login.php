@@ -14,6 +14,7 @@ class Login extends Controller{
             $res = db('storeman')->where('id',$id)->find();
             if($res['pwd']==md5($pwd)){
                   session('login_time',time());
+                  session('sid',$res['id']); 
                   echo 'succ';
             }
             else{

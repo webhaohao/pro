@@ -158,7 +158,8 @@ class Storelist extends Base
 			->setCellValue('G1','备注')
 			->setCellValue('H1','类型')
 			->setCellValue('I1','时间')
-			->setCellValue('J1','签名图片');
+			->setCellValue('J1','状态')
+			->setCellValue('K1','签名图片');
 		$list =cache('list');
 		$count=count($list);
 		for($i=2;$i<=$count+1;$i++){
@@ -171,9 +172,10 @@ class Storelist extends Base
 				$objPHPExcel->getActiveSheet()->setCellValue('G' .$i, $list[$i-2]['remarks']);
 				$objPHPExcel->getActiveSheet()->setCellValue('H' .$i, $list[$i-2]['type']?'领取':'清退');
 				$objPHPExcel->getActiveSheet()->setCellValue('I' .$i, $list[$i-2]['time']);
-				$objPHPExcel->getActiveSheet()->setCellValue('J' .$i, $list[$i-2]['path']);
+				$objPHPExcel->getActiveSheet()->setCellValue('J' .$i, $list[$i-2]['status']?'已处理':'待处理');
+				$objPHPExcel->getActiveSheet()->setCellValue('K' .$i, $list[$i-2]['path']);
 				if($list[$i-2]['path']){
-					$objPHPExcel->getActiveSheet()->getCell('J'.$i)->getHyperlink()->setUrl($list[$i-2]['path']); 
+					$objPHPExcel->getActiveSheet()->getCell('K'.$i)->getHyperlink()->setUrl($list[$i-2]['path']); 
 				}
 		}
 		/*--------------下面是设置其他信息------------------*/
