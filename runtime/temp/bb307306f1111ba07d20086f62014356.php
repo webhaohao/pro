@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:3:{s:71:"C:\xampp\htdocs\pro\public/../application/admin\view\storelist\lst.html";i:1559578998;s:68:"C:\xampp\htdocs\pro\public/../application/admin\view\common\top.html";i:1559464798;s:69:"C:\xampp\htdocs\pro\public/../application/admin\view\common\left.html";i:1559138579;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:3:{s:71:"C:\xampp\htdocs\pro\public/../application/admin\view\storelist\lst.html";i:1559632865;s:68:"C:\xampp\htdocs\pro\public/../application/admin\view\common\top.html";i:1558573096;s:69:"C:\xampp\htdocs\pro\public/../application/admin\view\common\left.html";i:1558917843;}*/ ?>
 <!DOCTYPE html>
 <html>
     <head>
@@ -303,7 +303,7 @@ src="__PUBLIC__/images/userPhoto.png">
     <script src="__PUBLIC__/style/bootstrap-editable.min.js"></script>
     <script src="__PUBLIC__/style/bootstrap-table-editable.js"></script>
     <script src="__PUBLIC__/style/bootstrap-table-zh-CN.js"></script>
-    <script src="__PUBLIC__/style/tableExport.min.js"></script>
+    <!-- <script src="__PUBLIC__/style/tableExport.min.js"></script> -->
     <script src="__PUBLIC__/style/fileinput.min.js"></script>
     <script src="__PUBLIC__/style/locales/zh.js"></script>
     <script src="__PUBLIC__/style/jquery.js"></script>
@@ -340,16 +340,16 @@ src="__PUBLIC__/images/userPhoto.png">
                         $("#myModal .modal-body").html(`<img style="width:100%" src="${$(this).attr('href')}"/>`);
                         $('#myModal').modal();
                 })
-                $(".download").on('click',function(){
-                        if(GetQueryString('search')){
-                            var serializeUrl = $(".searchForm").serialize();
-                            //alert('./lst?download=1&'+serializeUrl);
-                            window.location.href='./lst?download=1&search=查询'+serializeUrl;
-                        }
-                        else{
-                            window.location.href='./lst?download=1'; 
-                        }
-                })
+                // $(".download").on('click',function(){
+                //         if(GetQueryString('search')){
+                //             var serializeUrl = $(".searchForm").serialize();
+                //             //alert('./lst?download=1&'+serializeUrl);
+                //             window.location.href='./lst?download=1&search=查询'+serializeUrl;
+                //         }
+                //         else{
+                //             window.location.href='./lst?download=1'; 
+                //         }
+                // })
                 $(".processed").on('click',function(){
                     updataStatus(1);
                 })

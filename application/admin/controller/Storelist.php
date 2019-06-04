@@ -48,24 +48,24 @@ class Storelist extends Base
 			// die;
 			return $this->fetch();
 		}
-	public function search(){
-		input('stusno')&& $map['stusno'] =['like',input('stusno').'%'];
-		input('uname') && $map['uname'] = ['like','%'.input('uname').'%'];
-		input('type')!=NULL && $map['type']=['eq',input('type')];
-		input('storeid')&& $map['storeid'] = ['eq',input('storeid')];
-		$list = StoreModel::where($map)->paginate($listRows = 10, $simple = false, $config = [
-			'query'=>request()->param()
-		]);
-		$result = StoreModel::where($map);
-		$data[0] = $list;
-		$data[1] = $result;
-		//$list_s = StoreModel::where($map);
-		//Cache::set('store',$list,7200);
-		//$store= db('storeman')->select();
-		// $this->assign('store',$store);
-		// $this->assign('list',$list);
-		return json($data);
-	}
+		public function search(){
+			input('stusno')&& $map['stusno'] =['like',input('stusno').'%'];
+			input('uname') && $map['uname'] = ['like','%'.input('uname').'%'];
+			input('type')!=NULL && $map['type']=['eq',input('type')];
+			input('storeid')&& $map['storeid'] = ['eq',input('storeid')];
+			$list = StoreModel::where($map)->paginate($listRows = 10, $simple = false, $config = [
+				'query'=>request()->param()
+			]);
+			$result = StoreModel::where($map);
+			$data[0] = $list;
+			$data[1] = $result;
+			//$list_s = StoreModel::where($map);
+			//Cache::set('store',$list,7200);
+			//$store= db('storeman')->select();
+			// $this->assign('store',$store);
+			// $this->assign('list',$list);
+			return json($data);
+		}
 	public function updateData(){
 			$status= input('status');
 			$idlist =json_decode(input('idList'));
@@ -162,8 +162,9 @@ class Storelist extends Base
 			->setCellValue('I1','类型')
 			->setCellValue('J1','时间')
 			->setCellValue('K1','签名图片');
-		$c = 2;
 		$list =cache('list');
+		// dump($list[0]['serialnum']);
+		// die;
 		$count=count($list);
 		for($i=2;$i<=$count+1;$i++){
 				$objPHPExcel->getActiveSheet()->setCellValue('A' .$i, $list[$i-2]['serialnum']);
@@ -177,11 +178,13 @@ class Storelist extends Base
 				$objPHPExcel->getActiveSheet()->setCellValue('I' .$i, $list[$i-2]['type']?'领取':'清退');
 				$objPHPExcel->getActiveSheet()->setCellValue('J' .$i, $list[$i-2]['time']);
 				$objPHPExcel->getActiveSheet()->setCellValue('K' .$i, $list[$i-2]['path']);
-				$objPHPExcel->getActiveSheet()->getCell('J'.$i)->getHyperlink()->setUrl($list[$i-2]['path']); 
+				if($list[$i-2]['path']){
+					$objPHPExcel->getActiveSheet()->getCell('K'.$i)->getHyperlink()->setUrl($list[$i-2]['path']); 
+				}
+				
 		}
-		/*--------------下面是设置其他信息------------------*/
-
-		$objPHPExcel->getActiveSheet()->setTitle('productaccess');      //设置sheet的名称
+		// /*--------------下面是设置其他信息------------------*/
+		$objPHPExcel->getActiveSheet()->setTitle('cangkuxinxi');      //设置sheet的名称
 		$objPHPExcel->setActiveSheetIndex(0);                   //设置sheet的起始位置
 		$objWriter = \PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');   //通过PHPExcel_IOFactory的写函数将上面数据写出来
 		$PHPWriter = \PHPExcel_IOFactory::createWriter( $objPHPExcel,"Excel2007");
@@ -201,11 +204,6 @@ class Storelist extends Base
 						vendor("PHPExcel.PHPExcel.IOFactory");
 						$objPHPExcel = \PHPExcel_IOFactory::load($excel['tmp_name']);//读取上传的文件
 						$arrExcel = $objPHPExcel->getSheet(0)->toArray();//获取其中的数据
-						// array_splice($arrExcel, 1, 0);
-						//检查模板是否符合风格
-						// if($arrExcel[0][0]!="姓名" || ($arrExcel[0][1]!="学号" && $arrExcel[0][1]!="工号")){
-						// 		return 'fail';
-						// }
 						$key = array('serialnum','serialdes','partIntr','count','uname','stusno','remarks','sname','type','time');
 						foreach($arrExcel as $i=>$vals){
 								$arrExcel[$i] = array_combine($key,$vals);
@@ -227,6 +225,7 @@ class Storelist extends Base
 									$partinfo[$k]['remarks']=$value['remarks'];
 									$partinfo[$k]['serialnum']=$value['serialnum'];
 									$partinfo[$k]['serialdes']=$value['serialdes'];
+									$partinfo[$k]['count']=$value['count'];
 						}
 						$limit = 500;
 						$count = ceil(count($storeinfo)/$limit);

@@ -124,6 +124,7 @@ class Storelist extends Base
 					$list[$k]['time'] = date("Y-m-d H:i:s",$val['time']);
 					$list[$k]['path'] = $list[$k]['path']?'http://'.$_SERVER['HTTP_HOST'].$val['path']:'';
 			}	   
+			cache('list', $list, 7200);   
 			echo  json_encode($list);
 	}
     public function del(){
@@ -135,7 +136,7 @@ class Storelist extends Base
 		}	
 	}
 	//导出excel
-	public function out($list){
+	public function out(){
 		$path = dirname(__FILE__); //找到当前脚本所在路径
 		vendor("PHPExcel.PHPExcel.PHPExcel");
 		vendor("PHPExcel.PHPExcel.Writer.IWriter");
@@ -155,24 +156,25 @@ class Storelist extends Base
 			->setCellValue('E1', '姓名')
 			->setCellValue('F1', '学号')
 			->setCellValue('G1','备注')
+			->setCellValue('H1','类型')
 			->setCellValue('I1','时间')
 			->setCellValue('J1','签名图片');
-		$c = 2;
+		$list =cache('list');
 		$count=count($list);
 		for($i=2;$i<=$count+1;$i++){
-			for($j=0;$j<count($list[$i-2]['partinfo']);$j++){
-				$objPHPExcel->getActiveSheet()->setCellValue('A' .($c+$j), $list[$i-2]['partinfo'][$j]['serialnum']);
-				$objPHPExcel->getActiveSheet()->setCellValue('B' .($c+$j), $list[$i-2]['partinfo'][$j]['serialdes']);
-				$objPHPExcel->getActiveSheet()->setCellValue('C' .($c+$j), $list[$i-2]['partinfo'][$j]['partIntr']);
-				$objPHPExcel->getActiveSheet()->setCellValue('D' .($c+$j), $list[$i-2]['partinfo'][$j]['count']);
-				$objPHPExcel->getActiveSheet()->setCellValue('E' .($c+$j), $list[$i-2]['uname']);
-				$objPHPExcel->getActiveSheet()->setCellValue('F' .($c+$j), $list[$i-2]['stusno']);
-				$objPHPExcel->getActiveSheet()->setCellValue('G' .($c+$j), $list[$i-2]['partinfo'][$j]['remarks']);
-				$objPHPExcel->getActiveSheet()->setCellValue('I' .($c+$j), date("Y-m-d H:i:s",$list[$i-2]['time']));
-				$objPHPExcel->getActiveSheet()->setCellValue('J' .($c+$j), 'http://'.$_SERVER['HTTP_HOST'].$list[$i-2]['path']);
-				$objPHPExcel->getActiveSheet()->getCell('J'.($c+$j))->getHyperlink()->setUrl('http://'.$_SERVER['HTTP_HOST'].$list[$i-2]['path']); 
-			}
-			$c+=count($list[$i-2]['partinfo']);
+				$objPHPExcel->getActiveSheet()->setCellValue('A' .$i, $list[$i-2]['serialnum']);
+				$objPHPExcel->getActiveSheet()->setCellValue('B' .$i, $list[$i-2]['serialdes']);
+				$objPHPExcel->getActiveSheet()->setCellValue('C' .$i, $list[$i-2]['partIntr']);
+				$objPHPExcel->getActiveSheet()->setCellValue('D' .$i, $list[$i-2]['count']);
+				$objPHPExcel->getActiveSheet()->setCellValue('E' .$i, $list[$i-2]['uname']);
+				$objPHPExcel->getActiveSheet()->setCellValue('F' .$i, $list[$i-2]['stusno']);
+				$objPHPExcel->getActiveSheet()->setCellValue('G' .$i, $list[$i-2]['remarks']);
+				$objPHPExcel->getActiveSheet()->setCellValue('H' .$i, $list[$i-2]['type']?'领取':'清退');
+				$objPHPExcel->getActiveSheet()->setCellValue('I' .$i, $list[$i-2]['time']);
+				$objPHPExcel->getActiveSheet()->setCellValue('J' .$i, $list[$i-2]['path']);
+				if($list[$i-2]['path']){
+					$objPHPExcel->getActiveSheet()->getCell('J'.$i)->getHyperlink()->setUrl($list[$i-2]['path']); 
+				}
 		}
 		/*--------------下面是设置其他信息------------------*/
 

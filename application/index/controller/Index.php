@@ -4,7 +4,7 @@ use app\index\controller\Base;
 
 class index extends Base{
       public function index(){
-           if(input('storeid')){
+           if(input('storeid') && session('login_time')){
                   session('sid',input('storeid'));
                   $store = db('storeman')->where('id',input('storeid'))->find();
                   $this->assign('store',$store); 

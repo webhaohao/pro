@@ -46,7 +46,7 @@ class Storeman extends Base
     		if(input('password')){
 				$data['pwd']=md5(input('password'));
 			}else{
-				$data['pwd']=$store['password'];
+				$data['pwd']=$store['pwd'];
 			}
 			$validate = \think\Loader::validate('storeman');
     		if(!$validate->scene('edit')->check($data)){
